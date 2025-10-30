@@ -9,5 +9,11 @@ export default defineConfig({
     globals: true,
     environment: 'node',
   },
+  optimizeDeps: {
+    include: ['monaco-editor'],
+  },
+  worker: {
+    format: 'es',
+  },
 })
 

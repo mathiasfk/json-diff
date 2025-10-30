@@ -6,9 +6,10 @@ A web application for comparing JSON objects semantically with intelligent array
 
 - **Semantic Comparison**: Compares JSON objects by meaning, not just structure
 - **Smart Array Matching**: Automatically detects the best field to match array items (id, index, name, etc.)
-- **Visual Diff**: Git-style diff visualization with additions/deletions highlighted
+- **Visual Diff**: Git-style diff visualization with additions/deletions highlighted using Monaco Editor
+- **Monaco Editor Integration**: Professional code editor (same as VSCode) with syntax highlighting and consistent visual experience
 - **Property Sorting**: Automatically sorts object properties alphabetically
-- **Format JSON**: Built-in JSON formatter for each input
+- **Format JSON**: Built-in JSON formatter for each input with format-on-paste and format-on-type
 - **Responsive Design**: Works on desktop and mobile devices
 
 ## Tech Stack
@@ -18,7 +19,7 @@ A web application for comparing JSON objects semantically with intelligent array
 - Vite
 - Tailwind CSS
 - jsondiffpatch (for semantic diffing)
-- react-diff-viewer-continued (for visual diff)
+- Monaco Editor / @monaco-editor/react (for code editing and diff visualization - the same editor used by VSCode)
 
 ## Installation
 
@@ -42,11 +43,12 @@ pnpm build
 
 ## Usage
 
-1. Paste your JSON objects into the left and right text areas
-2. Optionally use the "Format Left" or "Format Right" buttons to prettify your JSON
-3. Click "Compare JSONs" to see the semantic diff
-4. The diff view will highlight differences with green (additions) and red (deletions)
-5. Click "Back to Edit" to return to the editing mode
+1. Paste your JSON objects into the left and right Monaco editors (with syntax highlighting)
+2. The editor automatically validates JSON syntax and highlights errors in real-time
+3. Optionally use the "Format Left" or "Format Right" buttons to prettify your JSON
+4. Click "Compare JSONs" to see the semantic diff in side-by-side view
+5. The diff view uses Monaco Editor's diff mode with visual highlighting of additions (green) and deletions (red)
+6. Click "Back to Edit" to return to the editing mode
 
 ## How It Works
 
