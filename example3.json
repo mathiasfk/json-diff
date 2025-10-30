@@ -1,0 +1,30 @@
+{
+    "hobbies": [
+        {
+            "id": 10,
+            "name": "Reading",
+            "description": "I like to read books"
+        },
+        {
+            "id": 20,
+            "name": "Traveling",
+            "description": "I like to travel to new places"
+        }
+        
+    ],
+    "name": "John Doe",
+    "friends": [
+        {
+            "name": "Jane Doe",
+            "age": 25,
+            "email": "jane.doe@example.com"
+        },
+        {
+            "name": "Jim Doe",
+            "age": 35,
+            "job": "Engineer"
+        }
+    ],
+    "age": 30,
+    "email": "john.doe@example.com"
+}
