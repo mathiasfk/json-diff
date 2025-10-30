@@ -121,9 +121,14 @@ export function semanticDiff(left: any, right: any): any {
 }
 
 /**
- * Formats JSON for display
+ * Formats JSON for display with normalization
  */
-export function formatJSON(obj: any): string {
+export function formatJSON(obj: any, normalize: boolean = false): string {
+  if (normalize) {
+    const normalized = normalizeArrays(obj);
+    const sorted = sortObjectProperties(normalized);
+    return JSON.stringify(sorted, null, 2);
+  }
   return JSON.stringify(obj, null, 2);
 }
 

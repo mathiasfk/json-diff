@@ -81,7 +81,8 @@ function App() {
     const result = validateAndParse(json);
 
     if (result.valid && result.parsed) {
-      const formatted = formatJSON(result.parsed);
+      // Apply the same normalization used in comparison (sort arrays and properties)
+      const formatted = formatJSON(result.parsed, true);
       if (side === 'left') {
         setLeftJson(formatted);
         setLeftError('');
