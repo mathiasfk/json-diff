@@ -14,6 +14,7 @@ function App() {
   const [diffResult, setDiffResult] = useState<{
     left: string;
     right: string;
+    hasDifferences: boolean;
   } | null>(null);
 
   const validateAndParse = (json: string): { valid: boolean; parsed?: any; error?: string } => {
@@ -56,9 +57,13 @@ function App() {
     const formattedLeft = formatJSON(result.left);
     const formattedRight = formatJSON(result.right);
 
+    // Check if there are differences (delta is undefined or empty when JSONs are identical)
+    const hasDifferences = result.delta !== undefined;
+
     setDiffResult({
       left: formattedLeft,
       right: formattedRight,
+      hasDifferences,
     });
 
     setViewMode('compare');
@@ -147,6 +152,7 @@ function App() {
                 oldValue={diffResult.left}
                 newValue={diffResult.right}
                 onReset={handleReset}
+                hasDifferences={diffResult.hasDifferences}
               />
             )}
           </div>
