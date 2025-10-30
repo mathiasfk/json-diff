@@ -99,7 +99,7 @@ describe('semanticDiff', () => {
       expect(result.delta).toHaveProperty('users');
     });
 
-    it('should detect moved array items', () => {
+    it('should not report differences for reordered array items with id field', () => {
       const left = {
         items: [
           { id: 1, value: 'first' },
@@ -115,8 +115,44 @@ describe('semanticDiff', () => {
       
       const result = semanticDiff(left, right);
       
-      expect(result.delta).toBeDefined();
-      // Should detect as move rather than delete+add
+      // Should not report any differences since items are semantically identical
+      expect(result.delta).toBeUndefined();
+    });
+
+    it('should handle complex objects with reordered properties and arrays', () => {
+      // This simulates the example1.json vs example2.json scenario
+      const left = {
+        name: 'John Doe',
+        age: 30,
+        email: 'john.doe@example.com',
+        hobbies: [
+          { id: 1, name: 'Reading', description: 'I like to read books' },
+          { id: 2, name: 'Traveling', description: 'I like to travel to new places' },
+        ],
+        friends: [
+          { name: 'Jane Doe', age: 25, email: 'jane.doe@example.com' },
+          { name: 'Jim Doe', age: 35, job: 'Engineer' },
+        ],
+      };
+      
+      const right = {
+        hobbies: [
+          { id: 2, name: 'Traveling', description: 'I like to travel to new places' },
+          { id: 1, name: 'Reading', description: 'I like to read books' },
+        ],
+        name: 'John Doe',
+        friends: [
+          { name: 'Jane Doe', age: 25, email: 'jane.doe@example.com' },
+          { name: 'Jim Doe', age: 35, job: 'Engineer' },
+        ],
+        age: 30,
+        email: 'john.doe@example.com',
+      };
+      
+      const result = semanticDiff(left, right);
+      
+      // Should not report any differences - only property and array ordering differs
+      expect(result.delta).toBeUndefined();
     });
 
     it('should handle empty objects', () => {
