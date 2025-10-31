@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { JsonEditor } from './components/JsonEditor';
 import { DiffViewer } from './components/DiffViewer';
 import { semanticDiff, formatJSON } from './utils/semanticDiff';
+import { gtag } from './services/analytics';
 
 type ViewMode = 'edit' | 'compare';
 
@@ -37,28 +38,35 @@ function App() {
     setLeftError('');
     setRightError('');
 
+    gtag('event', 'compare_click', { left_chars: leftJson.length, right_chars: rightJson.length });
+
     const leftResult = validateAndParse(leftJson);
     const rightResult = validateAndParse(rightJson);
 
     if (!leftResult.valid) {
+      gtag('event', 'invalid_json', { side: 'left' });
       setLeftError(leftResult.error || 'Invalid JSON');
       return;
     }
 
     if (!rightResult.valid) {
+      gtag('event', 'invalid_json', { side: 'right' });
       setRightError(rightResult.error || 'Invalid JSON');
       return;
     }
 
-    // Perform semantic diff
     const result = semanticDiff(leftResult.parsed, rightResult.parsed);
 
-    // Format the normalized JSONs for display
     const formattedLeft = formatJSON(result.left);
     const formattedRight = formatJSON(result.right);
 
-    // Check if there are differences (delta is undefined or empty when JSONs are identical)
     const hasDifferences = result.delta !== undefined;
+
+    gtag('event', 'compare_completed', {
+      has_differences: hasDifferences ? 1 : 0,
+      left_chars: leftJson.length,
+      right_chars: rightJson.length,
+    });
 
     setDiffResult({
       left: formattedLeft,
@@ -70,6 +78,7 @@ function App() {
   };
 
   const handleReset = () => {
+    gtag('event', 'back_to_edit');
     setViewMode('edit');
     setDiffResult(null);
     setLeftError('');
@@ -77,6 +86,7 @@ function App() {
   };
 
   const handleFormat = (side: 'left' | 'right') => {
+    gtag('event', 'format_click', { side });
     const json = side === 'left' ? leftJson : rightJson;
     const result = validateAndParse(json);
 
