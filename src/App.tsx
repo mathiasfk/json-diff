@@ -95,7 +95,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100">
-      <header className="bg-gray-800 border-b border-gray-700 px-6 py-4">
+      <header className="bg-gray-800 border-b border-gray-700 px-6 py-4" role="banner">
         <div className="max-w-screen-2xl mx-auto">
           <h1 className="text-2xl font-bold">Smart JSON Diff</h1>
           <p className="text-sm text-gray-400 mt-1">
@@ -104,10 +104,10 @@ function App() {
         </div>
       </header>
 
-      <main className="max-w-screen-2xl mx-auto p-6">
+      <main className="max-w-screen-2xl mx-auto p-6" role="main">
         {viewMode === 'edit' ? (
           <div className="flex flex-col h-[calc(100vh-180px)]">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1" role="region" aria-label="JSON input editors">
               <JsonEditor
                 value={leftJson}
                 onChange={setLeftJson}
@@ -122,11 +122,12 @@ function App() {
               />
             </div>
 
-            <div className="flex items-center justify-center gap-4 mt-6">
+            <div className="flex items-center justify-center gap-4 mt-6" role="toolbar" aria-label="JSON comparison actions">
               <button
                 onClick={() => handleFormat('left')}
                 className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={!leftJson.trim()}
+                aria-label="Format and beautify the left JSON input"
               >
                 Format Left
               </button>
@@ -134,6 +135,7 @@ function App() {
                 onClick={handleCompare}
                 className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={!leftJson.trim() || !rightJson.trim()}
+                aria-label="Compare the two JSON objects semantically"
               >
                 Compare JSONs
               </button>
@@ -141,13 +143,14 @@ function App() {
                 onClick={() => handleFormat('right')}
                 className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={!rightJson.trim()}
+                aria-label="Format and beautify the right JSON input"
               >
                 Format Right
               </button>
             </div>
           </div>
         ) : (
-          <div className="h-[calc(100vh-180px)]">
+          <div className="h-[calc(100vh-180px)]" role="region" aria-label="Comparison results">
             {diffResult && (
               <DiffViewer
                 oldValue={diffResult.left}
