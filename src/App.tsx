@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { JsonEditor } from './components/JsonEditor';
 import { DiffViewer } from './components/DiffViewer';
 import { semanticDiff, formatJSON } from './utils/semanticDiff';
-import { trackEvent } from './services/analytics';
+import { gtag } from './services/analytics';
 
 type ViewMode = 'edit' | 'compare';
 
@@ -38,19 +38,19 @@ function App() {
     setLeftError('');
     setRightError('');
 
-    trackEvent('compare_click', { left_chars: leftJson.length, right_chars: rightJson.length });
+    gtag('event', 'compare_click', { left_chars: leftJson.length, right_chars: rightJson.length });
 
     const leftResult = validateAndParse(leftJson);
     const rightResult = validateAndParse(rightJson);
 
     if (!leftResult.valid) {
-      trackEvent('invalid_json', { side: 'left' });
+      gtag('event', 'invalid_json', { side: 'left' });
       setLeftError(leftResult.error || 'Invalid JSON');
       return;
     }
 
     if (!rightResult.valid) {
-      trackEvent('invalid_json', { side: 'right' });
+      gtag('event', 'invalid_json', { side: 'right' });
       setRightError(rightResult.error || 'Invalid JSON');
       return;
     }
@@ -62,7 +62,7 @@ function App() {
 
     const hasDifferences = result.delta !== undefined;
 
-    trackEvent('compare_completed', {
+    gtag('event', 'compare_completed', {
       has_differences: hasDifferences ? 1 : 0,
       left_chars: leftJson.length,
       right_chars: rightJson.length,
@@ -78,7 +78,7 @@ function App() {
   };
 
   const handleReset = () => {
-    trackEvent('back_to_edit', {});
+    gtag('event', 'back_to_edit');
     setViewMode('edit');
     setDiffResult(null);
     setLeftError('');
@@ -86,7 +86,7 @@ function App() {
   };
 
   const handleFormat = (side: 'left' | 'right') => {
-    trackEvent('format_click', { side });
+    gtag('event', 'format_click', { side });
     const json = side === 'left' ? leftJson : rightJson;
     const result = validateAndParse(json);
 
