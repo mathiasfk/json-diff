@@ -97,7 +97,7 @@ function App() {
     <div className="min-h-screen bg-gray-900 text-gray-100">
       <header className="bg-gray-800 border-b border-gray-700 px-6 py-4">
         <div className="max-w-screen-2xl mx-auto">
-          <h1 className="text-2xl font-bold">Semantic JSON Comparator</h1>
+          <h1 className="text-2xl font-bold">Smart JSON Diff</h1>
           <p className="text-sm text-gray-400 mt-1">
             Compare JSON objects semantically with smart array matching
           </p>
