@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { Suspense, lazy, useState } from 'react';
 import { JsonEditor } from './components/JsonEditor';
-import { DiffViewer } from './components/DiffViewer';
+const DiffViewer = lazy(() => import('./components/DiffViewer').then(m => ({ default: m.DiffViewer })));
 import { semanticDiff, formatJSON } from './utils/semanticDiff';
 import { gtag } from './services/analytics';
 
@@ -161,14 +161,16 @@ function App() {
           </div>
         ) : (
           <div className="h-[calc(100vh-180px)]" role="region" aria-label="Comparison results">
-            {diffResult && (
-              <DiffViewer
-                oldValue={diffResult.left}
-                newValue={diffResult.right}
-                onReset={handleReset}
-                hasDifferences={diffResult.hasDifferences}
-              />
-            )}
+            <Suspense fallback={<div className="text-gray-300">Loading diff…</div>}>
+              {diffResult && (
+                <DiffViewer
+                  oldValue={diffResult.left}
+                  newValue={diffResult.right}
+                  onReset={handleReset}
+                  hasDifferences={diffResult.hasDifferences}
+                />
+              )}
+            </Suspense>
           </div>
         )}
       </main>
