@@ -214,6 +214,61 @@ function normalizeForDiff(left: any, right: any): [any, any] {
 }
 
 /**
+ * Single-side normalization for display: mirrors diff rules without a peer
+ * - Sorts object properties
+ * - Sorts arrays deterministically
+ *   - Primitives: by string value
+ *   - Objects: by priority id-like field when uniquely present on all items; otherwise by sorted JSON content
+ */
+function normalizeForDisplay(value: any): any {
+  if (Array.isArray(value)) {
+    const items = value.map((v) => (isPlainObject(v) || Array.isArray(v) ? normalizeForDisplay(v) : deepClone(v)));
+
+    const allObjects = items.every((it) => isPlainObject(it));
+    if (!allObjects) {
+      return items.slice().sort((a, b) => String(a).localeCompare(String(b)));
+    }
+
+    // Determine a stable sort key
+    const candidateField = (() => {
+      for (const f of PRIORITY_FIELDS) {
+        if (items.every((it: any) => f in it && it[f] !== null && it[f] !== undefined)) {
+          const values = items.map((it: any) => String(it[f]));
+          const unique = new Set(values);
+          if (unique.size === values.length) return f;
+        }
+      }
+      return undefined;
+    })();
+
+    const sortKey = (item: any): string => {
+      if (candidateField) {
+        const v = item[candidateField];
+        return typeof v === 'number' ? `#${v}` : `#${String(v)}`;
+      }
+      return serializeSorted(item);
+    };
+
+    return items.slice().sort((a, b) => sortKey(a).localeCompare(sortKey(b)));
+  }
+
+  if (isPlainObject(value)) {
+    const out: any = {};
+    for (const key of Object.keys(value).sort()) {
+      out[key] = normalizeForDisplay((value as any)[key]);
+    }
+    // Preserve non-enumerable matching annotations if present
+    const strat = (value as any)['__match_strategy'];
+    const field = (value as any)['__match_field'];
+    if (strat !== undefined) defineNonEnum(out, '__match_strategy', strat);
+    if (field !== undefined) defineNonEnum(out, '__match_field', field);
+    return out;
+  }
+
+  return deepClone(value);
+}
+
+/**
  * Creates a custom differ with smart array matching
  */
 function createSemanticDiffer() {
@@ -279,9 +334,8 @@ export function semanticDiff(left: any, right: any): any {
  */
 export function formatJSON(obj: any, normalize: boolean = false): string {
   if (normalize) {
-    const normalized = normalizeArrays(obj);
-    const sorted = sortObjectProperties(normalized);
-    return JSON.stringify(sorted, null, 2);
+    const normalized = normalizeForDisplay(obj);
+    return JSON.stringify(normalized, null, 2);
   }
   return JSON.stringify(obj, null, 2);
 }

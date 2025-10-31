@@ -383,6 +383,66 @@ describe('semanticDiff', () => {
       expect(result).toContain('Alice');
       expect(result).toContain('5000');
     });
+
+    // New tests ensuring normalization matches diff semantics
+    it('should normalize arrays of primitives by sorting', () => {
+      const obj = { items: [3, 1, 2, 10, 4] };
+      const out = JSON.parse(formatJSON(obj, true));
+      expect(out.items).toEqual([1, 2, 3, 4, 10]);
+    });
+
+    it('should normalize arrays of objects by id when uniquely present', () => {
+      const obj = {
+        items: [
+          { id: 3, value: 'c' },
+          { id: 1, value: 'a' },
+          { id: 2, value: 'b' },
+        ],
+      };
+      const out = JSON.parse(formatJSON(obj, true));
+      expect(out.items.map((it: any) => it.id)).toEqual([1, 2, 3]);
+    });
+
+    it('should normalize arrays of objects by content when no id-like field', () => {
+      const obj = {
+        items: [
+          { name: 'Bob', age: 20 },
+          { name: 'Alice', age: 20 },
+        ],
+      };
+      const out = JSON.parse(formatJSON(obj, true));
+      // Sorted by serialized content -> Alice before Bob
+      expect(out.items.map((it: any) => it.name)).toEqual(['Alice', 'Bob']);
+    });
+
+    it('should match preprocessing used by semanticDiff for visual consistency (left and right)', () => {
+      const left = {
+        users: [
+          { id: 2, name: 'Bob' },
+          { id: 1, name: 'Alice' },
+        ],
+        meta: { z: 1, a: 2 },
+      };
+      const right = {
+        users: [
+          { id: 1, name: 'Alice' },
+          { id: 2, name: 'Bob' },
+        ],
+        meta: { a: 2, z: 1 },
+      };
+
+      const result = semanticDiff(left, right);
+
+      // Formatting the raw inputs with normalization should equal formatting the diff-processed outputs
+      const formattedLeftNormalized = formatJSON(left, true);
+      const formattedRightNormalized = formatJSON(right, true);
+
+      const formattedProcessedLeft = formatJSON(result.left);
+      const formattedProcessedRight = formatJSON(result.right);
+
+      expect(formattedLeftNormalized).toBe(formattedProcessedLeft);
+      expect(formattedRightNormalized).toBe(formattedProcessedRight);
+    });
   });
 });
 
