@@ -1,0 +1,39 @@
+{
+    "hobbies": {
+        "_t": "a",
+        "0": [
+            {
+                "id": 10,
+                "name": "Reading",
+                "description": "I like to read books"
+            }
+        ],
+        "1": [
+            {
+                "id": 20,
+                "name": "Traveling",
+                "description": "I like to travel to new places"
+            }
+        ],
+        "_0": [
+            {
+                "id": 1,
+                "name": "Reading",
+                "description": "I like to read books"
+            },
+            0,
+            0
+        ],
+        "_1": [
+            {
+                "id": 2,
+                "name": "Traveling",
+                "description": "I like to travel to new places"
+            },
+            0,
+            0
+        ]
+    }
+}
+
+

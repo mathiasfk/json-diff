@@ -92,3 +92,12 @@ The comparator will recognize that:
 
 Result: **No differences** (semantically identical)
 
+## Test Scenarios (JSON fixtures)
+
+- Place scenarios under `test-data/<scenario>/` with these files:
+  - `left.json`: base JSON
+  - `right.json`: JSON to compare
+  - `expected.json`: expected delta; use `null` when there should be no differences. If omitted, the test only asserts successful execution.
+
+- Automated test runner: `src/utils/semanticDiff.scenarios.test.js` iterates all subfolders in `test-data/` and runs comparisons automatically.
+
