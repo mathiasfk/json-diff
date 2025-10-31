@@ -1,10 +1,7 @@
 import * as jsondiffpatch from 'jsondiffpatch';
 import { sortObjectProperties } from './jsonNormalizer';
 
-/**
- * Priority fields to use for sorting/matching array items
- */
-const PRIORITY_FIELDS = ['id', 'index', 'name', 'key', 'uuid', '_id'];
+// Priority fields removed; matching and sorting now derive keys from data itself
 
 // ---- Pair-aware normalization helpers ----
 
@@ -76,10 +73,6 @@ function findUniqueKeyCommonToBoth(arr1: any[], arr2: any[]): string | undefined
   const c2 = getCandidateKeys(arr2);
   const common = Array.from(c1).filter((k) => c2.has(k));
   if (common.length === 0) return undefined;
-  // Prefer priority fields if available
-  for (const k of PRIORITY_FIELDS) {
-    if (common.includes(k)) return k;
-  }
   return common.sort()[0];
 }
 
@@ -109,8 +102,12 @@ function alignArraysForDiff(leftArr: any[], rightArr: any[]): { left: any[]; rig
   const rightIsObject = rightArr.every((it) => isPlainObject(it));
 
   if (!leftIsObject || !rightIsObject) {
-    const l = [...leftArr].map(deepClone).sort((a, b) => String(a).localeCompare(String(b)));
-    const r = [...rightArr].map(deepClone).sort((a, b) => String(a).localeCompare(String(b)));
+    const primitiveComparator = (a: unknown, b: unknown): number => {
+      if (typeof a === 'number' && typeof b === 'number') return a - b;
+      return String(a).localeCompare(String(b));
+    };
+    const l = [...leftArr].map(deepClone).sort(primitiveComparator);
+    const r = [...rightArr].map(deepClone).sort(primitiveComparator);
     return { left: l, right: r, strategy: 'content' };
   }
 
@@ -226,19 +223,32 @@ function normalizeForDisplay(value: any): any {
 
     const allObjects = items.every((it) => isPlainObject(it));
     if (!allObjects) {
-      return items.slice().sort((a, b) => String(a).localeCompare(String(b)));
+      const primitiveComparator = (a: unknown, b: unknown): number => {
+        if (typeof a === 'number' && typeof b === 'number') return a - b;
+        return String(a).localeCompare(String(b));
+      };
+      return items.slice().sort(primitiveComparator);
     }
 
-    // Determine a stable sort key
+    // Determine a stable sort key derived from data: pick any key present on all
+    // items with unique values; prefer lexicographically smallest key name
     const candidateField = (() => {
-      for (const f of PRIORITY_FIELDS) {
-        if (items.every((it: any) => f in it && it[f] !== null && it[f] !== undefined)) {
-          const values = items.map((it: any) => String(it[f]));
-          const unique = new Set(values);
-          if (unique.size === values.length) return f;
+      if (items.length === 0) return undefined;
+      const keysIntersection = new Set<string>(Object.keys(items[0] as any));
+      for (const it of items.slice(1)) {
+        for (const k of Array.from(keysIntersection)) {
+          if (!(k in (it as any)) || (it as any)[k] === null || (it as any)[k] === undefined) {
+            keysIntersection.delete(k);
+          }
         }
       }
-      return undefined;
+      const candidates: string[] = [];
+      for (const k of keysIntersection) {
+        const values = items.map((it: any) => String((it as any)[k]));
+        if (new Set(values).size === values.length) candidates.push(k);
+      }
+      if (candidates.length === 0) return undefined;
+      return candidates.sort()[0];
     })();
 
     const sortKey = (item: any): string => {
@@ -288,12 +298,7 @@ function createSemanticDiffer() {
           }
           return `content:${serializeSorted(item)}`;
         }
-        // Try priority fields as a reasonable default
-        for (const f of PRIORITY_FIELDS) {
-          if (f in item && (item as any)[f] !== null && (item as any)[f] !== undefined) {
-            return `${f}:${(item as any)[f]}`;
-          }
-        }
+        // Without priority fields, fall back to content-based hashing
       }
       // Fallback to stringified object
       return JSON.stringify(sortObjectProperties(item));
