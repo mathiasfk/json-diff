@@ -139,6 +139,25 @@ export function sortObjectProperties(obj: any): any {
   for (const key of keys) {
     sorted[key] = sortObjectProperties(obj[key]);
   }
+  // Preserve non-enumerable matching annotations if present
+  const strat = (obj as any)['__match_strategy'];
+  const field = (obj as any)['__match_field'];
+  if (strat !== undefined) {
+    Object.defineProperty(sorted, '__match_strategy', {
+      value: strat,
+      enumerable: false,
+      configurable: true,
+      writable: true,
+    });
+  }
+  if (field !== undefined) {
+    Object.defineProperty(sorted, '__match_field', {
+      value: field,
+      enumerable: false,
+      configurable: true,
+      writable: true,
+    });
+  }
 
   return sorted;
 }

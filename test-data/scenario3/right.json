@@ -1,0 +1,40 @@
+{
+    "businesses": [
+        {
+            "category": "Bar",
+            "products": [
+                {
+                    "name": "Beer",
+                    "price": 5,
+                    "ingredients": [
+                        "Malt",
+                        "Water",
+                        "Yeast"
+                    ]
+                }
+            ]
+        },
+        {
+            "category": "Restaurant",
+            "products": [
+                {
+                    "name": "Salad",
+                    "price": 8,
+                    "ingredients": [
+                        "Tomato",
+                        "Lettuce"
+                    ]
+                },
+                {
+                    "name": "Pizza",
+                    "price": 10,
+                    "ingredients": [
+                        "Dough",
+                        "Tomato",
+                        "Cheese"
+                    ]
+                }
+            ]
+        }
+    ]
+}

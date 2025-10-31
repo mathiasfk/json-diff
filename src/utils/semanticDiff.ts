@@ -1,68 +1,216 @@
 import * as jsondiffpatch from 'jsondiffpatch';
-import {
-  sortObjectProperties,
-} from './jsonNormalizer';
+import { sortObjectProperties } from './jsonNormalizer';
 
 /**
  * Priority fields to use for sorting/matching array items
  */
 const PRIORITY_FIELDS = ['id', 'index', 'name', 'key', 'uuid', '_id'];
 
-/**
- * Normalizes arrays by sorting objects with identifiable fields
- */
-function normalizeArrays(obj: any): any {
-  if (obj === null || typeof obj !== 'object') {
-    return obj;
-  }
+// ---- Pair-aware normalization helpers ----
 
-  if (Array.isArray(obj)) {
-    // Check if this is an array of objects with identifiable fields
-    if (obj.length > 0 && typeof obj[0] === 'object' && obj[0] !== null) {
-      // Find if there's a priority field that all items have
-      let sortField: string | null = null;
-      
-      for (const field of PRIORITY_FIELDS) {
-        if (obj.every(item => 
-          typeof item === 'object' && 
-          item !== null && 
-          field in item && 
-          item[field] !== null && 
-          item[field] !== undefined
-        )) {
-          sortField = field;
-          break;
+function deepClone<T>(value: T): T {
+  return value === undefined ? value : JSON.parse(JSON.stringify(value));
+}
+
+function defineNonEnum(target: any, key: string, value: any) {
+  if (target && typeof target === 'object') {
+    Object.defineProperty(target, key, {
+      value,
+      enumerable: false,
+      configurable: true,
+      writable: true,
+    });
+  }
+}
+
+function isPlainObject(value: any): boolean {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+function serializeSorted(obj: any): string {
+  return JSON.stringify(sortObjectProperties(obj));
+}
+
+function omitField(obj: any, field?: string): any {
+  if (!field || !isPlainObject(obj)) return obj;
+  const copy: any = {};
+  for (const k of Object.keys(obj)) {
+    if (k === field) continue;
+    copy[k] = obj[k];
+  }
+  return copy;
+}
+
+function serializeWithoutField(obj: any, field?: string): string {
+  return JSON.stringify(sortObjectProperties(omitField(obj, field)));
+}
+
+function findUniqueKeyCommonToBoth(arr1: any[], arr2: any[]): string | undefined {
+  const getCandidateKeys = (arr: any[]): Set<string> => {
+    const keys = new Set<string>();
+    if (arr.length === 0) return keys;
+    const objectItems = arr.filter((it) => isPlainObject(it));
+    if (objectItems.length !== arr.length) return keys;
+
+    // keys present in all items
+    const intersection = new Set<string>(Object.keys(objectItems[0]));
+    for (const item of objectItems.slice(1)) {
+      for (const key of Array.from(intersection)) {
+        if (!(key in item) || item[key] === null || item[key] === undefined) {
+          intersection.delete(key);
         }
       }
-      
-      // Sort the array by the identified field
-      if (sortField) {
-        const sorted = [...obj].sort((a, b) => {
-          const valA = a[sortField!];
-          const valB = b[sortField!];
-          
-          // Handle different types
-          if (typeof valA === 'number' && typeof valB === 'number') {
-            return valA - valB;
-          }
-          return String(valA).localeCompare(String(valB));
-        });
-        
-        // Recursively normalize nested structures
-        return sorted.map(item => normalizeArrays(item));
-      }
     }
-    
-    // For arrays without identifiable fields, just normalize nested items
-    return obj.map(item => normalizeArrays(item));
+
+    // only keep keys with unique values
+    const uniqueKeys = new Set<string>();
+    for (const key of intersection) {
+      const values = objectItems.map((it) => String(it[key]));
+      const unique = new Set(values);
+      if (unique.size === values.length) uniqueKeys.add(key);
+    }
+    return uniqueKeys;
+  };
+
+  const c1 = getCandidateKeys(arr1);
+  const c2 = getCandidateKeys(arr2);
+  const common = Array.from(c1).filter((k) => c2.has(k));
+  if (common.length === 0) return undefined;
+  // Prefer priority fields if available
+  for (const k of PRIORITY_FIELDS) {
+    if (common.includes(k)) return k;
+  }
+  return common.sort()[0];
+}
+
+function multisetEqualBySerializationIgnoringField(arr1: any[], arr2: any[], field: string): boolean {
+  const freq = (arr: any[]) => {
+    const map = new Map<string, number>();
+    for (const it of arr) {
+      const key = serializeWithoutField(it, field);
+      map.set(key, (map.get(key) ?? 0) + 1);
+    }
+    return map;
+  };
+  const m1 = freq(arr1);
+  const m2 = freq(arr2);
+  if (m1.size !== m2.size) return false;
+  for (const [k, v] of m1) {
+    if (m2.get(k) !== v) return false;
+  }
+  return true;
+}
+
+type MatchStrategy = 'id' | 'content';
+
+function alignArraysForDiff(leftArr: any[], rightArr: any[]): { left: any[]; right: any[]; strategy: MatchStrategy; field?: string } {
+  // Arrays of primitives -> sort by string representation
+  const leftIsObject = leftArr.every((it) => isPlainObject(it));
+  const rightIsObject = rightArr.every((it) => isPlainObject(it));
+
+  if (!leftIsObject || !rightIsObject) {
+    const l = [...leftArr].map(deepClone).sort((a, b) => String(a).localeCompare(String(b)));
+    const r = [...rightArr].map(deepClone).sort((a, b) => String(a).localeCompare(String(b)));
+    return { left: l, right: r, strategy: 'content' };
   }
 
-  // For objects, normalize all nested values
-  const normalized: any = {};
-  for (const key of Object.keys(obj)) {
-    normalized[key] = normalizeArrays(obj[key]);
+  const field = findUniqueKeyCommonToBoth(leftArr, rightArr);
+  let strategy: MatchStrategy = 'content';
+  let matchField: string | undefined = undefined;
+
+  if (field) {
+    if (multisetEqualBySerializationIgnoringField(leftArr, rightArr, field)) {
+      strategy = 'content';
+      matchField = field;
+    } else {
+      strategy = 'id';
+      matchField = field;
+    }
+  } else {
+    strategy = 'content';
   }
-  return normalized;
+
+  const sortKey = (item: any): string => {
+    if (strategy === 'id' && matchField) {
+      const v = item?.[matchField];
+      if (typeof v === 'number') return `#${v}`;
+      return `#${String(v)}`;
+    }
+    if (strategy === 'content' && matchField) {
+      return serializeWithoutField(item, matchField);
+    }
+    return serializeSorted(item);
+  };
+
+  const lSorted = leftArr.map(deepClone).sort((a, b) => sortKey(a).localeCompare(sortKey(b)));
+  const rSorted = rightArr.map(deepClone).sort((a, b) => sortKey(a).localeCompare(sortKey(b)));
+
+  // annotate items for hashing strategy
+  for (const it of lSorted) {
+    defineNonEnum(it, '__match_strategy', strategy);
+    if (matchField) defineNonEnum(it, '__match_field', matchField);
+  }
+  for (const it of rSorted) {
+    defineNonEnum(it, '__match_strategy', strategy);
+    if (matchField) defineNonEnum(it, '__match_field', matchField);
+  }
+
+  // recurse pairwise to normalize nested structures
+  const maxLen = Math.max(lSorted.length, rSorted.length);
+  const lOut: any[] = [];
+  const rOut: any[] = [];
+  for (let i = 0; i < maxLen; i++) {
+    const lItem = lSorted[i];
+    const rItem = rSorted[i];
+    if (lItem !== undefined && rItem !== undefined) {
+      const [ln, rn] = normalizeForDiff(lItem, rItem);
+      lOut.push(ln);
+      rOut.push(rn);
+    } else if (lItem !== undefined) {
+      lOut.push(lItem);
+    } else if (rItem !== undefined) {
+      rOut.push(rItem);
+    }
+  }
+
+  return { left: lOut, right: rOut, strategy, field: matchField };
+}
+
+function normalizeForDiff(left: any, right: any): [any, any] {
+  if (Array.isArray(left) && Array.isArray(right)) {
+    const { left: la, right: ra } = alignArraysForDiff(left, right);
+    return [la, ra];
+  }
+
+  if (isPlainObject(left) && isPlainObject(right)) {
+    const allKeys = new Set<string>([...Object.keys(left), ...Object.keys(right)]);
+    const lOut: any = {};
+    const rOut: any = {};
+    for (const key of Array.from(allKeys)) {
+      if (key in left && key in right) {
+        const [ln, rn] = normalizeForDiff(left[key], right[key]);
+        lOut[key] = ln;
+        rOut[key] = rn;
+      } else if (key in left) {
+        lOut[key] = deepClone(left[key]);
+      } else if (key in right) {
+        rOut[key] = deepClone(right[key]);
+      }
+    }
+    // Preserve matching annotations if present on the original items
+    const lStrat = (left as any)['__match_strategy'];
+    const lField = (left as any)['__match_field'];
+    if (lStrat !== undefined) defineNonEnum(lOut, '__match_strategy', lStrat);
+    if (lField !== undefined) defineNonEnum(lOut, '__match_field', lField);
+    const rStrat = (right as any)['__match_strategy'];
+    const rField = (right as any)['__match_field'];
+    if (rStrat !== undefined) defineNonEnum(rOut, '__match_strategy', rStrat);
+    if (rField !== undefined) defineNonEnum(rOut, '__match_field', rField);
+    return [lOut, rOut];
+  }
+
+  // Fallback: return values as-is (or deep clone to be safe)
+  return [deepClone(left), deepClone(right)];
 }
 
 /**
@@ -72,18 +220,26 @@ function createSemanticDiffer() {
   // Create differ with custom array matching
   const differ = jsondiffpatch.create({
     objectHash: function(item: any) {
-      // Try to determine which array we're in based on context
-      // This is a simplified approach - jsondiffpatch will call this for each array
-      
-      if (typeof item === 'object' && item !== null) {
-        // Try priority fields
-        for (const field of PRIORITY_FIELDS) {
-          if (field in item && item[field] !== null && item[field] !== undefined) {
-            return `${field}:${item[field]}`;
+      // Respect precomputed matching strategy annotations when present
+      if (item && typeof item === 'object') {
+        const strat = (item as any)['__match_strategy'] as MatchStrategy | undefined;
+        const field = (item as any)['__match_field'] as string | undefined;
+        if (strat === 'id' && field && field in item) {
+          return `${field}:${(item as any)[field]}`;
+        }
+        if (strat === 'content') {
+          if (field) {
+            return `content:${serializeWithoutField(item, field)}`;
+          }
+          return `content:${serializeSorted(item)}`;
+        }
+        // Try priority fields as a reasonable default
+        for (const f of PRIORITY_FIELDS) {
+          if (f in item && (item as any)[f] !== null && (item as any)[f] !== undefined) {
+            return `${f}:${(item as any)[f]}`;
           }
         }
       }
-      
       // Fallback to stringified object
       return JSON.stringify(sortObjectProperties(item));
     },
@@ -100,12 +256,10 @@ function createSemanticDiffer() {
  * Performs semantic diff between two JSON objects
  */
 export function semanticDiff(left: any, right: any): any {
-  // Preprocess both objects (normalize arrays, then sort properties)
-  const normalizedLeft = normalizeArrays(left);
-  const normalizedRight = normalizeArrays(right);
-  
-  const processedLeft = sortObjectProperties(normalizedLeft);
-  const processedRight = sortObjectProperties(normalizedRight);
+  // Pair-aware preprocessing (align arrays), then sort properties
+  const [normLeft, normRight] = normalizeForDiff(left, right);
+  const processedLeft = sortObjectProperties(normLeft);
+  const processedRight = sortObjectProperties(normRight);
 
   // Create custom differ
   const differ = createSemanticDiffer();

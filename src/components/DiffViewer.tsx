@@ -48,7 +48,7 @@ export const DiffViewer: React.FC<DiffViewerProps> = ({
               </svg>
             </div>
             <h3 className="text-2xl font-semibold text-gray-100 mb-2">
-              JSONs are identical!
+              JSONs are equivalent!
             </h3>
             <p className="text-gray-400">
               No differences found between the two JSONs after semantic normalization.
