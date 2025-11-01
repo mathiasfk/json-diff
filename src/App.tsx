@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState } from 'react';
+import { Suspense, lazy, useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { JsonEditor } from './components/JsonEditor';
 const DiffViewer = lazy(() => import('./components/DiffViewer').then(m => ({ default: m.DiffViewer })));
@@ -8,18 +8,80 @@ import { gtag } from './services/analytics';
 type ViewMode = 'edit' | 'compare';
 
 function App() {
-  const [leftJson, setLeftJson] = useState('');
-  const [rightJson, setRightJson] = useState('');
+  const LS_KEYS = {
+    left: 'jsonDiff.left',
+    right: 'jsonDiff.right',
+    mode: 'jsonDiff.viewMode',
+    diff: 'jsonDiff.diffResult',
+  } as const;
+
+  const [leftJson, setLeftJson] = useState(() => {
+    try {
+      return localStorage.getItem(LS_KEYS.left) ?? '';
+    } catch {
+      return '';
+    }
+  });
+  const [rightJson, setRightJson] = useState(() => {
+    try {
+      return localStorage.getItem(LS_KEYS.right) ?? '';
+    } catch {
+      return '';
+    }
+  });
   const [leftError, setLeftError] = useState('');
   const [rightError, setRightError] = useState('');
-  const [viewMode, setViewMode] = useState<ViewMode>('edit');
+  const [viewMode, setViewMode] = useState<ViewMode>(() => {
+    try {
+      const mode = localStorage.getItem(LS_KEYS.mode) as ViewMode | null;
+      return mode === 'compare' ? 'compare' : 'edit';
+    } catch {
+      return 'edit';
+    }
+  });
   const [diffResult, setDiffResult] = useState<{
     left: string;
     right: string;
     hasDifferences: boolean;
-  } | null>(null);
+  } | null>(() => {
+    try {
+      const diffRaw = localStorage.getItem(LS_KEYS.diff);
+      return diffRaw ? JSON.parse(diffRaw) : null;
+    } catch {
+      return null;
+    }
+  });
 
-  const validateAndParse = (json: string): { valid: boolean; parsed?: any; error?: string } => {
+  // Persist changes
+  useEffect(() => {
+    try {
+      localStorage.setItem('jsonDiff.left', leftJson);
+    } catch { void 0; }
+  }, [leftJson]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('jsonDiff.right', rightJson);
+    } catch { void 0; }
+  }, [rightJson]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('jsonDiff.viewMode', viewMode);
+    } catch { void 0; }
+  }, [viewMode]);
+
+  useEffect(() => {
+    try {
+      if (diffResult) {
+        localStorage.setItem('jsonDiff.diffResult', JSON.stringify(diffResult));
+      } else {
+        localStorage.removeItem('jsonDiff.diffResult');
+      }
+    } catch { void 0; }
+  }, [diffResult]);
+
+  const validateAndParse = (json: string): { valid: boolean; parsed?: unknown; error?: string } => {
     if (!json.trim()) {
       return { valid: false, error: 'JSON cannot be empty' };
     }
