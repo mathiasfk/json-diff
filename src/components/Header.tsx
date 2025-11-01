@@ -1,4 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { gtag } from '../services/analytics';
 
 export function Header() {
   const location = useLocation();
@@ -17,14 +18,23 @@ export function Header() {
         <nav aria-label="Primary">
           {isFaq ? (
             <button
-              onClick={() => navigate(-1)}
+              onClick={() => {
+                gtag('event', 'faq_back_click');
+                navigate(-1);
+              }}
               className="text-sm text-gray-400 hover:text-gray-200"
               aria-label="Go back to previous view"
             >
               ← Back
             </button>
           ) : (
-            <Link to="/faq" className="text-sm text-gray-400 hover:text-gray-200">
+            <Link
+              to="/faq"
+              onClick={() => {
+                gtag('event', 'faq_open_click');
+              }}
+              className="text-sm text-gray-400 hover:text-gray-200"
+            >
               FAQ
             </Link>
           )}
