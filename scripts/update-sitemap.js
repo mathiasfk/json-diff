@@ -1,28 +1,39 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import process from 'node:process';
 
-async function updateSitemapLastMod() {
-  const sitemapPath = path.join(process.cwd(), 'public', 'sitemap.xml');
+async function updateFileLastMod(sitemapPath) {
   try {
-    let xml = await fs.readFile(sitemapPath, 'utf-8');
+    const xml = await fs.readFile(sitemapPath, 'utf-8');
     const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD (UTC)
 
-    let updated = xml.replace(/<lastmod>[^<]*<\/lastmod>/g, `<lastmod>${today}</lastmod>`);
-    if (updated === xml) {
-      // If no <lastmod> exists, insert after <loc> within each <url>
-      updated = xml.replace(/(<loc>[^<]*<\/loc>)/g, `$1\n    <lastmod>${today}</lastmod>`);
-    }
+    // 1) Remove ALL existing <lastmod> tags (handles duplicates and different placements)
+    const withoutLastMod = xml.replace(/[\r\n]?\s*<lastmod>[\s\S]*?<\/lastmod>/g, '');
+
+    // 2) Insert exactly one <lastmod> after each <loc>
+    const updated = withoutLastMod.replace(/(<loc>[^<]*<\/loc>)/g, `$1\n    <lastmod>${today}</lastmod>`);
 
     if (updated !== xml) {
       await fs.writeFile(sitemapPath, updated);
-      console.log(`sitemap.xml lastmod set to ${today}`);
+      console.log(`${path.relative(process.cwd(), sitemapPath)} lastmod set to ${today}`);
     } else {
-      console.log('sitemap.xml unchanged (no <loc> or <lastmod> match found)');
+      console.log(`${path.relative(process.cwd(), sitemapPath)} unchanged`);
     }
   } catch (err) {
-    console.error('Failed to update sitemap.xml:', err);
+    // If file doesn't exist, just skip silently; otherwise log
+    if (err && err.code === 'ENOENT') return;
+    console.error(`Failed to update ${path.relative(process.cwd(), sitemapPath)}:`, err);
     process.exitCode = 0; // Do not fail the build due to sitemap update
   }
+}
+
+async function updateSitemapLastMod() {
+  const publicSitemap = path.join(process.cwd(), 'public', 'sitemap.xml');
+  const distSitemap = path.join(process.cwd(), 'dist', 'sitemap.xml');
+  await Promise.all([
+    updateFileLastMod(publicSitemap),
+    updateFileLastMod(distSitemap),
+  ]);
 }
 
 updateSitemapLastMod();
