@@ -1,4 +1,5 @@
 import { Suspense, lazy, useState } from 'react';
+import { Header } from './components/Header';
 import { JsonEditor } from './components/JsonEditor';
 const DiffViewer = lazy(() => import('./components/DiffViewer').then(m => ({ default: m.DiffViewer })));
 import { semanticDiff, formatJSON } from './utils/semanticDiff';
@@ -105,14 +106,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100">
-      <header className="bg-gray-800 border-b border-gray-700 px-6 py-4" role="banner">
-        <div className="max-w-screen-2xl mx-auto">
-          <h1 className="text-2xl font-bold">Smart JSON Diff</h1>
-          <p className="text-sm text-gray-400 mt-1">
-            Compare JSON objects semantically with smart array matching
-          </p>
-        </div>
-      </header>
+      <Header />
 
       <main className="max-w-screen-2xl mx-auto p-6" role="main">
         {viewMode === 'edit' ? (

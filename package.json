@@ -19,7 +19,8 @@
     "jsondiffpatch": "^0.6.0",
     "monaco-editor": "^0.45.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^7.9.5"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
