@@ -1,6 +1,7 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Editor from '@monaco-editor/react';
 import type * as monaco from 'monaco-editor';
+import { formatJSON } from '../utils/semanticDiff';
 
 interface JsonEditorProps {
   value: string;
@@ -19,6 +20,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
 }) => {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const monacoRef = useRef<typeof monaco | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   const handleEditorDidMount = (editor: monaco.editor.IStandaloneCodeEditor, monacoInstance: typeof monaco) => {
     editorRef.current = editor;
@@ -31,6 +33,63 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
       schemas: [],
       enableSchemaRequest: false,
     });
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Only set dragging to false if we're leaving the drop zone entirely
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const x = e.clientX;
+    const y = e.clientY;
+    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+      setIsDragging(false);
+    }
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length === 0) return;
+
+    const file = files[0];
+    
+    // Validate file type
+    const isValidJsonFile = 
+      file.type === 'application/json' || 
+      file.name.toLowerCase().endsWith('.json') ||
+      file.type === 'text/plain' && file.name.toLowerCase().endsWith('.json');
+
+    if (!isValidJsonFile) {
+      return; // Silently ignore non-JSON files
+    }
+
+    try {
+      const text = await file.text();
+      
+      // Try to parse and format the JSON
+      try {
+        const parsed = JSON.parse(text);
+        const formatted = formatJSON(parsed, true);
+        onChange(formatted);
+      } catch (parseError) {
+        // If parsing fails, just set the raw text
+        // The editor's validation will show the error
+        onChange(text);
+      }
+    } catch (readError) {
+      // Silently ignore read errors
+      console.error('Error reading file:', readError);
+    }
   };
 
   useEffect(() => {
@@ -97,7 +156,16 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
       <label className="text-sm font-medium text-gray-300 mb-2">
         {label}
       </label>
-      <div className="flex-1 relative rounded-lg overflow-hidden border border-gray-700">
+      <div 
+        className={`flex-1 relative rounded-lg overflow-hidden border transition-colors ${
+          isDragging 
+            ? 'border-blue-500 border-2 bg-blue-500/10' 
+            : 'border-gray-700'
+        }`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
         {!value && (
           <div className="absolute top-14 left-4 text-gray-500 text-sm pointer-events-none z-10">
             {placeholder}

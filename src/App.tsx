@@ -165,6 +165,43 @@ function App() {
     }
   };
 
+  const handleClear = (side: 'left' | 'right') => {
+    gtag('event', 'clear_click', { side });
+    if (side === 'left') {
+      setLeftJson('');
+      setLeftError('');
+    } else {
+      setRightJson('');
+      setRightError('');
+    }
+  };
+
+  const handleLeftJsonChange = (newValue: string) => {
+    setLeftJson(newValue);
+    // Clear error if JSON becomes valid
+    if (newValue.trim()) {
+      try {
+        JSON.parse(newValue);
+        setLeftError('');
+      } catch {
+        // Error will be set during comparison if invalid
+      }
+    }
+  };
+
+  const handleRightJsonChange = (newValue: string) => {
+    setRightJson(newValue);
+    // Clear error if JSON becomes valid
+    if (newValue.trim()) {
+      try {
+        JSON.parse(newValue);
+        setRightError('');
+      } catch {
+        // Error will be set during comparison if invalid
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100">
       <Header />
@@ -175,19 +212,27 @@ function App() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1" role="region" aria-label="JSON input editors">
               <JsonEditor
                 value={leftJson}
-                onChange={setLeftJson}
+                onChange={handleLeftJsonChange}
                 error={leftError}
                 label="Left JSON"
               />
               <JsonEditor
                 value={rightJson}
-                onChange={setRightJson}
+                onChange={handleRightJsonChange}
                 error={rightError}
                 label="Right JSON"
               />
             </div>
 
             <div className="flex items-center justify-center gap-4 mt-6" role="toolbar" aria-label="JSON comparison actions">
+              <button
+                onClick={() => handleClear('left')}
+                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={!leftJson.trim()}
+                aria-label="Clear the left JSON input"
+              >
+                Clear Left
+              </button>
               <button
                 onClick={() => handleFormat('left')}
                 className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -211,6 +256,14 @@ function App() {
                 aria-label="Format and beautify the right JSON input"
               >
                 Format Right
+              </button>
+              <button
+                onClick={() => handleClear('right')}
+                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={!rightJson.trim()}
+                aria-label="Clear the right JSON input"
+              >
+                Clear Right
               </button>
             </div>
           </div>
