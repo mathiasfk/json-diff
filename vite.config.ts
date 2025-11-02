@@ -51,9 +51,7 @@ export default defineConfig({
         assetFileNames: 'assets/[name]-[hash].[ext]'
       },
       treeshake: {
-        moduleSideEffects: false,
-        propertyReadSideEffects: false,
-        tryCatchDeoptimization: false
+        moduleSideEffects: 'no-external'
       }
     },
     chunkSizeWarningLimit: 500,
