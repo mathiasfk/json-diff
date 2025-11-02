@@ -215,19 +215,21 @@ function App() {
                 onChange={handleLeftJsonChange}
                 error={leftError}
                 label="Left JSON"
+                side="left"
               />
               <JsonEditor
                 value={rightJson}
                 onChange={handleRightJsonChange}
                 error={rightError}
                 label="Right JSON"
+                side="right"
               />
             </div>
 
             <div className="flex items-center justify-center gap-4 mt-6" role="toolbar" aria-label="JSON comparison actions">
               <button
                 onClick={() => handleClear('left')}
-                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={!leftJson.trim()}
                 aria-label="Clear the left JSON input"
               >
@@ -259,7 +261,7 @@ function App() {
               </button>
               <button
                 onClick={() => handleClear('right')}
-                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={!rightJson.trim()}
                 aria-label="Clear the right JSON input"
               >

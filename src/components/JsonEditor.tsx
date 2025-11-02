@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import Editor from '@monaco-editor/react';
 import type * as monaco from 'monaco-editor';
 import { formatJSON } from '../utils/semanticDiff';
+import { gtag } from '../services/analytics';
 
 interface JsonEditorProps {
   value: string;
@@ -9,14 +10,16 @@ interface JsonEditorProps {
   placeholder?: string;
   error?: string;
   label: string;
+  side?: 'left' | 'right';
 }
 
 export const JsonEditor: React.FC<JsonEditorProps> = ({
   value,
   onChange,
-  placeholder = 'Paste your JSON here...',
+  placeholder = 'Paste or drag your JSON here...',
   error,
   label,
+  side,
 }) => {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const monacoRef = useRef<typeof monaco | null>(null);
@@ -70,6 +73,11 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
       file.type === 'text/plain' && file.name.toLowerCase().endsWith('.json');
 
     if (!isValidJsonFile) {
+      gtag('event', 'drag_drop_invalid_file', { 
+        side: side || 'unknown',
+        file_type: file.type,
+        file_name: file.name
+      });
       return; // Silently ignore non-JSON files
     }
 
@@ -81,10 +89,21 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
         const parsed = JSON.parse(text);
         const formatted = formatJSON(parsed, true);
         onChange(formatted);
+        gtag('event', 'drag_drop_success', { 
+          side: side || 'unknown',
+          file_size: file.size,
+          formatted: true
+        });
       } catch (parseError) {
         // If parsing fails, just set the raw text
         // The editor's validation will show the error
         onChange(text);
+        gtag('event', 'drag_drop_success', { 
+          side: side || 'unknown',
+          file_size: file.size,
+          formatted: false,
+          parse_error: true
+        });
       }
     } catch (readError) {
       // Silently ignore read errors
