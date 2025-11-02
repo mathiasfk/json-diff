@@ -1,0 +1,33 @@
+{
+  "allSortOfThings": [
+    {
+      "fruit": "apple",
+      "taste": "sweet"
+    },
+    {
+      "country": "Argentina",
+      "provinces": [
+        {
+          "capital": "San Fernando del Valle de Catamarca",
+          "name": "Catamarca"
+        },
+        {
+          "capital": "La Plata",
+          "name": "Buenos Aires"
+        },
+        {
+          "capital": "Rawson",
+          "name": "Chubut"
+        },
+        {
+          "capital": "Córdoba",
+          "name": "Córdoba"
+        }
+      ]
+    },
+    {
+      "shape": "square",
+      "color": "red"
+    }
+  ]
+}
