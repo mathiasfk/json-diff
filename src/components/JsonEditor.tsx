@@ -110,6 +110,11 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
           value={value || ''}
           onChange={(newValue) => onChange(newValue || '')}
           onMount={handleEditorDidMount}
+          loading={
+            <div className="flex items-center justify-center h-full text-gray-400">
+              <div className="animate-pulse">Loading editor...</div>
+            </div>
+          }
           options={{
             minimap: { enabled: false },
             fontSize: 14,

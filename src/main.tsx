@@ -6,8 +6,13 @@ import './index.css'
 
 const Faq = React.lazy(() => import('./pages/Faq'))
 
+// Disable StrictMode in production to reduce TBT
+const isProduction = import.meta.env.PROD
+const AppWrapper = ({ children }: { children: React.ReactNode }) =>
+  isProduction ? <>{children}</> : <React.StrictMode>{children}</React.StrictMode>
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+  <AppWrapper>
     <HashRouter>
       <Routes>
         <Route path="/" element={<App />} />
@@ -21,6 +26,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         />
       </Routes>
     </HashRouter>
-  </React.StrictMode>,
+  </AppWrapper>
 )
 

@@ -15,42 +15,41 @@ function App() {
     diff: 'jsonDiff.diffResult',
   } as const;
 
-  const [leftJson, setLeftJson] = useState(() => {
-    try {
-      return localStorage.getItem(LS_KEYS.left) ?? '';
-    } catch {
-      return '';
-    }
-  });
-  const [rightJson, setRightJson] = useState(() => {
-    try {
-      return localStorage.getItem(LS_KEYS.right) ?? '';
-    } catch {
-      return '';
-    }
-  });
+  // Initialize with empty values to avoid blocking on first render
+  const [leftJson, setLeftJson] = useState('');
+  const [rightJson, setRightJson] = useState('');
   const [leftError, setLeftError] = useState('');
   const [rightError, setRightError] = useState('');
-  const [viewMode, setViewMode] = useState<ViewMode>(() => {
-    try {
-      const mode = localStorage.getItem(LS_KEYS.mode) as ViewMode | null;
-      return mode === 'compare' ? 'compare' : 'edit';
-    } catch {
-      return 'edit';
-    }
-  });
+  const [viewMode, setViewMode] = useState<ViewMode>('edit');
   const [diffResult, setDiffResult] = useState<{
     left: string;
     right: string;
     hasDifferences: boolean;
-  } | null>(() => {
+  } | null>(null);
+
+  // Load from localStorage after initial render to avoid blocking
+  useEffect(() => {
     try {
-      const diffRaw = localStorage.getItem(LS_KEYS.diff);
-      return diffRaw ? JSON.parse(diffRaw) : null;
+      const storedLeft = localStorage.getItem(LS_KEYS.left);
+      const storedRight = localStorage.getItem(LS_KEYS.right);
+      const storedMode = localStorage.getItem(LS_KEYS.mode);
+      const storedDiff = localStorage.getItem(LS_KEYS.diff);
+      
+      if (storedLeft !== null) setLeftJson(storedLeft);
+      if (storedRight !== null) setRightJson(storedRight);
+      if (storedMode === 'compare') setViewMode('compare');
+      if (storedDiff) {
+        try {
+          setDiffResult(JSON.parse(storedDiff));
+        } catch {
+          // Ignore parse errors
+        }
+      }
     } catch {
-      return null;
+      // Ignore localStorage errors
     }
-  });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once on mount
 
   // Persist changes
   useEffect(() => {

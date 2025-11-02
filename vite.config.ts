@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import monacoEditorPluginModule from 'vite-plugin-monaco-editor'
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const monacoEditorPlugin: any = (monacoEditorPluginModule as any)?.default || (monacoEditorPluginModule as any)
 
 // https://vitejs.dev/config/
@@ -16,9 +17,7 @@ export default defineConfig({
       compress: {
         drop_console: true,
         drop_debugger: true,
-        passes: 3,
-        unsafe: true,
-        unsafe_comps: true,
+        passes: 2,
       },
       mangle: {
         safari10: true
