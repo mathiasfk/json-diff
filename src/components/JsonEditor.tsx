@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
-import * as monaco from 'monaco-editor';
+import type * as monaco from 'monaco-editor';
 
 interface JsonEditorProps {
   value: string;
@@ -18,12 +18,14 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
   label,
 }) => {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const monacoRef = useRef<typeof monaco | null>(null);
 
-  const handleEditorDidMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
+  const handleEditorDidMount = (editor: monaco.editor.IStandaloneCodeEditor, monacoInstance: typeof monaco) => {
     editorRef.current = editor;
+    monacoRef.current = monacoInstance;
     
     // Configure JSON validation
-    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+    monacoInstance.languages.json.jsonDefaults.setDiagnosticsOptions({
       validate: true,
       allowComments: false,
       schemas: [],
@@ -33,7 +35,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
 
   useEffect(() => {
     // Update editor markers for errors
-    if (editorRef.current && error) {
+    if (editorRef.current && error && monacoRef.current) {
       const model = editorRef.current.getModel();
       if (model) {
         const markers: monaco.editor.IMarkerData[] = [];
@@ -44,7 +46,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
             if (error.toLowerCase().includes(`line ${index + 1}`) || 
                 error.toLowerCase().includes(`position ${index + 1}`)) {
               markers.push({
-                severity: monaco.MarkerSeverity.Error,
+                severity: monacoRef.current!.MarkerSeverity.Error,
                 startLineNumber: index + 1,
                 startColumn: 1,
                 endLineNumber: index + 1,
@@ -57,7 +59,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
           // If no specific line found, mark the entire document
           if (markers.length === 0 && value.trim()) {
             markers.push({
-              severity: monaco.MarkerSeverity.Error,
+              severity: monacoRef.current!.MarkerSeverity.Error,
               startLineNumber: 1,
               startColumn: 1,
               endLineNumber: model.getLineCount(),
@@ -69,7 +71,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
           // If parsing fails, just mark the whole document
           if (model) {
             markers.push({
-              severity: monaco.MarkerSeverity.Error,
+              severity: monacoRef.current!.MarkerSeverity.Error,
               startLineNumber: 1,
               startColumn: 1,
               endLineNumber: model.getLineCount(),
@@ -79,13 +81,13 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
           }
         }
         
-        monaco.editor.setModelMarkers(model, 'json-validation', markers);
+        monacoRef.current!.editor.setModelMarkers(model, 'json-validation', markers);
       }
-    } else if (editorRef.current && !error) {
+    } else if (editorRef.current && !error && monacoRef.current) {
       // Clear markers when there's no error
       const model = editorRef.current.getModel();
       if (model) {
-        monaco.editor.setModelMarkers(model, 'json-validation', []);
+        monacoRef.current!.editor.setModelMarkers(model, 'json-validation', []);
       }
     }
   }, [error, value]);
