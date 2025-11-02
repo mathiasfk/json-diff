@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Editor from '@monaco-editor/react';
 import type * as monaco from 'monaco-editor';
-import { formatJSON } from '../utils/semanticDiff';
 import { gtag } from '../services/analytics';
 
 interface JsonEditorProps {
@@ -84,27 +83,13 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
     try {
       const text = await file.text();
       
-      // Try to parse and format the JSON
-      try {
-        const parsed = JSON.parse(text);
-        const formatted = formatJSON(parsed, true);
-        onChange(formatted);
-        gtag('event', 'drag_drop_success', { 
-          side: side || 'unknown',
-          file_size: file.size,
-          formatted: true
-        });
-      } catch (parseError) {
-        // If parsing fails, just set the raw text
-        // The editor's validation will show the error
-        onChange(text);
-        gtag('event', 'drag_drop_success', { 
-          side: side || 'unknown',
-          file_size: file.size,
-          formatted: false,
-          parse_error: true
-        });
-      }
+      // Set the raw text exactly as it was in the file, without formatting
+      onChange(text);
+      gtag('event', 'drag_drop_success', { 
+        side: side || 'unknown',
+        file_size: file.size,
+        formatted: false
+      });
     } catch (readError) {
       // Silently ignore read errors
       console.error('Error reading file:', readError);
