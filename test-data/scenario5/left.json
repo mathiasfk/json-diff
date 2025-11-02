@@ -1,0 +1,25 @@
+
+{
+    "event": [
+    {
+      "listen": "test",
+      "script": {
+        "exec": [
+          ""
+        ],
+        "packages": {},
+        "type": "text/javascript"
+      }
+    },
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [
+          ""
+        ],
+        "packages": {},
+        "type": "text/javascript"
+      }
+    }
+  ]
+}

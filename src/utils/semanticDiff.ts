@@ -139,8 +139,20 @@ function alignArraysForDiff(leftArr: any[], rightArr: any[]): { left: any[]; rig
     return serializeSorted(item);
   };
 
-  const lSorted = leftArr.map(deepClone).sort((a, b) => sortKey(a).localeCompare(sortKey(b)));
-  const rSorted = rightArr.map(deepClone).sort((a, b) => sortKey(a).localeCompare(sortKey(b)));
+  const lSorted = leftArr.map(deepClone).sort((a, b) => {
+    const keyA = sortKey(a);
+    const keyB = sortKey(b);
+    if (keyA !== keyB) return keyA.localeCompare(keyB);
+    // When keys are equal, use full serialization as tiebreaker for deterministic sort
+    return serializeSorted(a).localeCompare(serializeSorted(b));
+  });
+  const rSorted = rightArr.map(deepClone).sort((a, b) => {
+    const keyA = sortKey(a);
+    const keyB = sortKey(b);
+    if (keyA !== keyB) return keyA.localeCompare(keyB);
+    // When keys are equal, use full serialization as tiebreaker for deterministic sort
+    return serializeSorted(a).localeCompare(serializeSorted(b));
+  });
 
   // annotate items for hashing strategy
   for (const it of lSorted) {
