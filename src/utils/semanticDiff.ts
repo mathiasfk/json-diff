@@ -1,5 +1,8 @@
 import * as jsondiffpatch from 'jsondiffpatch';
 import { sortObjectProperties } from './jsonNormalizer';
+import {
+  matchArraysMaxSimilarity,
+} from './arraySimilarityMatcher';
 
 // Priority fields removed; matching and sorting now derive keys from data itself
 
@@ -94,7 +97,7 @@ function multisetEqualBySerializationIgnoringField(arr1: any[], arr2: any[], fie
   return true;
 }
 
-type MatchStrategy = 'id' | 'content';
+type MatchStrategy = 'id' | 'content' | 'similarity';
 
 function alignArraysForDiff(leftArr: any[], rightArr: any[]): { left: any[]; right: any[]; strategy: MatchStrategy; field?: string } {
   // Arrays of primitives -> sort by string representation
@@ -116,23 +119,105 @@ function alignArraysForDiff(leftArr: any[], rightArr: any[]): { left: any[]; rig
   let matchField: string | undefined = undefined;
 
   if (field) {
-    if (multisetEqualBySerializationIgnoringField(leftArr, rightArr, field)) {
+    // Check if both arrays have the same set of key values (same id space).
+    // If yes, use id-based matching (can detect moves). If not, the key spaces
+    // differ (e.g. left ids {1,2} vs right ids {10,20}) and we need similarity.
+    const leftKeyValues = new Set(leftArr.map((it) => it[field]));
+    const rightKeyValues = new Set(rightArr.map((it) => it[field]));
+    const sameKeySpace =
+      leftKeyValues.size === rightKeyValues.size &&
+      Array.from(leftKeyValues).every((v) => rightKeyValues.has(v));
+
+    if (sameKeySpace) {
+      // Same id space — use id-based hash matching (handles moves/renames).
+      strategy = 'id';
+      matchField = field;
+    } else if (multisetEqualBySerializationIgnoringField(leftArr, rightArr, field)) {
       strategy = 'content';
       matchField = field;
     } else {
-      strategy = 'id';
+      // Different id spaces — use similarity-maximizing Hungarian matching.
+      strategy = 'similarity';
       matchField = field;
     }
   } else {
     strategy = 'content';
   }
 
-  const sortKey = (item: any): string => {
-    if (strategy === 'id' && matchField) {
-      const v = item?.[matchField];
-      if (typeof v === 'number') return `#${v}`;
-      return `#${String(v)}`;
+  // When key-hash matching is ambiguous (different id spaces), fall back to
+  // similarity-based re-alignment so semantically-identical items across arrays
+  // get paired instead of reported as added+removed.
+  if (strategy === 'similarity' && matchField) {
+    const simResult = matchArraysMaxSimilarity(
+      leftArr.map(deepClone),
+      rightArr.map(deepClone)
+    );
+    // Reorder rightArr to match leftArr's pairing order when all items paired.
+    if (simResult.pairs.length === leftArr.length && simResult.unmatchedLeft.length === 0) {
+      const reorderedRight: any[] = [];
+      for (let i = 0; i < leftArr.length; i++) {
+        let pair: typeof simResult.pairs[0] | undefined;
+        for (const p of simResult.pairs) {
+          if (p.leftIndex === i) { pair = p; break; }
+        }
+        if (!pair || pair.rightIndex >= rightArr.length) {
+          // Similarity matcher didn't pair this item — fall through to content.
+          strategy = 'content';
+          matchField = undefined;
+          break;
+        }
+        reorderedRight.push(rightArr[pair.rightIndex]);
+      }
+
+      // If all items were successfully re-paired, return the reordered diff.
+      if (strategy !== 'content') {
+        for (const it of reorderedRight) {
+          defineNonEnum(it, '__match_strategy', 'content');
+          defineNonEnum(it, '__match_field', matchField);
+        }
+        for (const it of leftArr) {
+          defineNonEnum(it, '__match_strategy', 'content');
+          defineNonEnum(it, '__match_field', matchField);
+        }
+        const lSorted = leftArr.map(deepClone).sort((a, b) => {
+          const keyA = serializeWithoutField(a, matchField);
+          const keyB = serializeWithoutField(b, matchField);
+          if (keyA !== keyB) return keyA.localeCompare(keyB);
+          return serializeSorted(a).localeCompare(serializeSorted(b));
+        });
+        const rSorted = reorderedRight.map(deepClone).sort((a, b) => {
+          const keyA = serializeWithoutField(a, matchField);
+          const keyB = serializeWithoutField(b, matchField);
+          if (keyA !== keyB) return keyA.localeCompare(keyB);
+          return serializeSorted(a).localeCompare(serializeSorted(b));
+        });
+
+        const lOut: any[] = [];
+        const rOut: any[] = [];
+        const maxLen = Math.max(lSorted.length, rSorted.length);
+        for (let i = 0; i < maxLen; i++) {
+          const lItem = lSorted[i];
+          const rItem = rSorted[i];
+          if (lItem !== undefined && rItem !== undefined) {
+            const [ln, rn] = normalizeForDiff(lItem, rItem);
+            lOut.push(ln);
+            rOut.push(rn);
+          } else if (lItem !== undefined) {
+            lOut.push(lItem);
+          } else if (rItem !== undefined) {
+            rOut.push(rItem);
+          }
+        }
+
+        return { left: lOut, right: rOut, strategy: 'content', field: matchField };
+      }
     }
+    // Fall through to standard content strategy (reset matchField so sortKey works)
+    strategy = 'content';
+    matchField = undefined;
+  }
+
+  const sortKey = (item: any): string => {
     if (strategy === 'content' && matchField) {
       return serializeWithoutField(item, matchField);
     }
@@ -356,4 +441,3 @@ export function formatJSON(obj: any, normalize: boolean = false): string {
   }
   return JSON.stringify(obj, null, 2);
 }
-
