@@ -1,0 +1,103 @@
+name: Preview Deploy
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - "**"
+    tags-ignore:
+      - "**"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: preview-${{ github.event.pull_request.number || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  deploy-preview:
+    if: |
+      (github.event_name == 'pull_request' && 
+       github.event.pull_request.head.repo.full_name == github.repository) || 
+      (github.event_name == 'push' && 
+       startsWith(github.ref, 'refs/heads/') && 
+       github.ref_name != github.event.repository.default_branch && 
+       github.ref_name != 'gh-pages')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve preview path
+        id: preview
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "path=preview/pr-${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
+            echo "slug=pr-${{ github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
+          else
+            BRANCH="${{ github.ref_name }}"
+            SAFE_BRANCH="$(echo "$BRANCH" | tr '/' '-')"
+            echo "path=preview/branch-${SAFE_BRANCH}" >> "$GITHUB_OUTPUT"
+            echo "slug=branch-${SAFE_BRANCH}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Deploy preview to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
+          destination_dir: ${{ steps.preview.outputs.path }}
+          keep_files: true
+
+      - name: Build preview URL
+        if: github.event_name == 'pull_request'
+        id: preview-url
+        shell: bash
+        run: |
+          REPO="${{ github.event.repository.name }}"
+          OWNER="${{ github.repository_owner }}"
+          BASE="https://${OWNER}.github.io"
+          if [ "$REPO" != "${OWNER}.github.io" ]; then
+            BASE="${BASE}/${REPO}"
+          fi
+          echo "url=${BASE}/${{ steps.preview.outputs.path }}/" >> "$GITHUB_OUTPUT"
+
+      - name: Find existing preview comment
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/find-comment@v3
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: "github-actions[bot]"
+          body-includes: "Preview deployed"
+
+      - name: Comment preview URL
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          edit-mode: replace
+          body: |
+            Preview deployed:
+            ${{ steps.preview-url.outputs.url }}
