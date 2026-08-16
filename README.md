@@ -21,6 +21,13 @@ A web application for comparing JSON objects semantically with intelligent array
 - jsondiffpatch (for semantic diffing)
 - Monaco Editor / @monaco-editor/react (for code editing and diff visualization - the same editor used by VSCode)
 
+## Deployment
+
+- CI/CD: GitHub Actions
+- Deployment: GitHub Pages
+- Note: Vercel is NOT used for this project.
+
+
 ## Installation
 
 ```bash
