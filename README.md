@@ -101,3 +101,4 @@ Result: **No differences** (semantically identical)
 
 - Automated test runner: `src/utils/semanticDiff.scenarios.test.js` iterates all subfolders in `test-data/` and runs comparisons automatically.
 
+# Test PR workflow
