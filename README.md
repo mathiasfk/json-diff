@@ -107,5 +107,3 @@ Result: **No differences** (semantically identical)
   - `expected.json`: expected delta; use `null` when there should be no differences. If omitted, the test only asserts successful execution.
 
 - Automated test runner: `src/utils/semanticDiff.scenarios.test.js` iterates all subfolders in `test-data/` and runs comparisons automatically.
-
-# Test PR - Sun Aug 16 01:49:03 UTC 2026
