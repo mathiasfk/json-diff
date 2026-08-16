@@ -1,0 +1,52 @@
+name: Preview Cleanup
+
+on:
+  pull_request:
+    types: [closed]
+  delete:
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    if: |
+      (github.event_name == 'pull_request' && 
+       github.event.pull_request.head.repo.full_name == github.repository) || 
+      (github.event_name == 'delete' && 
+       github.event.ref_type == 'branch')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          fetch-depth: 0
+
+      - name: Remove preview directory
+        id: remove
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            TARGET="preview/pr-${{ github.event.pull_request.number }}"
+          else
+            BRANCH="${{ github.event.ref }}"
+            SAFE_BRANCH="$(echo "$BRANCH" | tr '/' '-')"
+            TARGET="preview/branch-${SAFE_BRANCH}"
+          fi
+
+          echo "target=$TARGET" >> "$GITHUB_OUTPUT"
+
+          if [ -d "$TARGET" ]; then
+            rm -rf "$TARGET"
+          fi
+
+      - name: Commit and push cleanup
+        if: steps.remove.outputs.changed == 'true'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Remove preview ${{ steps.remove.outputs.target }}"
+          git push origin gh-pages
