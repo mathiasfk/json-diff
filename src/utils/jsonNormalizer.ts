@@ -105,7 +105,7 @@ export function calculateSimilarity(obj1: any, obj2: any): number {
   if (allKeys.size === 0) return 1;
 
   let matches = 0;
-  let total = allKeys.size;
+  const total = allKeys.size;
 
   allKeys.forEach(key => {
     if (key in obj1 && key in obj2) {
