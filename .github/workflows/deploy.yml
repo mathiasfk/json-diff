@@ -1,18 +1,21 @@
 name: Deploy to GitHub Pages
 
 on:
+  # Merge deployments: a PR merged into the default branch
   push:
     branches:
       - main
   workflow_dispatch:
 
 permissions:
-  contents: read
+  # write is required so peaceiris can push the built site to the gh-pages branch
+  contents: write
   pages: write
   id-token: write
 
 concurrency:
-  group: pages
+  # Separate group from pages.yaml so the two deploy workflows don't cancel each other
+  group: deploy-pages
   cancel-in-progress: true
 
 jobs:
@@ -20,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -33,6 +36,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Run tests
+        run: pnpm test
 
       - name: Build
         run: pnpm run build
