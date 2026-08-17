@@ -8,6 +8,7 @@ const Faq = React.lazy(() => import('./pages/Faq'))
 
 // Disable StrictMode in production to reduce TBT
 const isProduction = import.meta.env.PROD
+// eslint-disable-next-line react-refresh/only-export-components
 const AppWrapper = ({ children }: { children: React.ReactNode }) =>
   isProduction ? <>{children}</> : <React.StrictMode>{children}</React.StrictMode>
 
