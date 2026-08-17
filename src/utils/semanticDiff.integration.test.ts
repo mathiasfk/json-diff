@@ -22,20 +22,29 @@ describe('semanticDiff — apple/citrus/banana integration', () => {
     const changeKeys = Object.keys(result.delta).filter((k) => k !== '_t');
     expect(changeKeys).toHaveLength(3);
 
-    // Build a lookup by iterating the delta entries
-    const appleDelta = result.delta['0'];
-    const citrusDelta = result.delta['1'];
-    const bananaDelta = result.delta['2'];
+    // The similarity matcher reorders items by their content key (id is ignored
+    // because the id spaces differ), so look each item up by its original `id`
+    // rather than assuming the delta array keeps the left input order.
+    const byLeftId = (id: number): any => {
+      for (const k of changeKeys) {
+        const entry = result.delta[k];
+        if (entry && Array.isArray(entry.id) && entry.id[0] === id) return entry;
+      }
+      throw new Error(`no delta entry for id ${id}`);
+    };
 
     // Verify apple: id 1→10, description unchanged
+    const appleDelta = byLeftId(1);
     expect(appleDelta.id).toEqual([1, 10]);
     expect(appleDelta.description).toBeUndefined();
 
     // Verify citrus: id 3→30, description unchanged
+    const citrusDelta = byLeftId(3);
     expect(citrusDelta.id).toEqual([3, 30]);
     expect(citrusDelta.description).toBeUndefined();
 
     // Verify banana: id 2→20, description changed
+    const bananaDelta = byLeftId(2);
     expect(bananaDelta.id).toEqual([2, 20]);
     expect(bananaDelta.description).toBeDefined();
   });

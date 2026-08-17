@@ -9,7 +9,19 @@ import {
 // ---- Pair-aware normalization helpers ----
 
 function deepClone<T>(value: T): T {
-  return value === undefined ? value : JSON.parse(JSON.stringify(value));
+  if (value === undefined) return value;
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    // Preserve the non-enumerable matching annotations that drive objectHash.
+    const copy: any = JSON.parse(JSON.stringify(value));
+    const strat = (value as any)['__match_strategy'];
+    const field = (value as any)['__match_field'];
+    const key = (value as any)['__match_key'];
+    if (strat !== undefined) defineNonEnum(copy, '__match_strategy', strat);
+    if (field !== undefined) defineNonEnum(copy, '__match_field', field);
+    if (key !== undefined) defineNonEnum(copy, '__match_key', key);
+    return copy;
+  }
+  return JSON.parse(JSON.stringify(value));
 }
 
 function defineNonEnum(target: any, key: string, value: any) {
@@ -171,13 +183,16 @@ function alignArraysForDiff(leftArr: any[], rightArr: any[]): { left: any[]; rig
 
       // If all items were successfully re-paired, return the reordered diff.
       if (strategy !== 'content') {
-        for (const it of reorderedRight) {
-          defineNonEnum(it, '__match_strategy', 'content');
-          defineNonEnum(it, '__match_field', matchField);
-        }
-        for (const it of leftArr) {
-          defineNonEnum(it, '__match_strategy', 'content');
-          defineNonEnum(it, '__match_field', matchField);
+        // The two sides share a matched name but differ on the id-key and other
+        // fields (different id spaces). Annotate each matched pair with a shared
+        // synthetic key so objectHash pairs them as MODIFICATIONS rather than
+        // remove+add. Without this, hashing by id/content would mismatch.
+        for (let i = 0; i < leftArr.length; i++) {
+          const pairKey = `sim:${i}`;
+          defineNonEnum(leftArr[i], '__match_strategy', 'similarity');
+          defineNonEnum(leftArr[i], '__match_key', pairKey);
+          defineNonEnum(reorderedRight[i], '__match_strategy', 'similarity');
+          defineNonEnum(reorderedRight[i], '__match_key', pairKey);
         }
         const lSorted = leftArr.map(deepClone).sort((a, b) => {
           const keyA = serializeWithoutField(a, matchField);
@@ -294,12 +309,16 @@ function normalizeForDiff(left: any, right: any): [any, any] {
     // Preserve matching annotations if present on the original items
     const lStrat = (left as any)['__match_strategy'];
     const lField = (left as any)['__match_field'];
+    const lKey = (left as any)['__match_key'];
     if (lStrat !== undefined) defineNonEnum(lOut, '__match_strategy', lStrat);
     if (lField !== undefined) defineNonEnum(lOut, '__match_field', lField);
+    if (lKey !== undefined) defineNonEnum(lOut, '__match_key', lKey);
     const rStrat = (right as any)['__match_strategy'];
     const rField = (right as any)['__match_field'];
+    const rKey = (right as any)['__match_key'];
     if (rStrat !== undefined) defineNonEnum(rOut, '__match_strategy', rStrat);
     if (rField !== undefined) defineNonEnum(rOut, '__match_field', rField);
+    if (rKey !== undefined) defineNonEnum(rOut, '__match_key', rKey);
     return [lOut, rOut];
   }
 
@@ -386,6 +405,12 @@ function createSemanticDiffer() {
       if (item && typeof item === 'object') {
         const strat = (item as any)['__match_strategy'] as MatchStrategy | undefined;
         const field = (item as any)['__match_field'] as string | undefined;
+        // Similarity-matched pairs carry a shared synthetic key so both sides
+        // hash identically and are reported as MODIFICATIONS (not remove+add).
+        const key = (item as any)['__match_key'];
+        if (strat === 'similarity' && key !== undefined) {
+          return key;
+        }
         if (strat === 'id' && field && field in item) {
           return `${field}:${(item as any)[field]}`;
         }
