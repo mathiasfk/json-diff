@@ -75,8 +75,13 @@ export default function Faq() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100">
-      <Header />
+      <Header showNav={false} homeLink={true} />
       <main className="max-w-screen-2xl mx-auto p-6" role="main">
+        <nav aria-label="Breadcrumb" className="mb-4">
+          <a href="/" className="text-sm text-gray-400 hover:text-gray-200">Home</a>
+          <span className="px-2 text-gray-500" aria-hidden="true">/</span>
+          <span className="text-sm text-gray-300">FAQ</span>
+        </nav>
         <h2 className="text-2xl font-semibold mb-6">Frequently Asked Questions</h2>
         <div className="space-y-6">
           {items.map((item, idx) => (
