@@ -6,7 +6,7 @@ const monacoEditorPlugin: any = (monacoEditorPluginModule as any)?.default || (m
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/',
+  base: process.env.PREVIEW_BASE || '/',
   plugins: [
     react(),
     monacoEditorPlugin({ languageWorkers: ['json'] })
