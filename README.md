@@ -1,5 +1,7 @@
 # Semantic JSON Comparator
 
+<!-- ci-verify: test line for t_629defcc -->
+
 A web application for comparing JSON objects semantically with intelligent array matching and visual diff highlighting.
 
 ## Features
