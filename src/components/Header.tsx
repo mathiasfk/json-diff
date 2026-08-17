@@ -2,7 +2,14 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { gtag } from '../services/analytics';
 import { Json2ToonCta } from './Json2ToonCta';
 
-export function Header() {
+interface HeaderProps {
+  /** When true, hide the FAQ/back nav (e.g. FAQ page renders its own breadcrumb). */
+  showNav?: boolean;
+  /** When true and showNav is false, render a real internal link back to home. */
+  homeLink?: boolean;
+}
+
+export function Header({ showNav = true, homeLink = false }: HeaderProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const isFaq = location.pathname === '/faq';
@@ -17,33 +24,43 @@ export function Header() {
           </p>
           <Json2ToonCta />
         </div>
-        <nav aria-label="Primary">
-          {isFaq ? (
-            <button
-              onClick={() => {
-                gtag('event', 'faq_back_click');
-                navigate(-1);
-              }}
-              className="text-sm text-gray-400 hover:text-gray-200"
-              aria-label="Go back to previous view"
-            >
-              ← Back
-            </button>
-          ) : (
+        {showNav ? (
+          <nav aria-label="Primary">
+            {isFaq ? (
+              <button
+                onClick={() => {
+                  gtag('event', 'faq_back_click');
+                  navigate(-1);
+                }}
+                className="text-sm text-gray-400 hover:text-gray-200"
+                aria-label="Go back to previous view"
+              >
+                ← Back
+              </button>
+            ) : (
+              <Link
+                to="/faq"
+                onClick={() => {
+                  gtag('event', 'faq_open_click');
+                }}
+                className="text-sm text-gray-400 hover:text-gray-200"
+              >
+                FAQ
+              </Link>
+            )}
+          </nav>
+        ) : homeLink ? (
+          <nav aria-label="Primary">
             <Link
-              to="/faq"
-              onClick={() => {
-                gtag('event', 'faq_open_click');
-              }}
+              to="/"
               className="text-sm text-gray-400 hover:text-gray-200"
+              aria-label="Go to the Smart JSON Diff home page"
             >
-              FAQ
+              ← Home
             </Link>
-          )}
-        </nav>
+          </nav>
+        ) : null}
       </div>
     </header>
   );
 }
-
-
