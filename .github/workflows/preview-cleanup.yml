@@ -39,6 +39,9 @@ jobs:
 
           if [ -d "$TARGET" ]; then
             rm -rf "$TARGET"
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Commit and push cleanup
