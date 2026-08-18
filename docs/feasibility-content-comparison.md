@@ -66,11 +66,11 @@ These bridge `alignArraysForDiff` and the custom `objectHash` in `createSemantic
 Legend: **GO** = proceed; **GO (parser work)** = feasible, main effort is parsing; **Effort**: S = Small, M = Medium, L = Large.
 
 | Format | Verdict | Effort | Core change | Algorithm change |
-|--------|---------|--------|-------------|------------------|
-| **JSONL** | ✅ GO | S | `parseJsonl` helper + UI toggle | None |
-| **YAML**  | ✅ GO | S | `parseInput` adapter (yaml lib) | None |
-| **CSV**   | ✅ GO | S/M | `delimited` parser + `TableModel` | None |
-| **TSV**   | ✅ GO | S/M | same parser, different delimiter | None |
+|---|---|---|---|---|
+| **JSONL** | GO | S | `parseJsonl` helper + UI toggle | None |
+| **YAML**  | GO | S | `parseInput` adapter (yaml lib) | None |
+| **CSV**   | GO | S/M | `delimited` parser + `TableModel` | None |
+| **TSV**   | GO | S/M | same parser, different delimiter | None |
 
 All four are feasible with **zero changes to the diffing algorithm** — only the input parser and a thin UI mode differ.
 

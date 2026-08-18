@@ -11,7 +11,7 @@ export default function Faq() {
     {
       q: 'How does the comparison work?',
       a:
-        'Instead of a naive diff, Smart JSON Diff performs a semantic comparison. It normalizes both inputs by sorting object properties alphabetically and reorders arrays to align equivalent items. When a unique key exists across both arrays, items are aligned by that key; otherwise, items are matched by normalized content to minimize noise and surface only the most relevant differences.'
+        'Instead of a naive diff, Smart JSON Diff performs a semantic comparison. It normalizes both inputs by sorting object properties alphabetically and reorders arrays to align equivalent items. When a unique key exists across both arrays, items are aligned by that key; otherwise, items are matched by normalized content to minimize noise and surface only the most relevant differences. The comparison runs entirely in your browser using jsondiffpatch under the hood.'
     },
     {
       q: 'How is this different from other thousands of JSON diff tools?',
@@ -36,17 +36,22 @@ export default function Faq() {
     {
       q: 'How are array differences handled?',
       a:
-        'We find an ordering that maximizes similarity between the two versions. When a unique key is present in both arrays, items are aligned by that key; otherwise items are aligned by normalized content, so you see only the most relevant differences.'
+        'We find an ordering that maximizes similarity between the two versions. When a unique key is present in both arrays, items are aligned by that key; otherwise items are aligned by normalized content, so you see only the most relevant differences. Array items are treated as a multiset: reordering the same items produces no diff, so [1, 2, 3] and [3, 2, 1] are considered equivalent.'
+    },
+    {
+      q: 'Which data formats does Smart JSON Diff support?',
+      a:
+        'Smart JSON Diff supports JSON (the default), JSONL (JSON Lines), YAML, CSV, and TSV. Use the format selector on each side to choose the format of your input. The tool parses each format and normalizes it to a common internal representation before performing the semantic comparison, so you can compare across formats — for example, a YAML file against a JSON file. Table formats (CSV/TSV) keep every cell as a string to avoid silent type coercion; YAML anchors/aliases are not expanded by the built-in parser (a known limitation).'
     },
     {
       q: 'Is it safe to paste sensitive data?',
       a:
-        'Yes. All processing happens locally in your browser. We do not collect the JSON you compare.'
+        'Yes. All processing happens locally in your browser. We do not collect the data you compare. For feature requests or bugs, open an issue at github.com/mathiasfk/json-diff/issues.'
     },
     {
       q: 'How do I report bugs?',
       a:
-        'Send an email to admin@smartjsondiff.com.'
+        'Send an email to admin@smartjsondiff.com, or open an issue at github.com/mathiasfk/json-diff/issues.'
     }
   ], []);
 
@@ -95,5 +100,3 @@ export default function Faq() {
     </div>
   );
 }
-
-
