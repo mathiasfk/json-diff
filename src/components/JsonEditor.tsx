@@ -11,8 +11,6 @@ const MONACO_LANGUAGE: Record<Format, string> = {
   json: 'json',
   jsonl: 'json',
   yaml: 'yaml',
-  csv: 'plaintext',
-  tsv: 'plaintext',
 };
 
 interface JsonEditorProps {
@@ -98,8 +96,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
     const accepted = detected !== 'json' || file.type === 'application/json' ||
       file.type === 'text/plain' || file.name.toLowerCase().endsWith('.json') ||
       file.name.toLowerCase().endsWith('.jsonl') || file.name.toLowerCase().endsWith('.ndjson') ||
-      file.name.toLowerCase().endsWith('.yml') || file.name.toLowerCase().endsWith('.yaml') ||
-      file.name.toLowerCase().endsWith('.csv') || file.name.toLowerCase().endsWith('.tsv');
+      file.name.toLowerCase().endsWith('.yml') || file.name.toLowerCase().endsWith('.yaml');
 
     if (!accepted) {
       gtag('event', 'drag_drop_invalid_file', {

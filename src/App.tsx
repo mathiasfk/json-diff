@@ -46,11 +46,11 @@ function App() {
       if (storedLeft !== null) setLeftJson(storedLeft);
       if (storedRight !== null) setRightJson(storedRight);
       if (storedLeftFormat === 'json' || storedLeftFormat === 'jsonl' ||
-          storedLeftFormat === 'yaml' || storedLeftFormat === 'csv' || storedLeftFormat === 'tsv') {
+          storedLeftFormat === 'yaml') {
         setLeftFormat(storedLeftFormat);
       }
       if (storedRightFormat === 'json' || storedRightFormat === 'jsonl' ||
-          storedRightFormat === 'yaml' || storedRightFormat === 'csv' || storedRightFormat === 'tsv') {
+          storedRightFormat === 'yaml') {
         setRightFormat(storedRightFormat);
       }
       if (storedMode === 'compare') setViewMode('compare');

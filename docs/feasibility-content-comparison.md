@@ -1,6 +1,6 @@
 # Feasibility: Adding Non-JSON Content Formats (JSONL, YAML, CSV, TSV)
 
-**Status:** Consolidated findings — all four formats are feasible; three are GO, one is GO-with-parsing-work (CSV/TSV).
+**Status:** Historical decision record. JSONL and YAML were implemented and shipped. CSV/TSV were evaluated (feasible) but ultimately NOT shipped — support was later removed; the product supports JSON, JSONL and YAML only.
 **Date:** 2026-08-17
 **Scope:** Single source of truth summarizing the per-format feasibility studies and the underlying algorithm analysis.
 **Author:** dev (kanban t_f14aaccf)
@@ -10,7 +10,7 @@ This document rolls up:
 - `ANALYSIS-similarity-algorithm.md` (task t_9ced8bcb) — algorithm & extension points
 - `docs/feasibility-jsonl.md` (task t_733b7e15) — JSONL study
 - `docs/feasibility-yaml.md` (task t_8d1b709b) — YAML study
-- `docs/csv-tsv-feasibility.md` (task t_6c61db57) — CSV/TSV study
+- `docs/csv-tsv-feasibility.md` (task t_6c61db57) — CSV/TSV study (removed; CSV/TSV support was not shipped)
 
 ---
 
