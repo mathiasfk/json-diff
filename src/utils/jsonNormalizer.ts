@@ -105,7 +105,7 @@ export function calculateSimilarity(obj1: any, obj2: any): number {
   if (allKeys.size === 0) return 1;
 
   let matches = 0;
-  let total = allKeys.size;
+  const total = allKeys.size;
 
   allKeys.forEach(key => {
     if (key in obj1 && key in obj2) {
@@ -142,6 +142,7 @@ export function sortObjectProperties(obj: any): any {
   // Preserve non-enumerable matching annotations if present
   const strat = (obj as any)['__match_strategy'];
   const field = (obj as any)['__match_field'];
+  const key = (obj as any)['__match_key'];
   if (strat !== undefined) {
     Object.defineProperty(sorted, '__match_strategy', {
       value: strat,
@@ -153,6 +154,14 @@ export function sortObjectProperties(obj: any): any {
   if (field !== undefined) {
     Object.defineProperty(sorted, '__match_field', {
       value: field,
+      enumerable: false,
+      configurable: true,
+      writable: true,
+    });
+  }
+  if (key !== undefined) {
+    Object.defineProperty(sorted, '__match_key', {
+      value: key,
       enumerable: false,
       configurable: true,
       writable: true,

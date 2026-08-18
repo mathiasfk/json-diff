@@ -1,0 +1,37 @@
+{
+  "snapshot_taken_at": "2026-08-17T11:55:00Z",
+  "purpose": "Frozen GA4 + Search Console baseline captured at deploy of PR #24 (commit fb83886). Use as the pre-deploy comparison point for the 30-day SEO review (cron job c80e730ab983).",
+  "property": "a369692771p511183898 (numeric 511183898)",
+  "date_range": "last 90 days ending 2026-08-16",
+  "totals": {
+    "total_sessions_all_channels": 232,
+    "organic_search_sessions": 40,
+    "gsc_impressions": 165,
+    "gsc_clicks": 9,
+    "gsc_avg_position": 33.45,
+    "gsc_ctr_pct": 5.45
+  },
+  "optimized_page_slash": {
+    "sessions": 180,
+    "total_users": 107,
+    "bounce_rate_pct": 52.22,
+    "avg_session_sec": 264.6,
+    "conversions_compare_click": 184,
+    "organic_sessions": 29,
+    "organic_bounce_rate_pct": 17.24,
+    "organic_avg_session_sec": 356.5,
+    "organic_conversions": 39
+  },
+  "channel_summary": {
+    "Direct": 174,
+    "Organic Search": 40,
+    "Unassigned": 13,
+    "Organic Social": 2,
+    "Referral": 1
+  },
+  "conversion_event": "compare_click",
+  "data_gaps": [
+    "Search Console query-level data (top 50 queries) NOT retrieved: webmasters scope 403 + GA4 searchTerm/metrics incompatibility. Needs human re-OAuth with webmasters.readonly.",
+    "Only page-level Google Search performance is available (GA4 <-> Search Console property link)."
+  ]
+}
