@@ -11,9 +11,13 @@ interface FormatSelectorProps {
 
 /**
  * Dropdown that lets the user pick the serialization format for one side of the
- * diff input: JSON, JSONL, YAML, CSV or TSV. JSON is the default format.
+ * diff input: JSON, JSONL or YAML. JSON is the default format. CSV and TSV are
+ * intentionally excluded from the UI selector.
  */
 export function FormatSelector({ value, onChange, label, id }: FormatSelectorProps) {
+  // CSV/TSV are excluded from the UI even though the parser may still know them.
+  const uiFormats = SUPPORTED_FORMATS.filter((f) => f !== 'csv' && f !== 'tsv');
+
   return (
     <label className="flex items-center gap-2 text-xs text-gray-400">
       {label && <span>{label}</span>}
@@ -24,7 +28,7 @@ export function FormatSelector({ value, onChange, label, id }: FormatSelectorPro
         className="bg-gray-900 border border-gray-700 text-gray-200 text-xs rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
         aria-label={label ? `${label} format` : 'Input format'}
       >
-        {SUPPORTED_FORMATS.map((f) => (
+        {uiFormats.map((f) => (
           <option key={f} value={f}>
             {f.toUpperCase()}
           </option>
