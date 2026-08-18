@@ -3,7 +3,7 @@ import { Header } from './components/Header';
 import { JsonEditor } from './components/JsonEditor';
 const DiffViewer = lazy(() => import('./components/DiffViewer').then(m => ({ default: m.DiffViewer })));
 import { semanticDiff, formatJSON } from './utils/semanticDiff';
-import { parse, serialize, FormatError, DEFAULT_FORMAT } from './utils/formatSelector';
+import { parse, serialize, formatSameFormatDiff, FormatError, DEFAULT_FORMAT } from './utils/formatSelector';
 import type { Format } from './utils/formatSelector';
 import { gtag } from './services/analytics';
 
@@ -30,6 +30,7 @@ function App() {
   const [diffResult, setDiffResult] = useState<{
     left: string;
     right: string;
+    language: string;
     hasDifferences: boolean;
   } | null>(null);
 
@@ -149,8 +150,16 @@ function App() {
 
     const result = semanticDiff(leftResult.parsed, rightResult.parsed);
 
-    const formattedLeft = formatJSON(result.left);
-    const formattedRight = formatJSON(result.right);
+    // When both sides share the same format (json/jsonl/yaml), re-serialize the
+    // normalized objects back into that dialect so the diff shows the original
+    // format instead of canonical JSON. Otherwise fall back to JSON display.
+    const sameFormat = leftFormat === rightFormat
+      ? formatSameFormatDiff(result.left, result.right, leftFormat)
+      : null;
+
+    const formattedLeft = sameFormat ? sameFormat.left : formatJSON(result.left);
+    const formattedRight = sameFormat ? sameFormat.right : formatJSON(result.right);
+    const language = sameFormat ? leftFormat : 'json';
 
     const hasDifferences = result.delta !== undefined;
 
@@ -165,6 +174,7 @@ function App() {
     setDiffResult({
       left: formattedLeft,
       right: formattedRight,
+      language,
       hasDifferences,
     });
 
@@ -308,6 +318,7 @@ function App() {
                 <DiffViewer
                   oldValue={diffResult.left}
                   newValue={diffResult.right}
+                  language={diffResult.language}
                   onReset={handleReset}
                   hasDifferences={diffResult.hasDifferences}
                 />

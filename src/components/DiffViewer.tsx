@@ -4,6 +4,7 @@ import { DiffEditor } from '@monaco-editor/react';
 interface DiffViewerProps {
   oldValue: string;
   newValue: string;
+  language?: string;
   onReset: () => void;
   hasDifferences: boolean;
 }
@@ -11,6 +12,7 @@ interface DiffViewerProps {
 export const DiffViewer: React.FC<DiffViewerProps> = ({
   oldValue,
   newValue,
+  language = 'json',
   onReset,
   hasDifferences,
 }) => {
@@ -59,7 +61,7 @@ export const DiffViewer: React.FC<DiffViewerProps> = ({
         <div className="flex-1 overflow-hidden bg-gray-900 rounded-lg border border-gray-700" role="region" aria-label="Differences view">
           <DiffEditor
             height="100%"
-            language="json"
+            language={language === 'jsonl' ? 'json' : language}
             theme="vs-dark"
             original={oldValue}
             modified={newValue}
