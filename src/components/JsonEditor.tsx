@@ -2,10 +2,26 @@ import React, { useRef, useEffect, useState } from 'react';
 import Editor from '@monaco-editor/react';
 import type * as monaco from 'monaco-editor';
 import { gtag } from '../services/analytics';
+import { FormatSelector } from './FormatSelector';
+import type { Format } from '../utils/formatSelector';
+import { detectFormatFromFilename } from '../utils/formatSelector';
+
+/** Map a diff-input format to a Monaco editor language id (when supported). */
+const MONACO_LANGUAGE: Record<Format, string> = {
+  json: 'json',
+  jsonl: 'json',
+  yaml: 'yaml',
+  csv: 'plaintext',
+  tsv: 'plaintext',
+};
 
 interface JsonEditorProps {
   value: string;
   onChange: (value: string) => void;
+  /** Selected input format for this side; drives the editor language + drag detection. */
+  format: Format;
+  /** Called when the user changes the format via the selector. */
+  onFormatChange: (format: Format) => void;
   placeholder?: string;
   error?: string;
   label: string;
@@ -15,7 +31,9 @@ interface JsonEditorProps {
 export const JsonEditor: React.FC<JsonEditorProps> = ({
   value,
   onChange,
-  placeholder = 'Paste or drag your JSON here...',
+  format,
+  onFormatChange,
+  placeholder = 'Paste or drag your input here...',
   error,
   label,
   side,
@@ -27,14 +45,23 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
   const handleEditorDidMount = (editor: monaco.editor.IStandaloneCodeEditor, monacoInstance: typeof monaco) => {
     editorRef.current = editor;
     monacoRef.current = monacoInstance;
-    
-    // Configure JSON validation
-    monacoInstance.languages.json.jsonDefaults.setDiagnosticsOptions({
-      validate: true,
-      allowComments: false,
-      schemas: [],
-      enableSchemaRequest: false,
-    });
+
+    // Configure validation only for JSON-family inputs; other formats use a
+    // plain text editor without schema validation.
+    if (format === 'json' || format === 'jsonl') {
+      monacoInstance.languages.json.jsonDefaults.setDiagnosticsOptions({
+        validate: true,
+        allowComments: false,
+        schemas: [],
+        enableSchemaRequest: false,
+      });
+    } else {
+      monacoInstance.languages.json.jsonDefaults.setDiagnosticsOptions({
+        validate: false,
+        schemas: [],
+        enableSchemaRequest: false,
+      });
+    }
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -64,31 +91,37 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
     if (files.length === 0) return;
 
     const file = files[0];
-    
-    // Validate file type
-    const isValidJsonFile = 
-      file.type === 'application/json' || 
-      file.name.toLowerCase().endsWith('.json') ||
-      file.type === 'text/plain' && file.name.toLowerCase().endsWith('.json');
 
-    if (!isValidJsonFile) {
-      gtag('event', 'drag_drop_invalid_file', { 
+    // Detect the format from the dropped file's extension so the editor and
+    // parser stay in sync with what the user actually dropped.
+    const detected = detectFormatFromFilename(file.name);
+    const accepted = detected !== 'json' || file.type === 'application/json' ||
+      file.type === 'text/plain' || file.name.toLowerCase().endsWith('.json') ||
+      file.name.toLowerCase().endsWith('.jsonl') || file.name.toLowerCase().endsWith('.ndjson') ||
+      file.name.toLowerCase().endsWith('.yml') || file.name.toLowerCase().endsWith('.yaml') ||
+      file.name.toLowerCase().endsWith('.csv') || file.name.toLowerCase().endsWith('.tsv');
+
+    if (!accepted) {
+      gtag('event', 'drag_drop_invalid_file', {
         side: side || 'unknown',
         file_type: file.type,
-        file_name: file.name
+        file_name: file.name,
       });
-      return; // Silently ignore non-JSON files
+      return; // Silently ignore unsupported files
     }
 
     try {
       const text = await file.text();
-      
-      // Set the raw text exactly as it was in the file, without formatting
+
+      // Set the raw text exactly as it was in the file, without formatting,
+      // and switch the selector to the detected format.
       onChange(text);
-      gtag('event', 'drag_drop_success', { 
+      onFormatChange(detected);
+      gtag('event', 'drag_drop_success', {
         side: side || 'unknown',
         file_size: file.size,
-        formatted: false
+        detected_format: detected,
+        formatted: false,
       });
     } catch (readError) {
       // Silently ignore read errors
@@ -106,7 +139,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
           // Try to find the error line if possible
           const lines = model.getLinesContent();
           lines.forEach((line, index) => {
-            if (error.toLowerCase().includes(`line ${index + 1}`) || 
+            if (error.toLowerCase().includes(`line ${index + 1}`) ||
                 error.toLowerCase().includes(`position ${index + 1}`)) {
               markers.push({
                 severity: monacoRef.current!.MarkerSeverity.Error,
@@ -118,7 +151,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
               });
             }
           });
-          
+
           // If no specific line found, mark the entire document
           if (markers.length === 0 && value.trim()) {
             markers.push({
@@ -143,7 +176,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
             });
           }
         }
-        
+
         monacoRef.current!.editor.setModelMarkers(model, 'json-validation', markers);
       }
     } else if (editorRef.current && !error && monacoRef.current) {
@@ -157,13 +190,20 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
 
   return (
     <div className="flex flex-col h-full">
-      <label className="text-sm font-medium text-gray-300 mb-2">
-        {label}
-      </label>
-      <div 
+      <div className="flex items-center justify-between mb-2">
+        <label htmlFor={`${side}-editor`} className="text-sm font-medium text-gray-300">
+          {label}
+        </label>
+        <FormatSelector
+          value={format}
+          onChange={onFormatChange}
+          label="Format"
+        />
+      </div>
+      <div
         className={`flex-1 relative rounded-lg overflow-hidden border transition-colors ${
-          isDragging 
-            ? 'border-blue-500 border-2 bg-blue-500/10' 
+          isDragging
+            ? 'border-blue-500 border-2 bg-blue-500/10'
             : 'border-gray-700'
         }`}
         onDragOver={handleDragOver}
@@ -177,7 +217,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
         )}
         <Editor
           height="100%"
-          defaultLanguage="json"
+          language={MONACO_LANGUAGE[format]}
           theme="vs-dark"
           value={value || ''}
           onChange={(newValue) => onChange(newValue || '')}
@@ -210,4 +250,3 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
     </div>
   );
 };
-

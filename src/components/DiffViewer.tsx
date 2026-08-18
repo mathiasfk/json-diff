@@ -15,7 +15,7 @@ export const DiffViewer: React.FC<DiffViewerProps> = ({
   hasDifferences,
 }) => {
   return (
-    <div className="h-full flex flex-col" role="region" aria-label="JSON comparison results">
+    <div className="h-full flex flex-col" role="region" aria-label="Comparison results">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold text-gray-100">
           Comparison Results
@@ -23,7 +23,7 @@ export const DiffViewer: React.FC<DiffViewerProps> = ({
         <button
           onClick={onReset}
           className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 rounded-lg transition-colors"
-          aria-label="Return to JSON input editors"
+          aria-label="Return to input editors"
         >
           ← Back to Edit
         </button>
@@ -48,15 +48,15 @@ export const DiffViewer: React.FC<DiffViewerProps> = ({
               </svg>
             </div>
             <h3 className="text-2xl font-semibold text-gray-100 mb-2">
-              JSONs are equivalent!
+              Inputs are equivalent!
             </h3>
             <p className="text-gray-400">
-              No differences found between the two JSONs after semantic normalization.
+              No differences found between the two inputs after semantic normalization.
             </p>
           </div>
         </div>
       ) : (
-        <div className="flex-1 overflow-hidden bg-gray-900 rounded-lg border border-gray-700" role="region" aria-label="JSON differences view">
+        <div className="flex-1 overflow-hidden bg-gray-900 rounded-lg border border-gray-700" role="region" aria-label="Differences view">
           <DiffEditor
             height="100%"
             language="json"
