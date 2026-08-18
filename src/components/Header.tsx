@@ -20,7 +20,7 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
         <div>
           <h1 className="text-2xl font-bold">Smart JSON Diff</h1>
           <p className="text-sm text-gray-400 mt-1">
-            Compare JSON objects semantically with smart array matching
+            Compare JSON, YAML, CSV and more semantically with smart array matching
           </p>
           <Json2ToonCta />
         </div>

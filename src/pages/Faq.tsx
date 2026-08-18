@@ -41,7 +41,7 @@ export default function Faq() {
     {
       q: 'Is it safe to paste sensitive data?',
       a:
-        'Yes. All processing happens locally in your browser. We do not collect the JSON you compare.'
+        'Yes. All processing happens locally in your browser. We do not collect the data you compare.'
     },
     {
       q: 'How do I report bugs?',
