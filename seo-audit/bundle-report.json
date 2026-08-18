@@ -1,0 +1,29 @@
+{
+  "totalJsKb": 214.2,
+  "eagerJsKb": 209.2,
+  "totalCssKb": 10.9,
+  "estimatedTbtMs": 126,
+  "chunks": [
+    {
+      "f": "react-vendor-Cio4V8dn.js",
+      "kb": 163.8
+    },
+    {
+      "f": "index-reG5A33d.js",
+      "kb": 25.6
+    },
+    {
+      "f": "vendor-BF7sr4as.js",
+      "kb": 19.8
+    },
+    {
+      "f": "Faq-BIWz0ZxZ.js",
+      "kb": 3.2
+    },
+    {
+      "f": "DiffViewer-CYnv71hq.js",
+      "kb": 1.8
+    }
+  ],
+  "note": "Real sizes from `pnpm build` dist output. Estimated TBT is a heuristic proxy; Monaco worker/editor chunks load lazily on demand and are excluded from the eager-paint estimate."
+}
