@@ -101,6 +101,141 @@ export function detectFormatFromFilename(filename: string): Format {
 }
 
 // ---------------------------------------------------------------------------
+// Content-based format detection (paste / text sniffing)
+// ---------------------------------------------------------------------------
+
+/**
+ * Inspect raw text and guess which supported format it most likely is.
+ *
+ * Detection order matters: JSONL and CSV/TSV only "smell" right when every
+ * data line parses, so JSON is attempted first (the strict, cheap check),
+ * then JSONL (one JSON value per line), then XML, then the delimiter-based
+ * table formats (CSV / TSV), then YAML. Anything that matches nothing is
+ * reported as plain text.
+ *
+ * Note: the tool only diffs the 5 serialization formats, so `xml`/`plaintext`
+ * are returned as `'json'` (the default) by callers that need a `Format`. The
+ * dedicated `detectInputFormat` return type (`DetectedFormat`) is broader so
+ * the UI can surface "this isn't a supported diff format" without guessing.
+ */
+export type DetectedFormat = Format | 'xml' | 'plaintext';
+
+/** Result of {@link detectInputFormat}: the guessed format plus a confidence flag. */
+export interface DetectResult {
+  format: DetectedFormat;
+  /** `true` when the text parsed cleanly as the returned format. */
+  confident: boolean;
+}
+
+/** Split text into non-empty lines, tolerating CRLF and trailing newlines. */
+function nonEmptyLines(text: string): string[] {
+  return text.split(/\r?\n/).filter((line) => line.trim() !== '');
+}
+
+/** Heuristic: does the line look like a single complete JSON value? */
+function isJsonLine(line: string): boolean {
+  const trimmed = line.trim();
+  if (trimmed.length === 0) return false;
+  const first = trimmed[0];
+  const last = trimmed[trimmed.length - 1];
+  const opens = first === '{' || first === '[';
+  const closes = last === '}' || last === ']';
+  // A bare quoted string / number is valid JSON too, but for sniffing we
+  // restrict to container/structural values to avoid false positives.
+  if (opens && closes) return true;
+  return false;
+}
+
+function looksLikeCsvOrTsv(text: string, delimiter: string): boolean {
+  // splitCsvRows returns an array of rows (each a field array). Drop any
+  // fully-blank rows produced by trailing newlines before inspecting.
+  const rows = splitCsvRows(text, delimiter).filter(
+    (row) => !(row.length === 1 && row[0] === ''),
+  );
+  // Require at least two rows with the same column count and ≥2 columns each;
+  // a single "a,b" row is too weak a signal (could be arbitrary comma prose).
+  if (rows.length < 2) return false;
+  let columnCount = -1;
+  for (const row of rows) {
+    if (row.length < 2) return false;
+    if (columnCount === -1) columnCount = row.length;
+    else if (row.length !== columnCount) return false;
+  }
+  return true;
+}
+
+/** Detect the format of pasted/raw text. Falls back to `'plaintext'`. */
+export function detectInputFormat(text: string): DetectResult {
+  if (typeof text !== 'string') {
+    return { format: 'plaintext', confident: false };
+  }
+  const trimmed = text.trim();
+  if (trimmed === '') {
+    return { format: 'plaintext', confident: false };
+  }
+
+  // JSON: a single JSON document (object/array/value).
+  if (isJsonLine(trimmed)) {
+    try {
+      JSON.parse(trimmed);
+      return { format: 'json', confident: true };
+    } catch {
+      // Not a single JSON value — fall through to line-based checks.
+    }
+  }
+
+  // JSONL: every non-empty line is a JSON value.
+  const lines = nonEmptyLines(text);
+  if (lines.length >= 1) {
+    let allJson = true;
+    for (const line of lines) {
+      if (!isJsonLine(line)) {
+        allJson = false;
+        break;
+      }
+      try {
+        JSON.parse(line);
+      } catch {
+        allJson = false;
+        break;
+      }
+    }
+    if (allJson) {
+      return { format: 'jsonl', confident: true };
+    }
+  }
+
+  // XML: a document or fragment wrapped in tags (also tolerates a leading
+  // `<?xml ...?>` declaration). Require a matching closing tag for confidence.
+  if (
+    /^\s*<\?xml\b/.test(trimmed) ||
+    (/^\s*<([a-zA-Z_][\w.-]*)(\s[^>]*)?>/.test(trimmed) && trimmed.includes('</'))
+  ) {
+    return { format: 'xml', confident: true };
+  }
+
+  // CSV / TSV: delimiter-separated tables with consistent columns.
+  if (looksLikeCsvOrTsv(text, ',')) {
+    return { format: 'csv', confident: true };
+  }
+  if (looksLikeCsvOrTsv(text, '\t')) {
+    return { format: 'tsv', confident: true };
+  }
+
+  // YAML: block mapping (lines of "key: value") or block sequence ("- item").
+  if (/^(?:[ \t]*[\w.$-]+[ \t]*:[ \t]*|\s*-[ \t]+)/.test(trimmed)) {
+    try {
+      parseYaml(text);
+      return { format: 'yaml', confident: true };
+    } catch {
+      // Parsing failed; treat as plain text below.
+    }
+  }
+
+  return { format: 'plaintext', confident: false };
+}
+
+// ---------------------------------------------------------------------------
 // Deserialization
 // ---------------------------------------------------------------------------
 
