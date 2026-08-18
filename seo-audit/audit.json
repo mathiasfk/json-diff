@@ -1,0 +1,382 @@
+{
+  "home": {
+    "title": {
+      "value": "Smart JSON Diff - Semantic JSON Comparator",
+      "length": 42,
+      "pass": true,
+      "detail": "OK"
+    },
+    "metaDescription": {
+      "value": "Compare JSON objects semantically with intelligent array matching. It sorts keys and array items before comparing for a more accurate diff.",
+      "length": 139,
+      "pass": true,
+      "detail": "OK"
+    },
+    "h1": {
+      "count": 0,
+      "pass": false,
+      "detail": "MISSING H1"
+    },
+    "headingHierarchy": {
+      "sequence": [],
+      "skip": false,
+      "pass": true,
+      "detail": "OK"
+    },
+    "images": {
+      "total": 0,
+      "missingAlt": 0,
+      "coveragePct": 100,
+      "pass": true,
+      "detail": "NO IMAGES"
+    },
+    "internalLinks": {
+      "internalCount": 0,
+      "pass": false,
+      "detail": "NO INTERNAL LINKS"
+    },
+    "canonical": {
+      "value": "https://smartjsondiff.com/",
+      "pass": true,
+      "detail": "OK"
+    },
+    "schema": {
+      "types": [
+        "WebApplication"
+      ],
+      "present": true,
+      "pass": true,
+      "detail": "OK (WebApplication)"
+    },
+    "indexability": {
+      "status": 200,
+      "noindex": false,
+      "xRobots": null,
+      "pass": true,
+      "detail": "OK"
+    },
+    "robotsTxt": {
+      "hasSitemap": true,
+      "userAgent": true,
+      "disallowAll": false,
+      "pass": true,
+      "detail": "OK"
+    },
+    "mobile": {
+      "hasViewport": true,
+      "pass": true,
+      "detail": "VIEWPORT PRESENT (live mobile test needed)"
+    },
+    "cwv": {
+      "totalJsKb": 214.2,
+      "totalCssKb": 10.9,
+      "estimatedTbtMs": 126,
+      "pass": true,
+      "detail": "OK (est.)",
+      "note": "Approximated from build bundle sizes; real CWV needs field/RUM or Lighthouse."
+    }
+  },
+  "faq": {
+    "title": {
+      "value": "",
+      "length": 0,
+      "pass": false,
+      "detail": "NO OWN TITLE (hash route inherits root document)"
+    },
+    "metaDescription": {
+      "value": "",
+      "length": 0,
+      "pass": false,
+      "detail": "NO OWN META DESCRIPTION (hash route)"
+    },
+    "h1": {
+      "count": 0,
+      "pass": false,
+      "detail": "NO H1 (uses H2 as page heading)"
+    },
+    "headingHierarchy": {
+      "sequence": [
+        2,
+        3
+      ],
+      "skip": false,
+      "pass": true,
+      "detail": "OK (H2 -> H3, valid)"
+    },
+    "images": {
+      "total": 0,
+      "missingAlt": 0,
+      "coveragePct": 100,
+      "pass": true,
+      "detail": "NO IMAGES"
+    },
+    "internalLinks": {
+      "internalCount": 1,
+      "pass": true,
+      "detail": "OK (Back button)"
+    },
+    "canonical": {
+      "value": "",
+      "pass": false,
+      "detail": "NO OWN CANONICAL (shares root; hash not canonicalized)"
+    },
+    "schema": {
+      "types": [
+        "FAQPage(injected)"
+      ],
+      "present": true,
+      "pass": true,
+      "detail": "FAQPage JSON-LD injected at runtime"
+    },
+    "indexability": {
+      "status": 200,
+      "noindex": false,
+      "xRobots": null,
+      "pass": false,
+      "detail": "HASH ROUTE NOT INDEPENDENTLY INDEXABLE"
+    },
+    "robotsTxt": {
+      "hasSitemap": true,
+      "userAgent": true,
+      "disallowAll": false,
+      "pass": true,
+      "detail": "OK (inherits root robots.txt)"
+    },
+    "mobile": {
+      "hasViewport": true,
+      "pass": true,
+      "detail": "VIEWPORT PRESENT (inherits root)"
+    },
+    "cwv": {
+      "totalJsKb": 214.2,
+      "totalCssKb": 10.9,
+      "estimatedTbtMs": 126,
+      "pass": true,
+      "detail": "OK (est.)",
+      "note": "Approximated from build bundle sizes; real CWV needs field/RUM or Lighthouse."
+    }
+  },
+  "bundle": {
+    "totalJsKb": 214.2,
+    "eagerJsKb": 209.2,
+    "totalCssKb": 10.9,
+    "estimatedTbtMs": 126,
+    "chunks": [
+      {
+        "f": "react-vendor-Cio4V8dn.js",
+        "kb": 163.8
+      },
+      {
+        "f": "index-reG5A33d.js",
+        "kb": 25.6
+      },
+      {
+        "f": "vendor-BF7sr4as.js",
+        "kb": 19.8
+      },
+      {
+        "f": "Faq-BIWz0ZxZ.js",
+        "kb": 3.2
+      },
+      {
+        "f": "DiffViewer-CYnv71hq.js",
+        "kb": 1.8
+      }
+    ],
+    "note": "Real sizes from `pnpm build` dist output. Estimated TBT is a heuristic proxy; Monaco worker/editor chunks load lazily on demand and are excluded from the eager-paint estimate."
+  },
+  "rows": [
+    {
+      "url": "https://smartjsondiff.com/",
+      "page": "home",
+      "check": "Title tag length/uniqueness",
+      "status": "PASS",
+      "detail": "OK",
+      "value": "Smart JSON Diff - Semantic JSON Comparator"
+    },
+    {
+      "url": "https://smartjsondiff.com/",
+      "page": "home",
+      "check": "Meta description presence/length",
+      "status": "PASS",
+      "detail": "OK",
+      "value": "Compare JSON objects semantically with intelligent array matching. It sorts keys and array items before comparing for a more accurate diff."
+    },
+    {
+      "url": "https://smartjsondiff.com/",
+      "page": "home",
+      "check": "H1 structure (exactly one)",
+      "status": "FAIL",
+      "detail": "MISSING H1",
+      "value": "0"
+    },
+    {
+      "url": "https://smartjsondiff.com/",
+      "page": "home",
+      "check": "Heading hierarchy (no skips)",
+      "status": "PASS",
+      "detail": "OK",
+      "value": ""
+    },
+    {
+      "url": "https://smartjsondiff.com/",
+      "page": "home",
+      "check": "Image alt coverage",
+      "status": "PASS",
+      "detail": "NO IMAGES",
+      "value": "100"
+    },
+    {
+      "url": "https://smartjsondiff.com/",
+      "page": "home",
+      "check": "Internal link count (>=1)",
+      "status": "FAIL",
+      "detail": "NO INTERNAL LINKS",
+      "value": "0"
+    },
+    {
+      "url": "https://smartjsondiff.com/",
+      "page": "home",
+      "check": "Canonical tag",
+      "status": "PASS",
+      "detail": "OK",
+      "value": "https://smartjsondiff.com/"
+    },
+    {
+      "url": "https://smartjsondiff.com/",
+      "page": "home",
+      "check": "Schema markup presence",
+      "status": "PASS",
+      "detail": "OK (WebApplication)",
+      "value": "WebApplication"
+    },
+    {
+      "url": "https://smartjsondiff.com/",
+      "page": "home",
+      "check": "Indexability (robots/noindex)",
+      "status": "PASS",
+      "detail": "OK",
+      "value": "200"
+    },
+    {
+      "url": "https://smartjsondiff.com/",
+      "page": "home",
+      "check": "robots.txt / sitemap ref",
+      "status": "PASS",
+      "detail": "OK",
+      "value": ""
+    },
+    {
+      "url": "https://smartjsondiff.com/",
+      "page": "home",
+      "check": "Mobile usability (viewport)",
+      "status": "PASS",
+      "detail": "VIEWPORT PRESENT (live mobile test needed)",
+      "value": ""
+    },
+    {
+      "url": "https://smartjsondiff.com/",
+      "page": "home",
+      "check": "Core Web Vitals (from build)",
+      "status": "PASS",
+      "detail": "OK (est.)",
+      "value": ""
+    },
+    {
+      "url": "https://smartjsondiff.com/#/faq",
+      "page": "faq",
+      "check": "Title tag length/uniqueness",
+      "status": "FAIL",
+      "detail": "NO OWN TITLE (hash route inherits root document)",
+      "value": ""
+    },
+    {
+      "url": "https://smartjsondiff.com/#/faq",
+      "page": "faq",
+      "check": "Meta description presence/length",
+      "status": "FAIL",
+      "detail": "NO OWN META DESCRIPTION (hash route)",
+      "value": ""
+    },
+    {
+      "url": "https://smartjsondiff.com/#/faq",
+      "page": "faq",
+      "check": "H1 structure (exactly one)",
+      "status": "FAIL",
+      "detail": "NO H1 (uses H2 as page heading)",
+      "value": "0"
+    },
+    {
+      "url": "https://smartjsondiff.com/#/faq",
+      "page": "faq",
+      "check": "Heading hierarchy (no skips)",
+      "status": "PASS",
+      "detail": "OK (H2 -> H3, valid)",
+      "value": ""
+    },
+    {
+      "url": "https://smartjsondiff.com/#/faq",
+      "page": "faq",
+      "check": "Image alt coverage",
+      "status": "PASS",
+      "detail": "NO IMAGES",
+      "value": "100"
+    },
+    {
+      "url": "https://smartjsondiff.com/#/faq",
+      "page": "faq",
+      "check": "Internal link count (>=1)",
+      "status": "PASS",
+      "detail": "OK (Back button)",
+      "value": "1"
+    },
+    {
+      "url": "https://smartjsondiff.com/#/faq",
+      "page": "faq",
+      "check": "Canonical tag",
+      "status": "FAIL",
+      "detail": "NO OWN CANONICAL (shares root; hash not canonicalized)",
+      "value": ""
+    },
+    {
+      "url": "https://smartjsondiff.com/#/faq",
+      "page": "faq",
+      "check": "Schema markup presence",
+      "status": "PASS",
+      "detail": "FAQPage JSON-LD injected at runtime",
+      "value": "FAQPage(injected)"
+    },
+    {
+      "url": "https://smartjsondiff.com/#/faq",
+      "page": "faq",
+      "check": "Indexability (robots/noindex)",
+      "status": "FAIL",
+      "detail": "HASH ROUTE NOT INDEPENDENTLY INDEXABLE",
+      "value": "200"
+    },
+    {
+      "url": "https://smartjsondiff.com/#/faq",
+      "page": "faq",
+      "check": "robots.txt / sitemap ref",
+      "status": "PASS",
+      "detail": "OK (inherits root robots.txt)",
+      "value": ""
+    },
+    {
+      "url": "https://smartjsondiff.com/#/faq",
+      "page": "faq",
+      "check": "Mobile usability (viewport)",
+      "status": "PASS",
+      "detail": "VIEWPORT PRESENT (inherits root)",
+      "value": ""
+    },
+    {
+      "url": "https://smartjsondiff.com/#/faq",
+      "page": "faq",
+      "check": "Core Web Vitals (from build)",
+      "status": "PASS",
+      "detail": "OK (est.)",
+      "value": ""
+    }
+  ]
+}

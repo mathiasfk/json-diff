@@ -1,12 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import monacoEditorPluginModule from 'vite-plugin-monaco-editor'
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const monacoEditorPlugin: any = (monacoEditorPluginModule as any)?.default || (monacoEditorPluginModule as any)
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/',
+  base: process.env.PREVIEW_BASE || '/',
   plugins: [
     react(),
     monacoEditorPlugin({ languageWorkers: ['json'] })
