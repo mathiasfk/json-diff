@@ -226,14 +226,72 @@ function parseJsonl(text: string): unknown[] {
     try {
       records.push(JSON.parse(line));
     } catch (err) {
+      const lineNo = i + 1;
+      const baseMsg = err instanceof Error ? err.message : 'Invalid JSON on line';
       throw new FormatError(
-        err instanceof Error ? err.message : 'Invalid JSON on line',
+        // Surface the original parser message (which already carries position/column
+        // context), then append a hint that JSONL requires one JSON value per line.
+        formatJsonlError(baseMsg, lineNo, line),
         'jsonl',
-        i + 1,
+        lineNo,
       );
     }
   }
   return records;
+}
+
+/**
+ * Build a JSONL error message with line/column context.
+ *
+ * JSONL requires exactly one self-contained JSON value per line. When a line is
+ * not valid JSON on its own, we keep the native parser message (it already
+ * reports the column, e.g. "... at position 3 (line 1 column 4)") and append a
+ * hint pointing at the most common cause: a pretty-printed / multi-line object
+ * that spans several physical lines.
+ */
+function formatJsonlError(parserMessage: string, lineNo: number, line: string): string {
+  const trimmed = line.trimStart();
+  const column = line.length - trimmed.length + 1;
+  let hint = ` (line ${lineNo} column ${column})`;
+  // A leading '{' or '[' with no matching closer on the same line is the
+  // signature of a pretty-printed object/array split across lines.
+  if (/^[[{]/.test(trimmed) && !isClosedOnSameLine(trimmed)) {
+    hint +=
+      '. JSONL expects one complete JSON value per line — a pretty-printed ' +
+      'or multi-line JSON object must be collapsed onto a single line.';
+  }
+  // Trailing content after a complete value is also invalid in strict JSONL.
+  if (/non-whitespace character after JSON/.test(parserMessage)) {
+    hint += '. A line must contain exactly one JSON value — remove any extra content after it.';
+  }
+  return `Invalid JSONL${hint} ${parserMessage}`;
+}
+
+/** Heuristic: the line has a balanced brace/bracket depth (ignoring strings). */
+function isClosedOnSameLine(line: string): boolean {
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+  for (const char of line) {
+    if (inString) {
+      if (escaped) {
+        escaped = false;
+      } else if (char === '\\') {
+        escaped = true;
+      } else if (char === '"') {
+        inString = false;
+      }
+      continue;
+    }
+    if (char === '"') {
+      inString = true;
+    } else if (char === '{' || char === '[') {
+      depth += 1;
+    } else if (char === '}' || char === ']') {
+      depth -= 1;
+    }
+  }
+  return depth <= 0;
 }
 
 /** Tolerant YAML parser: supports block mappings, block sequences, and flow scalars. */
