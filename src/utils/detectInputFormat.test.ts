@@ -76,38 +76,33 @@ not json
     });
   });
 
-  describe('CSV / TSV', () => {
-    it('detects CSV with a header and consistent columns', () => {
+  describe('CSV / TSV (no longer supported formats)', () => {
+    it('does NOT detect comma-delimited tables as a diffable format', () => {
       const input = `name,age,city
 Alice,30,NY
 Bob,25,LA`;
-      expect(detectInputFormat(input)).toEqual({ format: 'csv', confident: true });
+      expect(detectInputFormat(input)).toEqual({ format: 'plaintext', confident: false });
     });
 
-    it('detects CSV with quoted fields containing commas', () => {
-      const input = `name,note
-"Smith, John","hello, world"
-"Doe, Jane",plain`;
-      expect(detectInputFormat(input)).toEqual({ format: 'csv', confident: true });
-    });
-
-    it('detects a single-line CSV as plaintext (too weak a signal)', () => {
-      // One row with a delimiter is ambiguous; we require >=2 rows.
-      expect(detectInputFormat('a,b,c').format).not.toBe('csv');
-    });
-
-    it('detects TSV (tab-delimited) consistently', () => {
+    it('does NOT detect tab-delimited tables as a diffable format', () => {
       const input = `name\tage\tcity
 Alice\t30\tNY
 Bob\t25\tLA`;
-      expect(detectInputFormat(input)).toEqual({ format: 'tsv', confident: true });
+      expect(detectInputFormat(input)).toEqual({ format: 'plaintext', confident: false });
     });
 
-    it('does NOT detect CSV when column counts are inconsistent', () => {
+    it('falls back to plaintext for single-line comma-separated values', () => {
+      // One row with a delimiter is ambiguous; with CSV/TSV dropped it is not detected.
+      expect(detectInputFormat('a,b,c').format).toBe('plaintext');
+    });
+
+    it('does NOT detect inconsistent-column comma text as a supported format', () => {
       const input = `a,b,c
 1,2
 3,4,5,6`;
-      expect(detectInputFormat(input).format).not.toBe('csv');
+      expect(detectInputFormat(input).format).not.toBe('json');
+      expect(detectInputFormat(input).format).not.toBe('jsonl');
+      expect(detectInputFormat(input).format).not.toBe('yaml');
     });
   });
 
