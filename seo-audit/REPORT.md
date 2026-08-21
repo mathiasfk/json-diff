@@ -44,7 +44,7 @@
 | `https://smartjsondiff.com/#/faq` (FAQ view) | 12 | 7 | 5 |
 | **Total** | **24** | **17** | **7** |
 
-Full pass/fail matrix: **`seo-audit/audit.csv`** (machine-readable).
+Full pass/fail matrix: **`seo-audit/audit-report.txt`** (machine-readable).
 Raw structured data: **`seo-audit/audit.json`**.
 Bundle sizing used for CWV: **`seo-audit/bundle-report.json`**.
 
@@ -140,7 +140,7 @@ move SEO**; the rest are quick wins once prerendering is in place.
 pnpm install
 pnpm build                       # produces dist/ with real bundle sizes
 node seo-audit/gen-bundle-report.js   # dist/ -> seo-audit/bundle-report.json
-node seo-audit/audit.js          # live fetch + checks -> seo-audit/audit.csv
+node seo-audit/audit.js          # live fetch + checks -> seo-audit/audit-report.txt
 ```
 
 Dependencies: none beyond Node (uses global `fetch`). The audit fetches the

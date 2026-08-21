@@ -175,7 +175,7 @@ export function detectInputFormat(text: string): DetectResult {
   }
 
   // YAML: block mapping (lines of "key: value") or block sequence ("- item").
-  // Note: delimiter-separated table formats (CSV/TSV) were intentionally
+  // Note: delimiter-separated table formats were intentionally
   // dropped as supported formats, so no table sniffing is performed here.
   if (/^(?:[ \t]*[\w.$-]+[ \t]*:[ \t]*|\s*-[ \t]+)/.test(trimmed)) {
     try {
@@ -512,7 +512,7 @@ function serializeJsonl(value: unknown): string {
  * Formats whose normalized diff result can be re-serialized back into the same
  * dialect the user supplied. These preserve object/array structure, so the
  * diff viewer can show (e.g.) YAML instead of canonical JSON. Table formats
- * (CSV/TSV) are intentionally excluded — their shapes don't map cleanly onto a
+ * are intentionally excluded — their shapes don't map cleanly onto a
  * semantic normalized object diff.
  */
 export const SAME_FORMAT_DIFF_FORMATS: readonly Format[] = ['json', 'jsonl', 'yaml'] as const;

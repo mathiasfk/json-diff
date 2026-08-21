@@ -11,8 +11,7 @@ interface FormatSelectorProps {
 
 /**
  * Dropdown that lets the user pick the serialization format for one side of the
- * diff input: JSON, JSONL or YAML. JSON is the default format. CSV and TSV are
- * intentionally excluded from the supported formats.
+ * diff input: JSON, JSONL or YAML. JSON is the default format.
  */
 export function FormatSelector({ value, onChange, label, id }: FormatSelectorProps) {
   return (

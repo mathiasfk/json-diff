@@ -76,7 +76,7 @@ not json
     });
   });
 
-  describe('CSV / TSV (no longer supported formats)', () => {
+  describe('Delimiter-separated tables (not a supported format)', () => {
     it('does NOT detect comma-delimited tables as a diffable format', () => {
       const input = `name,age,city
 Alice,30,NY
@@ -92,7 +92,7 @@ Bob\t25\tLA`;
     });
 
     it('falls back to plaintext for single-line comma-separated values', () => {
-      // One row with a delimiter is ambiguous; with CSV/TSV dropped it is not detected.
+      // One row with a delimiter is ambiguous; with the table formats dropped it is not detected.
       expect(detectInputFormat('a,b,c').format).toBe('plaintext');
     });
 
@@ -127,7 +127,7 @@ There is no mapping list or table here at all.`;
       expect(detectInputFormat(input)).toEqual({ format: 'plaintext', confident: false });
     });
 
-    it('does NOT detect YAML for comma-separated prose (CSV takes precedence)', () => {
+    it('does NOT detect YAML for comma-separated prose (a table takes precedence)', () => {
       const input = `Monday we shipped the feature.
 Tuesday we fixed the regression.`;
       expect(detectInputFormat(input).format).not.toBe('yaml');
