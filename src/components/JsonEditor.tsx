@@ -4,7 +4,7 @@ import type * as monaco from 'monaco-editor';
 import { gtag } from '../services/analytics';
 import { FormatSelector } from './FormatSelector';
 import type { Format } from '../utils/formatSelector';
-import { detectFormatFromFilename } from '../utils/formatSelector';
+import { detectFormatFromFilename, detectInputFormat } from '../utils/formatSelector';
 
 /** Map a diff-input format to a Monaco editor language id (when supported). */
 const MONACO_LANGUAGE: Record<Format, string> = {
@@ -40,9 +40,37 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
   const monacoRef = useRef<typeof monaco | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
+  // Keep the latest onFormatChange in a ref so the Monaco paste listener
+  // (registered once on mount) always calls the current callback.
+  const onFormatChangeRef = useRef(onFormatChange);
+  onFormatChangeRef.current = onFormatChange;
+
+  /** When the user pastes recognizable content, auto-select the matching format. */
+  const detectAndApplyFormat = (pasted: string) => {
+    if (!pasted || !pasted.trim()) return;
+    const { format } = detectInputFormat(pasted);
+    // Only the 5 diff-able formats are selectable; xml/plaintext stay JSON.
+    if (format === 'json' || format === 'jsonl' || format === 'yaml' ||
+        format === 'csv' || format === 'tsv') {
+      onFormatChangeRef.current(format);
+      gtag('event', 'paste_auto_detect', {
+        side: side || 'unknown',
+        detected_format: format,
+      });
+    }
+  };
+
   const handleEditorDidMount = (editor: monaco.editor.IStandaloneCodeEditor, monacoInstance: typeof monaco) => {
     editorRef.current = editor;
     monacoRef.current = monacoInstance;
+
+    // Auto-detect format from pasted content and switch the selector.
+    editor.onDidPaste((e: { range: monaco.IRange }) => {
+      const model = editor.getModel();
+      if (!model) return;
+      const pasted = model.getValueInRange(e.range);
+      detectAndApplyFormat(pasted);
+    });
 
     // Configure validation only for JSON-family inputs; other formats use a
     // plain text editor without schema validation.
