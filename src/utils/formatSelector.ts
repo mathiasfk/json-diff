@@ -255,7 +255,7 @@ function formatJsonlError(parserMessage: string, lineNo: number, line: string): 
   let hint = ` (line ${lineNo} column ${column})`;
   // A leading '{' or '[' with no matching closer on the same line is the
   // signature of a pretty-printed object/array split across lines.
-  if (/^[\[{]/.test(trimmed) && !isClosedOnSameLine(trimmed)) {
+  if (/^[[{]/.test(trimmed) && !isClosedOnSameLine(trimmed)) {
     hint +=
       '. JSONL expects one complete JSON value per line — a pretty-printed ' +
       'or multi-line JSON object must be collapsed onto a single line.';
