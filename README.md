@@ -11,8 +11,9 @@ A web application for comparing JSON objects semantically with intelligent array
 - **Visual Diff**: Git-style diff visualization with additions/deletions highlighted using Monaco Editor
 - **Monaco Editor Integration**: Professional code editor (same as VSCode) with syntax highlighting and consistent visual experience
 - **Property Sorting**: Automatically sorts object properties alphabetically
-- **Format JSON**: Built-in JSON formatter for each input with format-on-paste and format-on-type
-- **Responsive Design**: Works on desktop and mobile devices
+- **Multi-format support**: Compare JSON, JSONL and YAML with format selectors on each side
+- **Local-only processing**: All comparison runs in your browser via jsondiffpatch; no data is sent to a server
+- **Single-page app**: Everything is one page — paste, compare, view diff; no navigation needed
 
 ## Tech Stack
 
@@ -26,8 +27,7 @@ A web application for comparing JSON objects semantically with intelligent array
 ## Deployment
 
 - CI/CD: GitHub Actions
-- Deployment: GitHub Pages
-- Note: Vercel is NOT used for this project.
+- Deployment: GitHub Pages via GitHub Actions (peaceiris/actions-gh-pages)
 
 
 ## Installation
@@ -52,10 +52,10 @@ pnpm build
 
 ## Usage
 
-1. Paste your JSON objects into the left and right Monaco editors (with syntax highlighting)
-2. The editor automatically validates JSON syntax and highlights errors in real-time
-3. Optionally use the "Format Left" or "Format Right" buttons to prettify your JSON
-4. Click "Compare JSONs" to see the semantic diff in side-by-side view
+1. Select the format for each side (JSON, JSONL, or YAML) using the format selector, then paste or drag your data into the editors
+2. The editor automatically validates syntax and highlights errors in real-time
+3. Optionally use the "Format Left" or "Format Right" buttons to prettify your input
+4. Click "Compare" to see the semantic diff in side-by-side view
 5. The diff view uses Monaco Editor's diff mode with visual highlighting of additions (green) and deletions (red)
 6. Click "Back to Edit" to return to the editing mode
 
