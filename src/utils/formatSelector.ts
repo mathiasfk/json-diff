@@ -1,5 +1,5 @@
 /**
- * Format selector for multi-format diff input (JSON, JSONL, YAML, CSV, TSV).
+ * Format selector for multi-format diff input (JSON, JSONL, YAML).
  *
  * Responsibilities:
  *  - Enumerate the supported serialization formats.
@@ -10,14 +10,10 @@
  *  - Sniff a format from a filename extension.
  *
  * Design notes / constraints (per project feasibility decisions):
- *  - Zero dependencies: CSV/TSV parsing implements a minimal RFC 4180 reader;
- *    YAML is a tolerant indentation-based parser. JSON/JSONL use the platform.
- *  - Strings-only cell values: table formats (CSV/TSV) never guess numbers,
- *    booleans, or nulls — every cell stays a string, matching the diff tool's
- *    "compare text" use case and avoiding silent data coercion.
+ *  - Zero dependencies: YAML is a tolerant indentation-based parser.
+ *    JSON/JSONL use the platform.
  *  - UTF-8 in-memory: everything is handled as in-memory strings.
- *  - CSV uses comma as the default delimiter; TSV uses a tab. Both accept a
- *    custom `delimiter` option. YAML honors a `flowStyle` option for output.
+ *  - YAML honors a `flowStyle` option for output.
  *
  * The diff engine may later attach non-enumerable `__match_*` annotations to
  * parsed values. This module never sets or strips them; it only produces clean
@@ -25,26 +21,20 @@
  * serialization, so downstream annotations are preserved by callers.
  */
 
-export type Format = 'json' | 'jsonl' | 'yaml' | 'csv' | 'tsv';
+export type Format = 'json' | 'jsonl' | 'yaml';
 
 export const SUPPORTED_FORMATS: readonly Format[] = [
   'json',
   'jsonl',
   'yaml',
-  'csv',
-  'tsv',
 ] as const;
 
 export const DEFAULT_FORMAT: Format = 'json';
 
 /** Options accepted by parse/serialize, per-format. All optional. */
 export interface FormatOptions {
-  /** CSV/TSV only: field delimiter. Defaults to ',' (csv) or '\t' (tsv). */
-  delimiter?: string;
   /** YAML only: emit flow style (`{a: 1}`) instead of block style. */
   yamlFlowStyle?: boolean;
-  /** CSV/TSV only: treat the first row as a header and return records keyed by header. */
-  firstRowIsHeader?: boolean; // (reserved for callers; parser exposes header via TableModel)
 }
 
 export class FormatError extends Error {
@@ -58,12 +48,6 @@ export class FormatError extends Error {
     this.format = format;
     this.line = line;
   }
-}
-
-/** A parsed table (CSV/TSV): header row + string-only record rows. */
-export interface TableModel {
-  header: string[];
-  rows: string[][];
 }
 
 /** Normalize a possibly-uppercase or alias string into a known Format, defaulting to JSON. */
@@ -90,14 +74,144 @@ export function detectFormatFromFilename(filename: string): Format {
     case 'yaml':
     case 'yml':
       return 'yaml';
-    case 'csv':
-      return 'csv';
-    case 'tsv':
-    case 'tab':
-      return 'tsv';
     default:
       return DEFAULT_FORMAT;
   }
+}
+
+// ---------------------------------------------------------------------------
+// Content-based format detection (paste / text sniffing)
+// ---------------------------------------------------------------------------
+
+/**
+ * Inspect raw text and guess which supported format it most likely is.
+ *
+ * Detection order matters: JSONL and CSV/TSV only "smell" right when every
+ * data line parses, so JSON is attempted first (the strict, cheap check),
+ * then JSONL (one JSON value per line), then XML, then the delimiter-based
+ * table formats (CSV / TSV), then YAML. Anything that matches nothing is
+ * reported as plain text.
+ *
+ * Note: the tool only diffs the 5 serialization formats, so `xml`/`plaintext`
+ * are returned as `'json'` (the default) by callers that need a `Format`. The
+ * dedicated `detectInputFormat` return type (`DetectedFormat`) is broader so
+ * the UI can surface "this isn't a supported diff format" without guessing.
+ */
+export type DetectedFormat = Format | 'xml' | 'plaintext';
+
+/** Result of {@link detectInputFormat}: the guessed format plus a confidence flag. */
+export interface DetectResult {
+  format: DetectedFormat;
+  /** `true` when the text parsed cleanly as the returned format. */
+  confident: boolean;
+}
+
+/** Split text into non-empty lines, tolerating CRLF and trailing newlines. */
+function nonEmptyLines(text: string): string[] {
+  return text.split(/\r?\n/).filter((line) => line.trim() !== '');
+}
+
+/** Heuristic: does the line look like a single complete JSON value? */
+function isJsonLine(line: string): boolean {
+  const trimmed = line.trim();
+  if (trimmed.length === 0) return false;
+  const first = trimmed[0];
+  const last = trimmed[trimmed.length - 1];
+  const opens = first === '{' || first === '[';
+  const closes = last === '}' || last === ']';
+  // A bare quoted string / number is valid JSON too, but for sniffing we
+  // restrict to container/structural values to avoid false positives.
+  if (opens && closes) return true;
+  return false;
+}
+
+function looksLikeCsvOrTsv(text: string, delimiter: string): boolean {
+  // splitCsvRows returns an array of rows (each a field array). Drop any
+  // fully-blank rows produced by trailing newlines before inspecting.
+  const rows = splitCsvRows(text, delimiter).filter(
+    (row) => !(row.length === 1 && row[0] === ''),
+  );
+  // Require at least two rows with the same column count and ≥2 columns each;
+  // a single "a,b" row is too weak a signal (could be arbitrary comma prose).
+  if (rows.length < 2) return false;
+  let columnCount = -1;
+  for (const row of rows) {
+    if (row.length < 2) return false;
+    if (columnCount === -1) columnCount = row.length;
+    else if (row.length !== columnCount) return false;
+  }
+  return true;
+}
+
+/** Detect the format of pasted/raw text. Falls back to `'plaintext'`. */
+export function detectInputFormat(text: string): DetectResult {
+  if (typeof text !== 'string') {
+    return { format: 'plaintext', confident: false };
+  }
+  const trimmed = text.trim();
+  if (trimmed === '') {
+    return { format: 'plaintext', confident: false };
+  }
+
+  // JSON: a single JSON document (object/array/value).
+  if (isJsonLine(trimmed)) {
+    try {
+      JSON.parse(trimmed);
+      return { format: 'json', confident: true };
+    } catch {
+      // Not a single JSON value — fall through to line-based checks.
+    }
+  }
+
+  // JSONL: every non-empty line is a JSON value.
+  const lines = nonEmptyLines(text);
+  if (lines.length >= 1) {
+    let allJson = true;
+    for (const line of lines) {
+      if (!isJsonLine(line)) {
+        allJson = false;
+        break;
+      }
+      try {
+        JSON.parse(line);
+      } catch {
+        allJson = false;
+        break;
+      }
+    }
+    if (allJson) {
+      return { format: 'jsonl', confident: true };
+    }
+  }
+
+  // XML: a document or fragment wrapped in tags (also tolerates a leading
+  // `<?xml ...?>` declaration). Require a matching closing tag for confidence.
+  if (
+    /^\s*<\?xml\b/.test(trimmed) ||
+    (/^\s*<([a-zA-Z_][\w.-]*)(\s[^>]*)?>/.test(trimmed) && trimmed.includes('</'))
+  ) {
+    return { format: 'xml', confident: true };
+  }
+
+  // CSV / TSV: delimiter-separated tables with consistent columns.
+  if (looksLikeCsvOrTsv(text, ',')) {
+    return { format: 'csv', confident: true };
+  }
+  if (looksLikeCsvOrTsv(text, '\t')) {
+    return { format: 'tsv', confident: true };
+  }
+
+  // YAML: block mapping (lines of "key: value") or block sequence ("- item").
+  if (/^(?:[ \t]*[\w.$-]+[ \t]*:[ \t]*|\s*-[ \t]+)/.test(trimmed)) {
+    try {
+      parseYaml(text);
+      return { format: 'yaml', confident: true };
+    } catch {
+      // Parsing failed; treat as plain text below.
+    }
+  }
+
+  return { format: 'plaintext', confident: false };
 }
 
 // ---------------------------------------------------------------------------
@@ -105,7 +219,7 @@ export function detectFormatFromFilename(filename: string): Format {
 // ---------------------------------------------------------------------------
 
 /** Parse text of the given format into a JSON-compatible value. */
-export function parse(text: string, format: Format = DEFAULT_FORMAT, options: FormatOptions = {}): unknown {
+export function parse(text: string, format: Format = DEFAULT_FORMAT): unknown {
   const fmt = normalizeFormat(format);
   switch (fmt) {
     case 'json':
@@ -114,10 +228,6 @@ export function parse(text: string, format: Format = DEFAULT_FORMAT, options: Fo
       return parseJsonl(text);
     case 'yaml':
       return parseYaml(text);
-    case 'csv':
-      return parseCsv(text, options);
-    case 'tsv':
-      return parseCsv(text, { ...options, delimiter: options.delimiter ?? '\t' });
   }
 }
 
@@ -149,90 +259,6 @@ function parseJsonl(text: string): unknown[] {
     }
   }
   return records;
-}
-
-/** RFC 4180-style CSV/TSV reader: handles quotes, escaped quotes, embedded delimiters and newlines. */
-function parseCsv(text: string, options: FormatOptions = {}): TableModel {
-  const delimiter = options.delimiter ?? ',';
-  const rows = splitCsvRows(text, delimiter);
-  const header = rows.length > 0 ? rows[0] : [];
-  const body = rows.slice(1);
-  return { header, rows: body };
-}
-
-/** Split raw CSV/TSV text into rows of fields, honoring quoting rules. */
-function splitCsvRows(text: string, delimiter: string): string[][] {
-  const rows: string[][] = [];
-  let field = '';
-  let row: string[] = [];
-  let inQuotes = false;
-  let i = 0;
-  const len = text.length;
-
-  while (i < len) {
-    const char = text[i];
-
-    if (inQuotes) {
-      if (char === '"') {
-        if (text[i + 1] === '"') {
-          field += '"';
-          i += 2;
-          continue;
-        }
-        inQuotes = false;
-        i += 1;
-        continue;
-      }
-      field += char;
-      i += 1;
-      continue;
-    }
-
-    if (char === '"') {
-      inQuotes = true;
-      i += 1;
-      continue;
-    }
-
-    if (char === delimiter) {
-      row.push(field);
-      field = '';
-      i += 1;
-      continue;
-    }
-
-    if (char === '\r') {
-      // Handle CRLF: only treat as row end, skip the following \n.
-      row.push(field);
-      rows.push(row);
-      field = '';
-      row = [];
-      i += 1;
-      if (text[i] === '\n') i += 1;
-      continue;
-    }
-
-    if (char === '\n') {
-      row.push(field);
-      rows.push(row);
-      field = '';
-      row = [];
-      i += 1;
-      continue;
-    }
-
-    field += char;
-    i += 1;
-  }
-
-  // Flush trailing field/row (file not ending in newline).
-  row.push(field);
-  // Avoid pushing an empty phantom row when the text ended cleanly on a newline.
-  if (!(field === '' && row.length === 1 && rows.length > 0)) {
-    rows.push(row);
-  }
-
-  return rows;
 }
 
 /** Tolerant YAML parser: supports block mappings, block sequences, and flow scalars. */
@@ -497,10 +523,6 @@ export function serialize(value: unknown, format: Format = DEFAULT_FORMAT, optio
       return serializeJsonl(value);
     case 'yaml':
       return serializeYaml(value, options);
-    case 'csv':
-      return serializeCsv(value, options);
-    case 'tsv':
-      return serializeCsv(value, { ...options, delimiter: options.delimiter ?? '\t' });
   }
 }
 
@@ -541,52 +563,6 @@ export function formatSameFormatDiff(
     left: serialize(left, format, options),
     right: serialize(right, format, options),
   };
-}
-
-function serializeCsv(value: unknown, options: FormatOptions = {}): string {
-  const delimiter = options.delimiter ?? ',';
-  const model = valueToTable(value);
-  const allRows = model.header.length > 0 ? [model.header, ...model.rows] : model.rows;
-  return allRows.map((row) => row.map((cell) => quoteCsvCell(String(cell ?? ''), delimiter)).join(delimiter)).join('\n');
-}
-
-/** Render a JSON-compatible value as a header + string rows. */
-function valueToTable(value: unknown): TableModel {
-  if (Array.isArray(value)) {
-    if (value.length === 0) return { header: [], rows: [] };
-    const first = value[0];
-    if (isPlainObject(first)) {
-      const header = Object.keys(first as Record<string, unknown>);
-      const rows = (value as Record<string, unknown>[]).map((obj) =>
-        header.map((h) => stringifyCell((obj as Record<string, unknown>)[h])),
-      );
-      return { header, rows };
-    }
-    // Array of primitives
-    return { header: [], rows: value.map((v) => [stringifyCell(v)]) };
-  }
-  if (isPlainObject(value)) {
-    const obj = value as Record<string, unknown>;
-    const header = Object.keys(obj);
-    const rows = [header.map((h) => stringifyCell(obj[h]))];
-    return { header, rows };
-  }
-  // Scalar
-  return { header: [], rows: [[stringifyCell(value)]] };
-}
-
-function stringifyCell(value: unknown): string {
-  if (value === null || value === undefined) return '';
-  if (typeof value === 'object') return JSON.stringify(value);
-  return String(value);
-}
-
-function quoteCsvCell(cell: string, delimiter: string): string {
-  const needsQuote = cell.includes('"') || cell.includes('\n') || cell.includes('\r') || cell.includes(delimiter);
-  if (needsQuote) {
-    return '"' + cell.replace(/"/g, '""') + '"';
-  }
-  return cell;
 }
 
 /** Serialize a JSON-compatible value to YAML (block or flow style). */
