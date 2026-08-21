@@ -533,6 +533,38 @@ function serializeJsonl(value: unknown): string {
   return JSON.stringify(value) + '\n';
 }
 
+/**
+ * Formats whose normalized diff result can be re-serialized back into the same
+ * dialect the user supplied. These preserve object/array structure, so the
+ * diff viewer can show (e.g.) YAML instead of canonical JSON. Table formats
+ * (CSV/TSV) are intentionally excluded — their shapes don't map cleanly onto a
+ * semantic normalized object diff.
+ */
+export const SAME_FORMAT_DIFF_FORMATS: readonly Format[] = ['json', 'jsonl', 'yaml'] as const;
+
+/**
+ * When both inputs use the same supported format, re-serialize the normalized
+ * diff-result objects back into that format so the diff viewer shows the
+ * original dialect (e.g. YAML) rather than canonical JSON.
+ *
+ * Returns `null` when `format` is not a same-format-diff format, so callers can
+ * fall back to JSON display.
+ */
+export function formatSameFormatDiff(
+  left: unknown,
+  right: unknown,
+  format: Format,
+  options: FormatOptions = {},
+): { left: string; right: string } | null {
+  if (!(SAME_FORMAT_DIFF_FORMATS as readonly string[]).includes(format)) {
+    return null;
+  }
+  return {
+    left: serialize(left, format, options),
+    right: serialize(right, format, options),
+  };
+}
+
 /** Serialize a JSON-compatible value to YAML (block or flow style). */
 function serializeYaml(value: unknown, options: FormatOptions = {}): string {
   const flow = options.yamlFlowStyle ?? false;
