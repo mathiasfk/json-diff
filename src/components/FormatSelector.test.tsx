@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { FormatSelector } from './FormatSelector';
 
-// Formats the UI selector is expected to expose (CSV/TSV intentionally excluded).
+// Formats the UI selector is expected to expose: JSON, JSONL and YAML.
 const EXPECTED_UI_FORMATS = ['json', 'jsonl', 'yaml'] as const;
 
 describe('FormatSelector', () => {
@@ -16,14 +16,12 @@ describe('FormatSelector', () => {
     }
   });
 
-  it('does NOT render CSV or TSV options', () => {
+  it('renders exactly the supported UI formats', () => {
     const markup = renderToStaticMarkup(
       <FormatSelector value="json" onChange={() => {}} />,
     );
-    expect(markup).not.toContain('value="csv"');
-    expect(markup).not.toContain('value="tsv"');
-    expect(markup).not.toContain('>CSV</option>');
-    expect(markup).not.toContain('>TSV</option>');
+    const optionCount = (markup.match(/<option/g) || []).length;
+    expect(optionCount).toBe(EXPECTED_UI_FORMATS.length);
   });
 
   it('marks the selected format as the default option', () => {

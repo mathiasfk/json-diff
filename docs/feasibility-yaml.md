@@ -239,4 +239,4 @@ handling strategy. Reuse of `semanticDiff` / `jsonNormalizer` /
 `alignArraysForDiff` is near-total.
 
 See `docs/feasibility-content-comparison.md` for the consolidated
-go/no-go across JSONL, YAML, CSV, TSV.
+go/no-go across JSONL and YAML.

@@ -73,7 +73,7 @@ semanticDiff(left, right)
 - **Everything downstream of `semanticDiff` operates on already-parsed `any`
   objects.** There is no awareness of the source text format inside the
   algorithm. This is the single most valuable fact for adding new formats:
-  a new format (JSONL/YAML/CSV/TSV) only needs a parser that converts its text
+  a new format (JSONL/YAML) only needs a parser that converts its text
   into the same `any` object/tree shape, and 100% of the existing algorithm is
   reused unchanged.
 
@@ -114,7 +114,7 @@ sorts properties, sorts primitives/objects by the same derived key. Used by
 
 | Layer | What to change | Effort | Notes |
 |-------|---------------|--------|-------|
-| **Format → object** | Add a parser producing `any`; call it in `validateAndParse` (or replace `JSON.parse`). | Low for JSONL/YAML, Med for CSV/TSV | This is the *only* mandatory change to reuse the whole engine. No algorithm edits needed. |
+| **Format → object** | Add a parser producing `any`; call it in `validateAndParse` (or replace `JSON.parse`). | Low for JSONL/YAML | This is the *only* mandatory change to reuse the whole engine. No algorithm edits needed. |
 | **Object → object (pre-processing)** | `normalizeForDiff` / `alignArraysForDiff` | Already generic | Already content-type agnostic (operates on `any`). No change expected. |
 | **Array similarity** | `matchArraysMaxSimilarity` options (`weights`, `threshold`) | Low | Already configurable per-call; no structural change needed. |
 | **Diff core** | `createSemanticDiffer` jsondiffpatch options | Low | Already a single factory; easy to parametrize. |
@@ -139,7 +139,7 @@ and where generalization would be required:
 
 2. **Scalar typing assumptions in `arraySimilarityMatcher.ts`:**
    - `fieldSimilarity` branches on `typeof` (`number | boolean | string |
-     object`). Fine for JSON/YAML. For CSV/TSV every value is a *string*, so the
+     object`). Fine for JSON/YAML. For table formats every value is a *string*, so the
      matcher would treat all values as strings (Levenshtein ratio) unless a
      type-inference/coercion step is added during parsing. JSONL/YAML preserve
      real types and need nothing.
@@ -150,22 +150,22 @@ and where generalization would be required:
 3. **Non-enumerable annotation transport relies on `JSON.parse(JSON.stringify)`
    deep-clones** (`deepClone`, `sortObjectProperties`). Any value that does not
    survive a JSON round-trip (e.g. undefined-in-arrays, cycles, `Date`) is lost.
-   YAML anchors/aliases and CSV typed columns are the risk areas — resolvable in
+   YAML anchors/aliases are the risk areas — resolvable in
    the parser (resolve aliases, coerce columns) before reaching the engine.
 
 4. **`findUniqueKeyCommonToBoth` / array alignment assume object arrays with
    comparable string-coercible keys.** Works for JSON/YAML object arrays and for
-   CSV/TSV *once rows are modeled as objects* (header → keys). No change needed
+   table formats *once rows are modeled as objects* (header → keys). No change needed
    if the parser emits row-objects.
 
 5. **No streaming / chunking anywhere.** The whole document is parsed and held in
    memory and passed to `jsondiffpatch.diff` (Myers, in-memory). Large JSONL /
-   CSV files would need either (a) whole-doc-in-memory (simplest, reuse as-is)
+   table-format files would need either (a) whole-doc-in-memory (simplest, reuse as-is)
    or (b) a chunked/line-based comparison mode (new code). For feasibility, the
    whole-doc approach is the natural first step and reuses everything.
 
 6. **`formatJSON` output is JSON-shaped pretty print.** Per-format textual
-   rendering (e.g. re-emitting CSV diff as CSV) would be a new, optional layer.
+   rendering (e.g. re-emitting a table diff as a table) would be a new, optional layer.
 
 ### Dead / orphaned code (does NOT need generalization, but worth noting)
 `src/utils/jsonNormalizer.ts` exports `detectArrayMatchField`,
@@ -184,7 +184,7 @@ build on `arraySimilarityMatcher.ts` + `semanticDiff.ts`, not on
 - The algorithm is a **format-agnostic object comparator**; the only real
   extension point for new content types is the **parser at `validateAndParse`**.
 - JSONL and YAML map almost perfectly (they already produce JSON-shaped data);
-  CSV/TSV need a row→object modeling decision but can reuse the exact same
+  table formats need a row→object modeling decision but can reuse the exact same
   pipeline once parsed.
 - The internal `__match_strategy/__match_field/__match_key` annotation contract
   is the linchpin and should be preserved by any parser/normalizer changes.

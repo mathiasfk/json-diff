@@ -13,7 +13,7 @@
  *    single indexable URL + the FAQ view. This caveat is stated up front.
  *
  * Runs the 11 required checks on the live homepage + the FAQ view, and emits
- * seo-audit/audit.csv (pass/fail matrix) + seo-audit/audit.json.
+ * seo-audit/audit-report.txt (pass/fail matrix) + seo-audit/audit.json.
  * Dependency-free (parses the server-rendered index.html with regex; the SPA
  * <head> is static HTML). Core Web Vitals are approximated from the real
  * production build bundle sizes in seo-audit/bundle-report.json.
@@ -215,18 +215,18 @@ async function main() {
 
   const outDir = path.join(process.cwd(), 'seo-audit');
   await fs.mkdir(outDir, { recursive: true });
-  const csv = [
+  const rowsOut = [
     'url,page,check,status,detail,value',
     ...rows.map((r) => `${r.url},${r.page},"${r.check}",${r.status},"${String(r.detail).replace(/"/g, '""')}","${String(r.value).replace(/"/g, '""')}"`),
   ].join('\n');
-  await fs.writeFile(path.join(outDir, 'audit.csv'), csv);
+  await fs.writeFile(path.join(outDir, 'audit-report.txt'), rowsOut);
   await fs.writeFile(path.join(outDir, 'audit.json'), JSON.stringify({ home, faq, bundle, rows }, null, 2));
 
   const homeFails = rows.filter((r) => r.page === 'home' && r.status === 'FAIL').length;
   const faqFails = rows.filter((r) => r.page === 'faq' && r.status === 'FAIL').length;
   console.log(`Audited ${rows.length} checks across 2 surfaces (home + faq view).`);
   console.log(`Home FAILs: ${homeFails} | FAQ-view FAILs: ${faqFails}`);
-  console.log('Wrote seo-audit/audit.csv and seo-audit/audit.json');
+  console.log('Wrote seo-audit/audit-report.txt and seo-audit/audit.json');
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });

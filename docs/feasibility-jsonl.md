@@ -6,7 +6,7 @@ diff engine already treats "top-level array of JSON values" as its primary
 case, so most of the work is parsing + a thin UI mode, not new comparison logic.
 
 Scope of this document: the four points in task t_733b7e15. The consolidated
-doc (docs/feasibility-content-comparison.md) compares JSONL vs YAML/CSV/TSV.
+doc (docs/feasibility-content-comparison.md) compares JSONL and YAML.
 
 ## 1. Parsing strategy
 
