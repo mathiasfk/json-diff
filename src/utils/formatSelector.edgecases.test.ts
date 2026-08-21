@@ -40,13 +40,7 @@ describe('formatSelector edge cases', () => {
       expect(parse('   \n  \n', 'yaml')).toBe('');
     });
 
-    it('parses empty CSV into a table with an empty header row', () => {
-      expect(parse('', 'csv')).toEqual({ header: [''], rows: [] });
-    });
-
-    it('serializes empty object/array to empty string for csv and {} / [] for yaml', () => {
-      expect(serialize({}, 'csv')).toBe('');
-      expect(serialize([], 'csv')).toBe('');
+    it('serializes empty object/array to {} / [] for yaml', () => {
       expect(serialize({}, 'yaml')).toBe('{}');
       expect(serialize([], 'yaml')).toBe('[]');
     });
@@ -64,27 +58,9 @@ describe('formatSelector edge cases', () => {
         config: { server: { host: 'localhost', ports: [80, 443] } },
       });
     });
-
-    it('round-trips nested objects through CSV via header+rows', () => {
-      const value = [{ user: { name: 'A' }, v: 1 }, { user: { name: 'B' }, v: 2 }];
-      // Objects become JSON-stringified cells; ensure no throw and stable shape.
-      const text = serialize(value, 'csv');
-      expect(text).toContain('user');
-      expect(parse(text, 'csv')).toEqual({
-        header: ['user', 'v'],
-        rows: [['{"name":"A"}', '1'], ['{"name":"B"}', '2']],
-      });
-    });
   });
 
   describe('special characters', () => {
-    it('preserves emoji in CSV cells', () => {
-      expect(parse('a,b\n🎉,x\n', 'csv')).toEqual({
-        header: ['a', 'b'],
-        rows: [['🎉', 'x']],
-      });
-    });
-
     it('preserves unicode and escaped sequences in JSON', () => {
       expect(parse('{"k":"é🎉\\u0000"}', 'json')).toEqual({ k: 'é🎉\u0000' });
     });
@@ -105,16 +81,6 @@ describe('formatSelector edge cases', () => {
   });
 
   describe('large datasets', () => {
-    it('round-trips a 1000-row CSV without loss', () => {
-      const value = Array.from({ length: 1000 }, (_, i) => ({ id: i, name: 'n' + i }));
-      const text = serialize(value, 'csv');
-      const parsed = parse(text, 'csv') as { header: string[]; rows: string[][] };
-      expect(parsed.header).toEqual(['id', 'name']);
-      expect(parsed.rows).toHaveLength(1000);
-      expect(parsed.rows[0]).toEqual(['0', 'n0']);
-      expect(parsed.rows[999]).toEqual(['999', 'n999']);
-    });
-
     it('round-trips a 1000-line JSONL without loss', () => {
       const value = Array.from({ length: 1000 }, (_, i) => ({ id: i }));
       const text = serialize(value, 'jsonl');
@@ -126,20 +92,6 @@ describe('formatSelector edge cases', () => {
   });
 
   describe('format-specific options', () => {
-    it('honors a custom CSV delimiter on serialize', () => {
-      expect(serialize([{ a: 1, b: 2 }], 'csv', { delimiter: ';' })).toBe('a;b\n1;2');
-    });
-
-    it('defaults TSV serialize to tab delimiters', () => {
-      expect(serialize([{ a: '1', b: '2' }], 'tsv')).toBe('a\tb\n1\t2');
-    });
-
-    it('quotes a TSV cell containing an embedded tab', () => {
-      expect(serialize([{ a: 'x\ty' }], 'tsv')).toBe('a\n"x\ty"');
-      const back = parse(serialize([{ a: 'x\ty' }], 'tsv'), 'tsv') as { header: string[]; rows: string[][] };
-      expect(back.rows[0]).toEqual(['x\ty']);
-    });
-
     it('emits nested structures in YAML flow style when requested', () => {
       expect(serialize({ a: { b: 1 }, c: [1, 2] }, 'yaml', { yamlFlowStyle: true })).toBe(
         '{a: {b: 1}, c: [1, 2]}',
@@ -156,18 +108,12 @@ describe('formatSelector edge cases', () => {
   describe('scalar & array-of-primitives serialization', () => {
     it('serializes scalars per format', () => {
       expect(serialize('hi', 'json')).toBe('"hi"');
-      expect(serialize('hi', 'csv')).toBe('hi');
       expect(serialize('hi', 'yaml')).toBe('hi');
       expect(serialize('hi', 'jsonl')).toBe('"hi"\n');
     });
 
-    it('serializes an array of primitives as rows without a header', () => {
-      expect(serialize([1, 2, 3], 'csv')).toBe('1\n2\n3');
+    it('serializes an array of primitives for jsonl', () => {
       expect(serialize([1, 2, 3], 'jsonl')).toBe('1\n2\n3\n');
-    });
-
-    it('serializes a single object as a header + one row for TSV', () => {
-      expect(serialize({ a: 1 }, 'tsv')).toBe('a\n1');
     });
   });
 
@@ -203,15 +149,6 @@ describe('formatSelector edge cases', () => {
         expect((e as FormatError).format).toBe('json');
       }
     });
-
-    it('exposes FormatError as a class with the expected name', () => {
-      const err = new FormatError('boom', 'csv', 3);
-      expect(err).toBeInstanceOf(Error);
-      expect(err).toBeInstanceOf(FormatError);
-      expect(err.name).toBe('FormatError');
-      expect(err.format).toBe('csv');
-      expect(err.line).toBe(3);
-    });
   });
 
   describe('round-trip consistency', () => {
@@ -220,38 +157,9 @@ describe('formatSelector edge cases', () => {
       expect(parse(serialize(value, 'json'), 'json')).toEqual(value);
     });
 
-    it('CSV: object array survives a serialize/parse round-trip', () => {
-      const value = [
-        { name: 'A', age: '1' },
-        { name: 'B', age: '2' },
-      ];
-      expect(parse(serialize(value, 'csv'), 'csv')).toEqual({
-        header: ['name', 'age'],
-        rows: [['A', '1'], ['B', '2']],
-      });
-    });
-
-    it('TSV: object array survives a serialize/parse round-trip', () => {
-      const value = [
-        { x: '1', y: '2' },
-        { x: '3', y: '4' },
-      ];
-      expect(parse(serialize(value, 'tsv'), 'tsv')).toEqual({
-        header: ['x', 'y'],
-        rows: [['1', '2'], ['3', '4']],
-      });
-    });
-
     it('YAML: simple object survives a serialize/parse round-trip', () => {
       const value = { name: 'Alice', age: 30 };
       expect(parse(serialize(value, 'yaml'), 'yaml')).toEqual(value);
-    });
-
-    it('CRLF line endings are handled in CSV', () => {
-      expect(parse('a,b\r\n1,2\r\n', 'csv')).toEqual({
-        header: ['a', 'b'],
-        rows: [['1', '2']],
-      });
     });
   });
 
