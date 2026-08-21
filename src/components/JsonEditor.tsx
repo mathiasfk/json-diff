@@ -49,9 +49,8 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
   const detectAndApplyFormat = (pasted: string) => {
     if (!pasted || !pasted.trim()) return;
     const { format } = detectInputFormat(pasted);
-    // Only the 5 diff-able formats are selectable; xml/plaintext stay JSON.
-    if (format === 'json' || format === 'jsonl' || format === 'yaml' ||
-        format === 'csv' || format === 'tsv') {
+    // Only the 3 supported formats are selectable; xml/plaintext fall back to JSON.
+    if (format === 'json' || format === 'jsonl' || format === 'yaml') {
       onFormatChangeRef.current(format);
       gtag('event', 'paste_auto_detect', {
         side: side || 'unknown',
