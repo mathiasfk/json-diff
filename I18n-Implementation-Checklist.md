@@ -1,3 +1,22 @@
+## Summary of I18n-Analysis.md
+
+**Chosen i18n library:** The analysis recommends using `i18next` with `react-i18next` and `i18next-browser-languagedetector` for language detection and integration with React.
+
+**File structure:** Translation files are JSON per locale located in `/src/locales/`. The analysis suggests files like `pt-BR.json`, `en.json`, `es.json` (note: the implementation uses `pt.json` and `zh.json` for Portuguese and Chinese, but the analysis mentions pt-BR and zh could be similar).
+
+**Routing strategy:** The app uses `HashRouter` (React Router). For SEO, the analysis outlines challenges because content after `#` is not indexed by crawlers. Strategies considered:
+- Migrate to `BrowserRouter` with server-side redirects (GitHub Pages can serve `index.html` for any route via 404 fallback).
+- Or generate static builds per language and route (e.g., `/build/en/`, `/build/pt-BR/`, etc.) during the build process.
+
+**Constraints:** 
+- Must support automatic language detection via `navigator.language` (or `navigator.languages`) with fallback to `en`.
+- User override via a language selector in the UI, with persistence (e.g., `localStorage`).
+- Need to translate UI components: header, buttons, labels, tooltips, modals, FAQ, footer.
+- Meta tags (title, description, Open Graph) should be updated dynamically based on language and page.
+- Avoid duplicate content; use `hreflang` and canonical tags.
+- Performance: translation files are small; consider code-splitting or async loading if needed.
+
+---
 # I18n Implementation Checklist
 
 Based on the analysis in I18n-Analysis.md, the following steps are required to implement i18n support for English (en), Portuguese (pt), Chinese (zh), and Spanish (es).
