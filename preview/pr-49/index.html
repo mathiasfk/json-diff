@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script>self["MonacoEnvironment"] = (function (paths) {
+          return {
+            globalAPI: false,
+            getWorkerUrl : function (moduleId, label) {
+              var result =  paths[label];
+              if (/^((http:)|(https:)|(file:)|(\/\/))/.test(result)) {
+                var currentUrl = String(window.location);
+                var currentOrigin = currentUrl.substr(0, currentUrl.length - window.location.hash.length - window.location.search.length - window.location.pathname.length);
+                if (result.substring(0, currentOrigin.length) !== currentOrigin) {
+                  var js = '/*' + label + '*/importScripts("' + result + '");';
+                  var blob = new Blob([js], { type: 'application/javascript' });
+                  return URL.createObjectURL(blob);
+                }
+              }
+              return result;
+            }
+          };
+        })({
+  "json": "/preview/pr-49/monacoeditorwork/json.worker.bundle.js"
+});</script>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Primary Meta Tags -->
+    <title>Smart JSON Diff — Compare JSON, YAML, XML, and more</title>
+    <meta name="title" content="Smart JSON Diff — Compare JSON, YAML, XML, and more" />
+    <meta name="description" content="Smart JSON Diff is a free online tool to compare JSON, YAML and JSONL semantically. Intelligent array matching sorts keys and reorders items to surface only the real differences across formats." />
+    <meta name="keywords" content="JSON diff, YAML diff, JSONL diff, semantic diff, compare JSON, array matching, multi-format diff" />
+    <meta name="author" content="Smart JSON Diff" />
+    <meta name="robots" content="index, follow" />
+    <meta name="inLanguage" content="en" />
+
+    <!-- Resource hints for faster loading -->
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
+    <link rel="dns-prefetch" href="https://www.google-analytics.com">
+    <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
+    <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://smartjsondiff.com/" />
+
+    <!-- Security Meta Tags -->
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/preview/pr-49/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/preview/pr-49/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/preview/pr-49/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/preview/pr-49/apple-touch-icon.png" />
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/preview/pr-49/site.webmanifest" />
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="msapplication-TileColor" content="#ffffff" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://smartjsondiff.com/" />
+    <meta property="og:site_name" content="Smart JSON Diff" />
+    <meta property="og:title" content="Smart JSON Diff — Compare JSON, YAML, XML, and more" />
+    <meta property="og:description" content="Compare JSON, YAML and JSONL semantically with intelligent array matching. Free, runs entirely in your browser." />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="en" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://smartjsondiff.com/" />
+    <meta name="twitter:title" content="Smart JSON Diff — Compare JSON, YAML, XML, and more" />
+    <meta name="twitter:description" content="Compare JSON, YAML and JSONL semantically with intelligent array matching. Free, runs entirely in your browser." />
+    <meta name="twitter:image" content="https://smartjsondiff.com/og-image-1200x630.png" />
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Smart JSON Diff",
+      "description": "Compare JSON, YAML and JSONL semantically with intelligent array matching. Free, runs entirely in your browser and supports multiple input formats.",
+      "url": "https://smartjsondiff.com/",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any",
+      "inLanguage": "en",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "Semantic comparison of JSON, YAML and JSONL",
+        "Intelligent array matching",
+        "Git-style diff visualization",
+        "Monaco Editor integration",
+        "Multi-format input",
+        "Real-time validation",
+        "Drag and drop support"
+      ],
+      "screenshot": "https://smartjsondiff.com/og-image-1200x630.png",
+      "softwareVersion": "1.2",
+      "author": {
+        "@type": "Organization",
+        "name": "Smart JSON Diff"
+      }
+    }
+    </script>
+
+    <!-- Organization + WebSite JSON-LD (Q2: sitelinks / search-box rich results) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Smart JSON Diff",
+      "url": "https://smartjsondiff.com/",
+      "logo": "https://smartjsondiff.com/android-chrome-512x512.png",
+      "sameAs": []
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Smart JSON Diff",
+      "url": "https://smartjsondiff.com/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://smartjsondiff.com/#/?left={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <!-- Google AdSense (auto-ads) -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6364476119143776" crossorigin="anonymous"></script>
+    <script type="module" crossorigin src="/preview/pr-49/assets/index-CKgg8xGs.js"></script>
+    <link rel="modulepreload" crossorigin href="/preview/pr-49/assets/vendor-C8QmwnwZ.js">
+    <link rel="modulepreload" crossorigin href="/preview/pr-49/assets/react-vendor-B-oH5RFN.js">
+    <link rel="stylesheet" crossorigin href="/preview/pr-49/assets/index-nqxzBB8d.css">
+  </head>
+  <body>
+    <!-- Pre-hydration SEO shell (Q1): replaced by React on mount, so exactly one H1 remains.
+         Crawlers that do not execute JS still see a crawlable H1 + internal link. -->
+    <div id="root">
+      <h1>Smart JSON Diff</h1>
+      <p>Compare JSON objects semantically with smart array matching.</p>
+      <nav aria-label="Primary">
+        <a href="/#/faq">FAQ</a>
+      </nav>
+    </div>
+    <noscript>
+      <div style="padding:12px;max-width:720px;margin:16px auto;color:#e5e7eb;background:#111827;border:1px solid #374151;border-radius:8px">
+        Smart JSON Diff requires JavaScript.
+      </div>
+    </noscript>
+  </body>
+</html>
