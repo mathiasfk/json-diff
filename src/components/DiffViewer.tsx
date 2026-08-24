@@ -1,5 +1,6 @@
 import React from 'react';
 import { DiffEditor } from '@monaco-editor/react';
+import { useTranslation } from 'react-i18next';
 
 interface DiffViewerProps {
   oldValue: string;
@@ -16,21 +17,22 @@ export const DiffViewer: React.FC<DiffViewerProps> = ({
   onReset,
   hasDifferences,
 }) => {
+  const { t } = useTranslation();
   return (
-    <div className="h-full flex flex-col" role="region" aria-label="Comparison results">
+    <div className="h-full flex flex-col" role="region" aria-label={t('diffViewer.resultsRegion')}>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold text-gray-100">
-          Comparison Results
+          {t('diffViewer.title')}
         </h2>
         <button
           onClick={onReset}
           className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 rounded-lg transition-colors"
-          aria-label="Return to input editors"
+          aria-label={t('diffViewer.back')}
         >
-          ← Back to Edit
+          {t('diffViewer.back')}
         </button>
       </div>
-      
+
       {!hasDifferences ? (
         <div className="flex-1 flex items-center justify-center bg-gray-900 rounded-lg" role="status" aria-live="polite">
           <div className="text-center px-8 py-12">
@@ -50,15 +52,15 @@ export const DiffViewer: React.FC<DiffViewerProps> = ({
               </svg>
             </div>
             <h3 className="text-2xl font-semibold text-gray-100 mb-2">
-              Inputs are equivalent!
+              {t('diffViewer.equivalentTitle')}
             </h3>
             <p className="text-gray-400">
-              No differences found between the two inputs after semantic normalization.
+              {t('diffViewer.equivalentBody')}
             </p>
           </div>
         </div>
       ) : (
-        <div className="flex-1 overflow-hidden bg-gray-900 rounded-lg border border-gray-700" role="region" aria-label="Differences view">
+        <div className="flex-1 overflow-hidden bg-gray-900 rounded-lg border border-gray-700" role="region" aria-label={t('diffViewer.differencesView')}>
           <DiffEditor
             height="100%"
             language={language === 'jsonl' ? 'json' : language}
@@ -83,4 +85,3 @@ export const DiffViewer: React.FC<DiffViewerProps> = ({
     </div>
   );
 };
-

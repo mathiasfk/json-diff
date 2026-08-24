@@ -1,3 +1,89 @@
 {
-  "app.title": "Smart JSON Diff"
+  "app": {
+    "title": "Smart JSON Diff",
+    "clearLeft": "Smart JSON Diff",
+    "formatLeft": "Smart JSON Diff",
+    "compare": "Smart JSON Diff",
+    "formatRight": "Smart JSON Diff",
+    "clearRight": "Smart JSON Diff"
+  },
+  "header": {
+    "subtitle": "Smart JSON Diff",
+    "faq": "Smart JSON Diff",
+    "back": "Smart JSON Diff",
+    "home": "Smart JSON Diff",
+    "primaryNav": "Smart JSON Diff",
+    "backNav": "Smart JSON Diff",
+    "homeNav": "Smart JSON Diff"
+  },
+  "json2toon": {
+    "cta": "Smart JSON Diff"
+  },
+  "jsonEditor": {
+    "placeholder": "Smart JSON Diff",
+    "loading": "Smart JSON Diff",
+    "formatLabel": "Smart JSON Diff",
+    "leftInput": "Smart JSON Diff",
+    "rightInput": "Smart JSON Diff",
+    "clearLeft": "Smart JSON Diff",
+    "formatLeft": "Smart JSON Diff",
+    "compare": "Smart JSON Diff",
+    "formatRight": "Smart JSON Diff",
+    "clearRight": "Smart JSON Diff",
+    "inputEditors": "Smart JSON Diff",
+    "comparisonActions": "Smart JSON Diff",
+    "comparisonResults": "Smart JSON Diff",
+    "loadingDiff": "Smart JSON Diff"
+  },
+  "formatSelector": {
+    "ariaWithLabel": "Smart JSON Diff",
+    "ariaDefault": "Smart JSON Diff"
+  },
+  "diffViewer": {
+    "title": "Smart JSON Diff",
+    "back": "Smart JSON Diff",
+    "resultsRegion": "Smart JSON Diff",
+    "differencesView": "Smart JSON Diff",
+    "equivalentTitle": "Smart JSON Diff",
+    "equivalentBody": "Smart JSON Diff"
+  },
+  "faq": {
+    "breadcrumbHome": "Smart JSON Diff",
+    "breadcrumbFaq": "Smart JSON Diff",
+    "title": "Smart JSON Diff",
+    "items": [
+      {
+        "q": "Smart JSON Diff",
+        "a": "Smart JSON Diff"
+      },
+      {
+        "q": "Smart JSON Diff",
+        "a": "Smart JSON Diff"
+      },
+      {
+        "q": "Smart JSON Diff",
+        "a": "Smart JSON Diff"
+      },
+      {
+        "q": "Smart JSON Diff",
+        "a": "Smart JSON Diff"
+      },
+      {
+        "q": "Smart JSON Diff",
+        "a": "Smart JSON Diff"
+      },
+      {
+        "q": "Smart JSON Diff",
+        "a": "Smart JSON Diff"
+      },
+      {
+        "q": "Smart JSON Diff",
+        "a": "Smart JSON Diff"
+      },
+      {
+        "q": "Smart JSON Diff",
+        "a": "Smart JSON Diff"
+      }
+    ]
+  }
 }

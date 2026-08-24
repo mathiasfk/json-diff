@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import Editor from '@monaco-editor/react';
 import type * as monaco from 'monaco-editor';
 import { gtag } from '../services/analytics';
+import { useTranslation } from 'react-i18next';
 import { FormatSelector } from './FormatSelector';
 import type { Format } from '../utils/formatSelector';
 import { detectFormatFromFilename, detectInputFormat } from '../utils/formatSelector';
@@ -33,11 +34,12 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
   onChange,
   format,
   onFormatChange,
-  placeholder = 'Paste or drag your input here...',
+  placeholder,
   error,
   label,
   side,
 }) => {
+  const { t } = useTranslation();
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const monacoRef = useRef<typeof monaco | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -254,7 +256,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
         <FormatSelector
           value={format}
           onChange={onFormatChange}
-          label="Format"
+          label={t('jsonEditor.formatLabel')}
         />
       </div>
       <div
@@ -269,7 +271,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
       >
         {!value && (
           <div className="absolute top-14 left-4 text-gray-500 text-sm pointer-events-none z-10">
-            {placeholder}
+            {placeholder ?? t('jsonEditor.placeholder')}
           </div>
         )}
         <Editor
@@ -281,7 +283,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
           onMount={handleEditorDidMount}
           loading={
             <div className="flex items-center justify-center h-full text-gray-400">
-              <div className="animate-pulse">Loading editor...</div>
+              <div className="animate-pulse">{t('jsonEditor.loading')}</div>
             </div>
           }
           options={{
