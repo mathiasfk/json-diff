@@ -3,7 +3,8 @@ import { gtag } from '../services/analytics';
 import { Json2ToonCta } from './Json2ToonCta';
 import { useTranslation } from 'react-i18next';
 import i18n from '../i18n';
-import { LOCALE_NAMES, SUPPORTED_LOCALES, DEFAULT_LOCALE, isLocale, type Locale } from '../i18n-config';
+import { DEFAULT_LOCALE, isLocale, type Locale } from '../i18n-config';
+import { LanguageSelector } from './LanguageSelector';
 
 interface HeaderProps {
   /** When true, hide the FAQ/back nav (e.g. FAQ page renders its own breadcrumb). */
@@ -37,12 +38,12 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
         <div>
           <h1 className="text-2xl font-bold">{t('app.title')}</h1>
           <p className="text-sm text-gray-400 mt-1">
-            {t('header.subtitle')}
+            Compare JSON, YAML and JSONL semantically with smart array matching
           </p>
           <Json2ToonCta />
         </div>
         {showNav ? (
-          <nav aria-label={t('header.primaryNav')}>
+          <nav aria-label="Primary">
             {isFaq ? (
               <button
                 onClick={() => {
@@ -50,9 +51,9 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
                   navigate(-1);
                 }}
                 className="text-sm text-gray-400 hover:text-gray-200"
-                aria-label={t('header.backNav')}
+                aria-label="Go back to previous view"
               >
-                {t('header.back')}
+                ← Back
               </button>
             ) : (
               <Link
@@ -62,33 +63,24 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
                 }}
                 className="text-sm text-gray-400 hover:text-gray-200"
               >
-                {t('header.faq')}
+                FAQ
               </Link>
             )}
             {/* Language selector */}
-            <div className="flex items-center gap-2 ml-4">
-              <select
-                value={activeLocale}
-                onChange={(e) => changeLanguage(e.target.value as Locale)}
-                className="border border-gray-700 bg-gray-900 text-gray-100 rounded px-2 py-1"
-                aria-label={t('formatSelector.ariaDefault')}
-              >
-                {SUPPORTED_LOCALES.map((lng) => (
-                  <option key={lng} value={lng}>
-                    {LOCALE_NAMES[lng]}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <LanguageSelector
+              currentLocale={activeLocale}
+              onSelect={changeLanguage}
+              className="ml-4"
+            />
           </nav>
         ) : homeLink ? (
-          <nav aria-label={t('header.primaryNav')}>
+          <nav aria-label="Primary">
             <Link
               to={localePath('')}
               className="text-sm text-gray-400 hover:text-gray-200"
-              aria-label={t('header.homeNav')}
+              aria-label="Go to the Smart JSON Diff home page"
             >
-              {t('header.home')}
+              ← Home
             </Link>
           </nav>
         ) : null}
