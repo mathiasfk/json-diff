@@ -18,6 +18,7 @@ i18n
     },
     fallbackLng: 'en',
     debug: import.meta.env.DEV,
+    returnObjects: true,
     detection: {
       order: ['localStorage', 'navigator'],
       caches: ['localStorage'],

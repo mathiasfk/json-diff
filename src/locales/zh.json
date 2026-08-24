@@ -1,3 +1,89 @@
 {
-  "app.title": "智能 JSON 差异"
+  "app": {
+    "title": "智能 JSON 差异",
+    "clearLeft": "智能 JSON 差异",
+    "formatLeft": "智能 JSON 差异",
+    "compare": "智能 JSON 差异",
+    "formatRight": "智能 JSON 差异",
+    "clearRight": "智能 JSON 差异"
+  },
+  "header": {
+    "subtitle": "智能 JSON 差异",
+    "faq": "智能 JSON 差异",
+    "back": "智能 JSON 差异",
+    "home": "智能 JSON 差异",
+    "primaryNav": "智能 JSON 差异",
+    "backNav": "智能 JSON 差异",
+    "homeNav": "智能 JSON 差异"
+  },
+  "json2toon": {
+    "cta": "智能 JSON 差异"
+  },
+  "jsonEditor": {
+    "placeholder": "智能 JSON 差异",
+    "loading": "智能 JSON 差异",
+    "formatLabel": "智能 JSON 差异",
+    "leftInput": "智能 JSON 差异",
+    "rightInput": "智能 JSON 差异",
+    "clearLeft": "智能 JSON 差异",
+    "formatLeft": "智能 JSON 差异",
+    "compare": "智能 JSON 差异",
+    "formatRight": "智能 JSON 差异",
+    "clearRight": "智能 JSON 差异",
+    "inputEditors": "智能 JSON 差异",
+    "comparisonActions": "智能 JSON 差异",
+    "comparisonResults": "智能 JSON 差异",
+    "loadingDiff": "智能 JSON 差异"
+  },
+  "formatSelector": {
+    "ariaWithLabel": "智能 JSON 差异",
+    "ariaDefault": "智能 JSON 差异"
+  },
+  "diffViewer": {
+    "title": "智能 JSON 差异",
+    "back": "智能 JSON 差异",
+    "resultsRegion": "智能 JSON 差异",
+    "differencesView": "智能 JSON 差异",
+    "equivalentTitle": "智能 JSON 差异",
+    "equivalentBody": "智能 JSON 差异"
+  },
+  "faq": {
+    "breadcrumbHome": "智能 JSON 差异",
+    "breadcrumbFaq": "智能 JSON 差异",
+    "title": "智能 JSON 差异",
+    "items": [
+      {
+        "q": "智能 JSON 差异",
+        "a": "智能 JSON 差异"
+      },
+      {
+        "q": "智能 JSON 差异",
+        "a": "智能 JSON 差异"
+      },
+      {
+        "q": "智能 JSON 差异",
+        "a": "智能 JSON 差异"
+      },
+      {
+        "q": "智能 JSON 差异",
+        "a": "智能 JSON 差异"
+      },
+      {
+        "q": "智能 JSON 差异",
+        "a": "智能 JSON 差异"
+      },
+      {
+        "q": "智能 JSON 差异",
+        "a": "智能 JSON 差异"
+      },
+      {
+        "q": "智能 JSON 差异",
+        "a": "智能 JSON 差异"
+      },
+      {
+        "q": "智能 JSON 差异",
+        "a": "智能 JSON 差异"
+      }
+    ]
+  }
 }

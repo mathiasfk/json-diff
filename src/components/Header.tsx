@@ -37,12 +37,12 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
         <div>
           <h1 className="text-2xl font-bold">{t('app.title')}</h1>
           <p className="text-sm text-gray-400 mt-1">
-            Compare JSON, YAML and JSONL semantically with smart array matching
+            {t('header.subtitle')}
           </p>
           <Json2ToonCta />
         </div>
         {showNav ? (
-          <nav aria-label="Primary">
+          <nav aria-label={t('header.primaryNav')}>
             {isFaq ? (
               <button
                 onClick={() => {
@@ -50,9 +50,9 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
                   navigate(-1);
                 }}
                 className="text-sm text-gray-400 hover:text-gray-200"
-                aria-label="Go back to previous view"
+                aria-label={t('header.backNav')}
               >
-                ← Back
+                {t('header.back')}
               </button>
             ) : (
               <Link
@@ -62,7 +62,7 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
                 }}
                 className="text-sm text-gray-400 hover:text-gray-200"
               >
-                FAQ
+                {t('header.faq')}
               </Link>
             )}
             {/* Language selector */}
@@ -71,7 +71,7 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
                 value={activeLocale}
                 onChange={(e) => changeLanguage(e.target.value as Locale)}
                 className="border border-gray-700 bg-gray-900 text-gray-100 rounded px-2 py-1"
-                aria-label="Select language"
+                aria-label={t('formatSelector.ariaDefault')}
               >
                 {SUPPORTED_LOCALES.map((lng) => (
                   <option key={lng} value={lng}>
@@ -82,13 +82,13 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
             </div>
           </nav>
         ) : homeLink ? (
-          <nav aria-label="Primary">
+          <nav aria-label={t('header.primaryNav')}>
             <Link
               to={localePath('')}
               className="text-sm text-gray-400 hover:text-gray-200"
-              aria-label="Go to the Smart JSON Diff home page"
+              aria-label={t('header.homeNav')}
             >
-              ← Home
+              {t('header.home')}
             </Link>
           </nav>
         ) : null}

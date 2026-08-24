@@ -1,5 +1,6 @@
 import { Suspense, lazy, useState, useEffect } from 'react';
 import { Header } from './components/Header';
+import { useTranslation } from 'react-i18next';
 import { JsonEditor } from './components/JsonEditor';
 const DiffViewer = lazy(() => import('./components/DiffViewer').then(m => ({ default: m.DiffViewer })));
 import { semanticDiff, formatJSON } from './utils/semanticDiff';
@@ -10,6 +11,7 @@ import { gtag } from './services/analytics';
 type ViewMode = 'edit' | 'compare';
 
 function App() {
+  const { t } = useTranslation();
   const LS_KEYS = {
     left: 'jsonDiff.left',
     right: 'jsonDiff.right',
@@ -247,14 +249,14 @@ function App() {
       <main className="max-w-screen-2xl mx-auto p-6" role="main">
         {viewMode === 'edit' ? (
           <div className="flex flex-col h-[calc(100vh-180px)]">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1" role="region" aria-label="Diff input editors">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1" role="region" aria-label={t('jsonEditor.inputEditors')}>
               <JsonEditor
                 value={leftJson}
                 onChange={handleLeftChange}
                 onFormatChange={setLeftFormat}
                 format={leftFormat}
                 error={leftError}
-                label="Left Input"
+                label={t('jsonEditor.leftInput')}
                 side="left"
               />
               <JsonEditor
@@ -263,57 +265,57 @@ function App() {
                 onFormatChange={setRightFormat}
                 format={rightFormat}
                 error={rightError}
-                label="Right Input"
+                label={t('jsonEditor.rightInput')}
                 side="right"
               />
             </div>
 
-            <div className="flex items-center justify-center gap-4 mt-6" role="toolbar" aria-label="Comparison actions">
+            <div className="flex items-center justify-center gap-4 mt-6" role="toolbar" aria-label={t('jsonEditor.comparisonActions')}>
               <button
                 onClick={() => handleClear('left')}
                 className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={!leftJson.trim()}
-                aria-label="Clear the left input"
+                aria-label={t('jsonEditor.clearLeft')}
               >
-                Clear Left
+                {t('app.clearLeft')}
               </button>
               <button
                 onClick={() => handleFormat('left')}
                 className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={!leftJson.trim()}
-                aria-label="Format and beautify the left input"
+                aria-label={t('jsonEditor.formatLeft')}
               >
-                Format Left
+                {t('app.formatLeft')}
               </button>
               <button
                 onClick={handleCompare}
                 className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={!leftJson.trim() || !rightJson.trim()}
-                aria-label="Compare the two inputs semantically"
+                aria-label={t('jsonEditor.compare')}
               >
-                Compare
+                {t('app.compare')}
               </button>
               <button
                 onClick={() => handleFormat('right')}
                 className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={!rightJson.trim()}
-                aria-label="Format and beautify the right input"
+                aria-label={t('jsonEditor.formatRight')}
               >
-                Format Right
+                {t('app.formatRight')}
               </button>
               <button
                 onClick={() => handleClear('right')}
                 className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={!rightJson.trim()}
-                aria-label="Clear the right input"
+                aria-label={t('jsonEditor.clearRight')}
               >
-                Clear Right
+                {t('app.clearRight')}
               </button>
             </div>
           </div>
         ) : (
-          <div className="h-[calc(100vh-180px)]" role="region" aria-label="Comparison results">
-            <Suspense fallback={<div className="text-gray-300">Loading diff…</div>}>
+          <div className="h-[calc(100vh-180px)]" role="region" aria-label={t('jsonEditor.comparisonResults')}>
+            <Suspense fallback={<div className="text-gray-300">{t('jsonEditor.loadingDiff')}</div>}>
               {diffResult && (
                 <DiffViewer
                   oldValue={diffResult.left}

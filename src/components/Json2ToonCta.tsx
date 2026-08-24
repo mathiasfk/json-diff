@@ -1,6 +1,8 @@
 import { gtag } from '../services/analytics';
+import { useTranslation } from 'react-i18next';
 
 export function Json2ToonCta() {
+  const { t } = useTranslation();
   return (
     <a
       href="https://json2toon.dev/"
@@ -11,7 +13,7 @@ export function Json2ToonCta() {
       }}
       className="mt-3 inline-flex items-center gap-2 rounded-full border border-gray-700 bg-gray-800/70 px-3 py-1 text-xs font-medium text-teal-200 transition hover:border-teal-400 hover:bg-gray-800 hover:text-teal-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400/70 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
     >
-      <span>Try our JSON to TOON converter</span>
+      <span>{t('json2toon.cta')}</span>
       <svg
         className="h-3.5 w-3.5"
         viewBox="0 0 20 20"
@@ -30,4 +32,3 @@ export function Json2ToonCta() {
     </a>
   );
 }
-
