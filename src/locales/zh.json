@@ -1,6 +1,7 @@
 {
   "app": {
     "title": "智能 JSON 差异",
+    "language": "语言",
     "clearLeft": "智能 JSON 差异",
     "formatLeft": "智能 JSON 差异",
     "compare": "智能 JSON 差异",

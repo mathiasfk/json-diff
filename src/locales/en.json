@@ -1,6 +1,7 @@
 {
   "app": {
     "title": "Smart JSON Diff",
+    "language": "Language",
     "clearLeft": "Clear Left",
     "formatLeft": "Format Left",
     "compare": "Compare",
