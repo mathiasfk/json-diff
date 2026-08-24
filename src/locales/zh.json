@@ -1,3 +1,68 @@
 {
-  "app.title": "智能 JSON 差异"
+  "app": {
+    "title": "Smart JSON Diff",
+    "subtitle": "Compare JSON, YAML and JSONL semantically with smart array matching"
+  },
+  "header": {
+    "back": "Back",
+    "faq": "FAQ",
+    "home": "Home",
+    "backAria": "Go back to previous view",
+    "homeAria": "Go to the Smart JSON Diff home page",
+    "languageLabel": "Language"
+  },
+  "editor": {
+    "placeholder": "Paste or drag your input here...",
+    "leftInput": "Left Input",
+    "rightInput": "Right Input",
+    "format": "Format",
+    "loading": "Loading editor...",
+    "invalidJsonl": "Invalid JSONL: line {{line}} is not a single-line JSON value ({{message}})"
+  },
+  "actions": {
+    "clearLeft": "Clear Left",
+    "formatLeft": "Format Left",
+    "compare": "Compare",
+    "formatRight": "Format Right",
+    "clearRight": "Clear Right",
+    "clearLeftAria": "Clear the left input",
+    "formatLeftAria": "Format and beautify the left input",
+    "compareAria": "Compare the two inputs semantically",
+    "formatRightAria": "Format and beautify the right input",
+    "clearRightAria": "Clear the right input"
+  },
+  "diff": {
+    "results": "Comparison Results",
+    "backToEdit": "Back to Edit",
+    "equivalent": "Inputs are equivalent!",
+    "noDifferences": "No differences found between the two inputs after semantic normalization.",
+    "backAria": "Return to input editors",
+    "resultsAria": "Comparison results",
+    "diffAria": "Differences view",
+    "loading": "Loading diff…"
+  },
+  "cta": {
+    "json2toon": "Try our JSON to TOON converter"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "home": "Home",
+    "breadcrumbCurrent": "FAQ",
+    "q1": "How does the comparison work?",
+    "a1": "Instead of a naive diff, Smart JSON Diff performs a semantic comparison. It normalizes both inputs by sorting object properties alphabetically and reorders arrays to align equivalent items. When a unique key exists across both arrays, items are aligned by that key; otherwise, items are matched by normalized content to minimize noise and surface only the most relevant differences. The comparison runs entirely in your browser using jsondiffpatch under the hood.",
+    "q2": "How is this different from other thousands of JSON diff tools?",
+    "a2": "Smart JSON Diff treats array items as multisets, meaning it considers the order of items in the array to be irrelevant. This is in contrast to other JSON diff tools that treat arrays as sequences, meaning the order of items in the array is significant. For example, the arrays [1, 2, 3] and [3, 2, 1] are considered equivalent by Smart JSON Diff, while they are considered different by other JSON diff tools.",
+    "q3": "What do the colors mean in the diff?",
+    "a3": "Green indicates additions and red indicates removals. The entire changed line is highlighted, and the exact changed segment is emphasized with a more saturated accent.",
+    "q4": "Does property order affect the result?",
+    "a4": "No. Properties are sorted alphabetically before comparison, so objects with the same meaning but different key order are considered equivalent. For example, the objects { a: 1, b: 2 } and { b: 2, a: 1 } are considered equivalent.",
+    "q5": "Does array order affect the result?",
+    "a5": "No. The best sorting key is found automatically, so arrays with the same items but different order are considered equivalent. For example, the arrays [{ id: 1, name: \"John\" }, { id: 2, name: \"Jane\" }] and [{ id: 2, name: \"Jane\" }, { id: 1, name: \"John\" }] are considered equivalent.",
+    "q6": "How are array differences handled?",
+    "a6": "We find an ordering that maximizes similarity between the two versions. When a unique key is present in both arrays, items are aligned by that key; otherwise items are aligned by normalized content, so you see only the most relevant differences. Array items are treated as a multiset: reordering the same items produces no diff, so [1, 2, 3] and [3, 2, 1] are considered equivalent.",
+    "q7": "Is it safe to paste sensitive data?",
+    "a7": "Yes. All processing happens locally in your browser. We do not collect the data you compare.",
+    "q8": "How do I report bugs?",
+    "a8": "Send an email to admin@smartjsondiff.com."
+  }
 }
