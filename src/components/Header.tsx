@@ -1,8 +1,9 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { gtag } from '../services/analytics';
 import { Json2ToonCta } from './Json2ToonCta';
 import { useTranslation } from 'react-i18next';
 import i18n from '../i18n';
+import { LOCALE_NAMES, SUPPORTED_LOCALES, DEFAULT_LOCALE, isLocale, type Locale } from '../i18n-config';
 
 interface HeaderProps {
   /** When true, hide the FAQ/back nav (e.g. FAQ page renders its own breadcrumb). */
@@ -12,14 +13,22 @@ interface HeaderProps {
 }
 
 export function Header({ showNav = true, homeLink = false }: HeaderProps) {
-  const { t, i18n: i18nInstance } = useTranslation();
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
-  const isFaq = location.pathname === '/faq';
+  const { locale } = useParams<{ locale: string }>();
+  const activeLocale: Locale = isLocale(locale) ? locale : DEFAULT_LOCALE;
+  const isFaq = location.pathname.endsWith('/faq');
 
-  const changeLanguage = (lng: string) => {
-    i18nInstance.changeLanguage(lng);
+  // Build a locale-prefixed path, preserving the current sub-route (/faq).
+  const localePath = (target: '' | 'faq') =>
+    target === 'faq' ? `/${activeLocale}/faq` : `/${activeLocale}`;
+
+  const changeLanguage = (lng: Locale) => {
+    i18n.changeLanguage(lng);
     gtag('event', 'language_change', { language: lng });
+    // Keep the URL in sync with the chosen locale while preserving the route.
+    navigate(localePath(isFaq ? 'faq' : ''));
   };
 
   return (
@@ -47,7 +56,7 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
               </button>
             ) : (
               <Link
-                to="/faq"
+                to={localePath('faq')}
                 onClick={() => {
                   gtag('event', 'faq_open_click');
                 }}
@@ -59,21 +68,23 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
             {/* Language selector */}
             <div className="flex items-center gap-2 ml-4">
               <select
-                value={i18n.language}
-                onChange={(e) => changeLanguage(e.target.value)}
+                value={activeLocale}
+                onChange={(e) => changeLanguage(e.target.value as Locale)}
                 className="border border-gray-700 bg-gray-900 text-gray-100 rounded px-2 py-1"
+                aria-label="Select language"
               >
-                <option value="en">English</option>
-                <option value="pt">Português</option>
-                <option value="zh">中文</option>
-                <option value="es">Español</option>
+                {SUPPORTED_LOCALES.map((lng) => (
+                  <option key={lng} value={lng}>
+                    {LOCALE_NAMES[lng]}
+                  </option>
+                ))}
               </select>
             </div>
           </nav>
         ) : homeLink ? (
           <nav aria-label="Primary">
             <Link
-              to="/"
+              to={localePath('')}
               className="text-sm text-gray-400 hover:text-gray-200"
               aria-label="Go to the Smart JSON Diff home page"
             >
