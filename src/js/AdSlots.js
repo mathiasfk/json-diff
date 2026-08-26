@@ -5,6 +5,7 @@ window.AdSlots = {
   /**
    * Updates visibility of ad slots based on viewport dimensions and content margins.
    * Should be called on load and resize events.
+   * Also injects ad scripts when slots become visible (only once per slot).
    */
   updateVisibility: function() {
     const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
@@ -44,5 +45,77 @@ window.AdSlots = {
     } else {
       root.style.marginBottom = '0';
     }
+
+    // Inject ad scripts for newly visible slots (only once per slot)
+    this.injectAdScripts();
+  },
+
+  /**
+   * Injects ad scripts into slots that are currently visible and haven't been injected yet.
+   * Uses placeholder URLs if real ones not provided.
+   */
+  injectAdScripts: function() {
+    // Track injected slots using a WeakSet to avoid memory leaks
+    if (!window.AdSlots._injectedSlots) {
+      window.AdSlots._injectedSlots = new WeakSet();
+    }
+    const injectedSlots = window.AdSlots._injectedSlots;
+
+    // Define ad script URLs.
+    // vert1 uses the provided AdSense auto-ads tag; vert2/horiz1 use placeholder
+    // publisher IDs until real ones are supplied.
+    const AD_CLIENT = 'ca-pub-6364476119143776';
+    const adScripts = {
+      'vertical-top':    `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${AD_CLIENT}" crossorigin="anonymous"></script>`,
+      'vertical-bottom': '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-vert2-placeholder" crossorigin="anonymous"></script>',
+      'horizontal':      '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-horiz1-placeholder" crossorigin="anonymous"></script>'
+    };
+
+    // Process all ad slots
+    const slots = document.querySelectorAll('.ad-slot');
+    slots.forEach(slot => {
+      // Skip if already injected
+      if (injectedSlots.has(slot)) return;
+
+      // Skip if not currently visible
+      if (!slot.classList.contains('visible')) return;
+
+      const slotType = slot.dataset.slot;
+      const scriptTag = adScripts[slotType];
+      if (!scriptTag) {
+        console.warn(`AdSlots: No ad script defined for slot type "${slotType}"`);
+        return;
+      }
+
+      try {
+        // Create script element from the tag string
+        const scriptEl = document.createElement('script');
+        scriptEl.async = true;
+
+        // If the tag contains src, set it; otherwise set innerHTML (for inline scripts)
+        const srcMatch = scriptTag.match(/src=["']([^"']+)["']/);
+        if (srcMatch) {
+          scriptEl.src = srcMatch[1];
+          scriptEl.crossOrigin = 'anonymous';
+        } else {
+          // Extract the script content between <script> and </script>
+          const scriptContent = scriptTag.replace(/<script[^>]*>|<\/script>/g, '');
+          scriptEl.textContent = scriptContent;
+        }
+
+        // Add error handling so failing ad scripts don't break page JS
+        scriptEl.onerror = function(e) {
+          console.warn(`AdSlots: Failed to load ad script for slot ${slotType}`, e);
+        };
+
+        // Append to slot
+        slot.appendChild(scriptEl);
+
+        // Mark as injected
+        injectedSlots.add(slot);
+      } catch (err) {
+        console.error(`AdSlots: Error injecting ad script for slot ${slotType}`, err);
+      }
+    });
   }
 };
