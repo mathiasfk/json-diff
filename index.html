@@ -175,5 +175,9 @@
       </div>
     </noscript>
     <script src="/js/AdSlots.js"></script>
+    <script>
+      window.addEventListener('load', window.AdSlots.updateVisibility);
+      window.addEventListener('resize', window.AdSlots.updateVisibility);
+    </script>
   </body>
 </html>
