@@ -30,3 +30,31 @@ body {
   min-height: 100vh;
 }
 
+/* Ad slots */
+.ad-slot {
+  position: fixed;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.ad-slot.visible {
+  opacity: 1;
+}
+.ad-slot.vertical {
+  width: 160px;
+  height: 100vh;
+  top: 0;
+}
+.ad-slot.vertical-left {
+  left: 0;
+}
+.ad-slot.vertical-right {
+  right: 0;
+}
+.ad-slot.horizontal {
+  height: 90px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+

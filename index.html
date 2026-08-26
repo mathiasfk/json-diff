@@ -127,6 +127,16 @@
   <body>
     <!-- Pre-hydration SEO shell (Q1): replaced by React on mount, so exactly one H1 remains.
          Crawlers that do not execute JS still see a crawlable H1 + internal link. -->
+    <!-- Ad slots -->
+    <div class="ad-slot vertical vertical-left" data-slot="vertical-top">
+      <!-- AdSense ad code goes here -->
+    </div>
+    <div class="ad-slot vertical vertical-right" data-slot="vertical-bottom">
+      <!-- AdSense ad code goes here -->
+    </div>
+    <div class="ad-slot horizontal" data-slot="horizontal">
+      <!-- AdSense ad code goes here -->
+    </div>
     <div id="root">
       <h1>Smart JSON Diff</h1>
       <p>Compare JSON objects semantically with smart array matching.</p>
@@ -139,6 +149,7 @@
         Smart JSON Diff requires JavaScript.
       </div>
     </noscript>
+    <script src="/js/AdSlots.js"></script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
