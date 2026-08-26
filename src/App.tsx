@@ -243,7 +243,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100">
+    <div className="min-h-screen bg-gray-900 text-gray-100 relative">
       <Header />
 
       <main className="max-w-screen-2xl mx-auto p-6" role="main">
@@ -312,6 +312,13 @@ function App() {
                 {t('app.clearRight')}
               </button>
             </div>
+            {/* Horizontal ad slot */}
+            <aside
+              data-ad-slot="horiz1"
+              role="complementary"
+              aria-label="Horizontal ad slot"
+              className="mt-4 w-full hidden"
+            />
           </div>
         ) : (
           <div className="h-[calc(100vh-180px)]" role="region" aria-label={t('jsonEditor.comparisonResults')}>
@@ -329,6 +336,19 @@ function App() {
           </div>
         )}
       </main>
+      {/* Vertical ad slots */}
+      <aside
+        data-ad-slot="vert1"
+        role="complementary"
+        aria-label="Left vertical ad slot"
+        className="absolute left-0 top-0 bottom-0 w-64 hidden"
+      />
+      <aside
+        data-ad-slot="vert2"
+        role="complementary"
+        aria-label="Right vertical ad slot"
+        className="absolute right-0 top-0 bottom-0 w-64 hidden"
+      />
     </div>
   );
 }
