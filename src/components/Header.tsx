@@ -7,7 +7,9 @@ import { DEFAULT_LOCALE, isLocale, type Locale } from '../i18n-config';
 import { LanguageSelector } from './LanguageSelector';
 
 interface HeaderProps {
-  /** When true, hide the FAQ/back nav (e.g. FAQ page renders its own breadcrumb). */
+  /**
+   * When true, hide the FAQ/back nav (e.g. FAQ page renders its own breadcrumb).
+   */
   showNav?: boolean;
   /** When true and showNav is false, render a real internal link back to home. */
   homeLink?: boolean;
@@ -21,15 +23,12 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
   const activeLocale: Locale = isLocale(locale) ? locale : DEFAULT_LOCALE;
   const isFaq = location.pathname.endsWith('/faq');
 
-  // Build a locale-prefixed path, preserving the current sub-route (/faq).
-  const localePath = (target: '' | 'faq') =>
-    target === 'faq' ? `/${activeLocale}/faq` : `/${activeLocale}`;
-
   const changeLanguage = (lng: Locale) => {
     i18n.changeLanguage(lng);
     gtag('event', 'language_change', { language: lng });
     // Keep the URL in sync with the chosen locale while preserving the route.
-    navigate(localePath(isFaq ? 'faq' : ''));
+    const path = isFaq ? `/${lng}/faq` : `/${lng}`;
+    navigate(path);
   };
 
   return (
@@ -57,7 +56,7 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
               </button>
             ) : (
               <Link
-                to={localePath('faq')}
+                to={isFaq ? `/${activeLocale}/faq` : `/${activeLocale}`}
                 onClick={() => {
                   gtag('event', 'faq_open_click');
                 }}
@@ -76,7 +75,7 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
         ) : homeLink ? (
           <nav aria-label="Primary">
             <Link
-              to={localePath('')}
+              to={isFaq ? `/${activeLocale}/faq` : `/${activeLocale}`}
               className="text-sm text-gray-400 hover:text-gray-200"
               aria-label="Go to the Smart JSON Diff home page"
             >
