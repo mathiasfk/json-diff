@@ -1,145 +1,145 @@
 {
   "app": {
-    "title": "Diferença JSON inteligente",
-    "subtitle": "Compare JSON, YAML e JSONL semanticamente com correspondência de matriz inteligente",
-    "clearLeft": "Clear Left",
-    "language": "Language",
-    "formatLeft": "Formatar Esquerda",
+    "title": "Smart JSON Diff",
+    "subtitle": "Compare JSON, YAML e JSONL semanticamente com comparação inteligente de arrays",
+    "clearLeft": "Limpar esquerda",
+    "language": "Idioma",
+    "formatLeft": "Formatar esquerda",
     "compare": "Comparar",
-    "formatRight": "Formatar Direita",
-    "clearRight": "Limpar Direita"
+    "formatRight": "Formatar direita",
+    "clearRight": "Limpar direita"
   },
   "header": {
     "back": "Voltar",
-    "faq": "Perguntas Frequentes",
-    "home": "Casa",
-    "backAria": "Recua para a página anteriormente vista.",
-    "homeAria": "Vá para a página inicial do Smart JSON Diff",
-    "languageLabel": "Língua",
-    "subtitle": "Compare JSON, YAML and JSONL semantically with smart array matching",
-    "primaryNav": "Navegação primária",
-    "backNav": "Navegar voltar",
-    "homeNav": "Navegar para casa"
+    "faq": "Perguntas frequentes",
+    "home": "Início",
+    "backAria": "Voltar para a página anterior",
+    "homeAria": "Ir para a página inicial do Smart JSON Diff",
+    "languageLabel": "Idioma",
+    "subtitle": "Compare JSON, YAML e JSONL semanticamente com comparação inteligente de arrays",
+    "primaryNav": "Navegação principal",
+    "backNav": "Voltar",
+    "homeNav": "Início"
   },
   "editor": {
-    "placeholder": "Cole ou arraste a sua entrada aqui...",
-    "leftInput": "Entrada Esquerda",
-    "rightInput": "Entrada Direita",
+    "placeholder": "Cole ou arraste sua entrada aqui...",
+    "leftInput": "Entrada esquerda",
+    "rightInput": "Entrada direita",
     "format": "Formato",
-    "loading": "Carregando Editor...",
-    "invalidJsonl": "JSONL inválido: a linha {{line}} não é um valor JSON de linha única ({{message}})"
+    "loading": "Carregando editor...",
+    "invalidJsonl": "JSONL inválido: a linha {{line}} não é um valor JSON de uma única linha ({{message}})"
   },
   "actions": {
-    "clearLeft": "Limpar à esquerda",
-    "formatLeft": "Formato à esquerda",
+    "clearLeft": "Limpar esquerda",
+    "formatLeft": "Formatar esquerda",
     "compare": "Comparar",
-    "formatRight": "Formatar à direita",
-    "clearRight": "Limpar à direita",
+    "formatRight": "Formatar direita",
+    "clearRight": "Limpar direita",
     "clearLeftAria": "Limpar a entrada esquerda",
     "formatLeftAria": "Formatar e embelezar a entrada esquerda",
-    "compareAria": "Compare as duas entradas semanticamente",
-    "formatRightAria": "Formatar e embelezar a entrada certa",
-    "clearRightAria": "Limpar a entrada certa"
+    "compareAria": "Comparar semanticamente as duas entradas",
+    "formatRightAria": "Formatar e embelezar a entrada direita",
+    "clearRightAria": "Limpar a entrada direita"
   },
   "diff": {
     "results": "Resultados da comparação",
-    "backToEdit": "Voltar para Editar",
+    "backToEdit": "Voltar para edição",
     "equivalent": "As entradas são equivalentes!",
-    "noDifferences": "Não foram encontradas diferenças entre as duas entradas após a normalização semântica.",
-    "backAria": "Voltar aos editores de entrada",
+    "noDifferences": "Nenhuma diferença encontrada após a normalização semântica.",
+    "backAria": "Voltar para os editores de entrada",
     "resultsAria": "Resultados da comparação",
-    "diffAria": "Visualização de diferenças",
-    "loading": "A carregar diferenças"
+    "diffAria": "Visualização das diferenças",
+    "loading": "Carregando diferenças..."
   },
   "cta": {
-    "json2toon": "Experimente o nosso conversor de JSON para TOON"
+    "json2toon": "Experimente nosso conversor de JSON para TOON"
   },
   "faq": {
-    "title": "Perguntas Frequentes",
-    "home": "Casa",
-    "breadcrumbCurrent": "Perguntas Frequentes",
+    "title": "Perguntas frequentes",
+    "home": "Início",
+    "breadcrumbCurrent": "Perguntas frequentes",
     "q1": "Como funciona a comparação?",
-    "a1": "Em vez de um diff ingênuo, o Smart JSON Diff realiza uma comparação semântica. Ele normaliza ambas as entradas classificando as propriedades do objeto em ordem alfabética e reordena as matrizes para alinhar itens equivalentes. Quando existe uma chave exclusiva em ambas as matrizes, os itens são alinhados por essa chave; caso contrário, os itens são combinados por conteúdo normalizado para minimizar o ruído e destacar apenas as diferenças mais relevantes. A comparação é executada inteiramente no seu navegador usando o jsondiffpatch.",
-    "q2": "Como isso é diferente de outras milhares de ferramentas JSON diff?",
-    "a2": "O Smart JSON Diff trata os itens da matriz como multisets, o que significa que considera a ordem dos itens na matriz irrelevante. Isso contrasta com outras ferramentas de diff JSON que tratam matrizes como sequências, o que significa que a ordem dos itens na matriz é significativa. Por exemplo, as matrizes [1, 2, 3] e [3, 2, 1] são consideradas equivalentes pelo Smart JSON Diff, enquanto são consideradas diferentes por outras ferramentas JSON diff.",
-    "q3": "O que as cores significam no diff?",
-    "a3": "Verde indica adições e vermelho indica remoções. Toda a linha alterada é destacada e o segmento alterado exato é enfatizado com um acento mais saturado.",
-    "q4": "A ordem da propriedade afeta o resultado?",
-    "a4": "Não. As propriedades são classificadas alfabeticamente antes da comparação, portanto, objetos com o mesmo significado, mas com ordem de chave diferente, são considerados equivalentes. Por exemplo, os objetos {a: 1, b: 2 } e { b: 2, a: 1 } são considerados equivalentes.",
-    "q5": "A ordem da matriz afeta o resultado?",
-    "a5": "Não. A melhor chave de classificação é encontrada automaticamente, portanto, matrizes com os mesmos itens, mas ordem diferente, são consideradas equivalentes. Por exemplo, as matrizes [{ id: 1, name: \"John\" }, { id: 2, name: \"Jane\" }] e [{ id: 2, name: \"Jane\" }, { id: 1, name: \"John\" }] são consideradas equivalentes.",
-    "q6": "Como as diferenças de matriz são tratadas?",
-    "a6": "Encontramos uma ordenação que maximiza a semelhança entre as duas versões. Quando uma chave exclusiva está presente em ambas as matrizes, os itens são alinhados por essa chave; caso contrário, os itens são alinhados pelo conteúdo normalizado, para que você veja apenas as diferenças mais relevantes. Os itens de matriz são tratados como um conjunto múltiplo: reordenar os mesmos itens não produz diferença, portanto [1, 2, 3] e [3, 2, 1] são considerados equivalentes.",
+    "a1": "Em vez de realizar um diff baseado apenas em texto, o Smart JSON Diff faz uma comparação semântica. Ele normaliza as duas entradas ordenando alfabeticamente as propriedades dos objetos e alinhando de forma inteligente os elementos dos arrays. Quando os dois arrays contêm uma chave única, os elementos são alinhados por essa chave; caso contrário, são comparados pelo conteúdo normalizado para minimizar o ruído e destacar apenas as diferenças mais relevantes. A comparação é executada inteiramente no seu navegador, usando o jsondiffpatch internamente.",
+    "q2": "Como o Smart JSON Diff é diferente de outras ferramentas de comparação de JSON?",
+    "a2": "Muitas ferramentas tradicionais de comparação de JSON tratam arrays como sequências, o que significa que a ordem dos elementos afeta o resultado. O Smart JSON Diff trata os elementos dos arrays como um multiconjunto, ou seja, a ordem dos elementos não importa, mas elementos duplicados continuam sendo considerados. Por exemplo, os arrays [1, 2, 3] e [3, 2, 1] são considerados equivalentes.",
+    "q3": "O que significam as cores na comparação?",
+    "a3": "Verde indica adições e vermelho indica remoções. Toda a linha alterada é destacada, enquanto o trecho exato que mudou recebe um destaque mais intenso.",
+    "q4": "A ordem das propriedades afeta o resultado?",
+    "a4": "Não. As propriedades são ordenadas alfabeticamente antes da comparação, portanto, objetos com o mesmo conteúdo, mas com propriedades em uma ordem diferente, são considerados equivalentes. Por exemplo, os objetos { \"a\": 1, \"b\": 2 } e { \"b\": 2, \"a\": 1 } são considerados equivalentes.",
+    "q5": "A ordem dos arrays afeta o resultado?",
+    "a5": "Não. O Smart JSON Diff encontra automaticamente a melhor forma de alinhar os elementos dos arrays, portanto, arrays que contêm os mesmos elementos em uma ordem diferente são considerados equivalentes. Por exemplo, os arrays [{ \"id\": 1, \"name\": \"John\" }, { \"id\": 2, \"name\": \"Jane\" }] e [{ \"id\": 2, \"name\": \"Jane\" }, { \"id\": 1, \"name\": \"John\" }] são considerados equivalentes.",
+    "q6": "Como as diferenças entre arrays são tratadas?",
+    "a6": "O Smart JSON Diff encontra um alinhamento que maximiza a similaridade entre as duas versões. Quando os dois arrays contêm uma chave única, os elementos são alinhados por essa chave; caso contrário, são alinhados pelo conteúdo normalizado. Isso ajuda a minimizar o ruído e destacar as alterações mais relevantes. Reordenar os mesmos elementos não produz nenhuma diferença, enquanto elementos adicionados, removidos ou modificados continuam sendo detectados.",
     "q7": "É seguro colar dados confidenciais?",
-    "a7": "Sim. Todo o processamento acontece localmente no seu navegador. Não recolhemos os dados que compara.",
-    "q8": "Como faço para relatar bugs?",
+    "a7": "Sim. Seus dados JSON, YAML e JSONL são processados inteiramente no seu navegador e não são enviados aos nossos servidores.",
+    "q8": "Como posso reportar bugs?",
     "a8": "Envie um e-mail para admin@smartjsondiff.com.",
     "items": [
       {
-        "q": "How does the comparison work?",
-        "a": "Instead of a naive diff, Smart JSON Diff performs a semantic comparison. It normalizes both inputs by sorting object properties alphabetically and reorders arrays to align equivalent items. When a unique key exists across both arrays, items are aligned by that key; otherwise, items are matched by normalized content to minimize noise and surface only the most relevant differences. The comparison runs entirely in your browser using jsondiffpatch under the hood."
+        "q": "Como funciona a comparação?",
+        "a": "Em vez de realizar um diff baseado apenas em texto, o Smart JSON Diff faz uma comparação semântica. Ele normaliza as duas entradas ordenando alfabeticamente as propriedades dos objetos e alinhando de forma inteligente os elementos dos arrays. Quando os dois arrays contêm uma chave única, os elementos são alinhados por essa chave; caso contrário, são comparados pelo conteúdo normalizado para minimizar o ruído e destacar apenas as diferenças mais relevantes. A comparação é executada inteiramente no seu navegador, usando o jsondiffpatch internamente."
       },
       {
-        "q": "How is this different from other thousands of JSON diff tools?",
-        "a": "Smart JSON Diff treats array items as multisets, meaning it considers the order of items in the array to be irrelevant. This is in contrast to other JSON diff tools that treat arrays as sequences, meaning the order of items in the array is significant. For example, the arrays [1, 2, 3] and [3, 2, 1] are considered equivalent by Smart JSON Diff, while they are considered different by other JSON diff tools."
+        "q": "Como o Smart JSON Diff é diferente de outras ferramentas de comparação de JSON?",
+        "a": "Muitas ferramentas tradicionais de comparação de JSON tratam arrays como sequências, o que significa que a ordem dos elementos afeta o resultado. O Smart JSON Diff trata os elementos dos arrays como um multiconjunto, ou seja, a ordem dos elementos não importa, mas elementos duplicados continuam sendo considerados. Por exemplo, os arrays [1, 2, 3] e [3, 2, 1] são considerados equivalentes."
       },
       {
-        "q": "What do the colors mean in the diff?",
-        "a": "Green indicates additions and red indicates removals. The entire changed line is highlighted, and the exact changed segment is emphasized with a more saturated accent."
+        "q": "O que significam as cores na comparação?",
+        "a": "Verde indica adições e vermelho indica remoções. Toda a linha alterada é destacada, enquanto o trecho exato que mudou recebe um destaque mais intenso."
       },
       {
-        "q": "Does property order affect the result?",
-        "a": "No. Properties are sorted alphabetically before comparison, so objects with the same meaning but different key order are considered equivalent. For example, the objects { a: 1, b: 2 } and { b: 2, a: 1 } are considered equivalent."
+        "q": "A ordem das propriedades afeta o resultado?",
+        "a": "Não. As propriedades são ordenadas alfabeticamente antes da comparação, portanto, objetos com o mesmo conteúdo, mas com propriedades em uma ordem diferente, são considerados equivalentes. Por exemplo, os objetos { \"a\": 1, \"b\": 2 } e { \"b\": 2, \"a\": 1 } são considerados equivalentes."
       },
       {
-        "q": "Does array order affect the result?",
-        "a": "No. The best sorting key is found automatically, so arrays with the same items but different order are considered equivalent. For example, the arrays [{ id: 1, name: \"John\" }, { id: 2, name: \"Jane\" }] and [{ id: 2, name: \"Jane\" }, { id: 1, name: \"John\" }] are considered equivalent."
+        "q": "A ordem dos arrays afeta o resultado?",
+        "a": "Não. O Smart JSON Diff encontra automaticamente a melhor forma de alinhar os elementos dos arrays, portanto, arrays que contêm os mesmos elementos em uma ordem diferente são considerados equivalentes. Por exemplo, os arrays [{ \"id\": 1, \"name\": \"John\" }, { \"id\": 2, \"name\": \"Jane\" }] e [{ \"id\": 2, \"name\": \"Jane\" }, { \"id\": 1, \"name\": \"John\" }] são considerados equivalentes."
       },
       {
-        "q": "How are array differences handled?",
-        "a": "We find an ordering that maximizes similarity between the two versions. When a unique key is present in both arrays, items are aligned by that key; otherwise items are aligned by normalized content, so you see only the most relevant differences. Array items are treated as a multiset: reordering the same items produces no diff, so [1, 2, 3] and [3, 2, 1] are considered equivalent."
+        "q": "Como as diferenças entre arrays são tratadas?",
+        "a": "O Smart JSON Diff encontra um alinhamento que maximiza a similaridade entre as duas versões. Quando os dois arrays contêm uma chave única, os elementos são alinhados por essa chave; caso contrário, são alinhados pelo conteúdo normalizado. Isso ajuda a minimizar o ruído e destacar as alterações mais relevantes. Reordenar os mesmos elementos não produz nenhuma diferença, enquanto elementos adicionados, removidos ou modificados continuam sendo detectados."
       },
       {
-        "q": "Is it safe to paste sensitive data?",
-        "a": "Yes. All processing happens locally in your browser. We do not collect the data you compare."
+        "q": "É seguro colar dados confidenciais?",
+        "a": "Sim. Seus dados JSON, YAML e JSONL são processados inteiramente no seu navegador e não são enviados aos nossos servidores."
       },
       {
-        "q": "How do I report bugs?",
-        "a": "Send an email to admin@smartjsondiff.com."
+        "q": "Como posso reportar bugs?",
+        "a": "Envie um e-mail para admin@smartjsondiff.com."
       }
     ],
-    "breadcrumbHome": "Home",
-    "breadcrumbFaq": "FAQ"
+    "breadcrumbHome": "Início",
+    "breadcrumbFaq": "Perguntas frequentes"
   },
   "formatSelector": {
-    "ariaWithLabel": "{{label}} format",
-    "ariaDefault": "Input format"
+    "ariaWithLabel": "Formato {{label}}",
+    "ariaDefault": "Formato de entrada"
   },
   "json2toon": {
-    "cta": "Try our JSON to TOON converter"
+    "cta": "Experimente nosso conversor de JSON para TOON"
   },
   "jsonEditor": {
-    "placeholder": "Paste or drag your input here...",
-    "loading": "Loading editor...",
-    "formatLabel": "Language",
-    "leftInput": "Entrada da Esquerda",
-    "rightInput": "Entrada da Direita",
-    "clearLeft": "Limpar entrada da esquerda",
-    "formatLeft": "Formatar entrada da esquerda",
+    "placeholder": "Cole ou arraste sua entrada aqui...",
+    "loading": "Carregando editor...",
+    "formatLabel": "Formato",
+    "leftInput": "Entrada esquerda",
+    "rightInput": "Entrada direita",
+    "clearLeft": "Limpar entrada esquerda",
+    "formatLeft": "Formatar entrada esquerda",
     "compare": "Comparar as duas entradas",
-    "formatRight": "Formatar entrada da direita",
-    "clearRight": "Limpar entrada da direita",
-    "inputEditors": "Diff input editors",
-    "comparisonActions": "Comparison actions",
-    "comparisonResults": "Comparison results",
-    "loadingDiff": "Loading editor..."
+    "formatRight": "Formatar entrada direita",
+    "clearRight": "Limpar entrada direita",
+    "inputEditors": "Editores de entrada do diff",
+    "comparisonActions": "Ações de comparação",
+    "comparisonResults": "Resultados da comparação",
+    "loadingDiff": "Carregando comparação..."
   },
   "diffViewer": {
-    "title": "Untitled",
-    "back": "Back",
-    "resultsRegion": "Comparison results",
-    "differencesView": "Differences view",
-    "equivalentTitle": "Inputs are equivalent!",
-    "equivalentBody": "No differences found between the two inputs after semantic normalization."
+    "title": "Sem título",
+    "back": "Voltar",
+    "resultsRegion": "Resultados da comparação",
+    "differencesView": "Visualização das diferenças",
+    "equivalentTitle": "As entradas são equivalentes!",
+    "equivalentBody": "Nenhuma diferença encontrada após a normalização semântica."
   }
 }
