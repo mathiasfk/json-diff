@@ -1,6 +1,5 @@
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { gtag } from '../services/analytics';
-import { Json2ToonCta } from './Json2ToonCta';
 import { useTranslation } from 'react-i18next';
 import i18n from '../i18n';
 import { DEFAULT_LOCALE, isLocale, type Locale } from '../i18n-config';
@@ -40,7 +39,6 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
           <p className="text-sm text-gray-400 mt-1">
             Compare JSON, YAML and JSONL semantically with smart array matching
           </p>
-          <Json2ToonCta />
         </div>
         {showNav ? (
           <nav aria-label="Primary" className="flex flex-col items-center gap-2 md:flex-row md:items-center md:gap-4">

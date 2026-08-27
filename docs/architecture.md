@@ -33,7 +33,7 @@ Reusable UI elements that encapsulate specific functionality:
 
 - `DiffViewer.tsx`: Displays side-by-side JSON comparison using Monaco Editor
 - `Header.tsx`: Application header with title and navigation
-- `Json2ToonCta.tsx`: Call-to-action component for related projects
+
 - `JsonEditor.tsx`: Custom JSON editor component with syntax highlighting and validation
 
 ### 2. Pages (`src/pages/`)

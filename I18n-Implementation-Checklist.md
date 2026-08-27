@@ -57,7 +57,6 @@ To complete i18n support for all languages, the following work remains:
 - FormatSelector
 - DiffViewer
 - JsonEditor
-- Json2ToonCta
 - Any modals, tooltips, or popups
 - Footer (if exists)
 - FAQ component
