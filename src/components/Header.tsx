@@ -43,7 +43,7 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
           <Json2ToonCta />
         </div>
         {showNav ? (
-          <nav aria-label="Primary">
+          <nav aria-label="Primary" className="flex flex-col items-center gap-2 md:flex-row md:items-center md:gap-4">
             {isFaq ? (
               <button
                 onClick={() => {
@@ -70,7 +70,6 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
             <LanguageSelector
               currentLocale={activeLocale}
               onSelect={changeLanguage}
-              className="ml-4"
             />
           </nav>
         ) : homeLink ? (
