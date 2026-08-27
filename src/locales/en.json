@@ -4,10 +4,10 @@
     "subtitle": "Compare JSON, YAML and JSONL semantically with smart array matching",
     "clearLeft": "Clear Left",
     "language": "Language",
-    "formatLeft": "TODO",
-    "compare": "TODO",
-    "formatRight": "TODO",
-    "clearRight": "TODO"
+    "formatLeft": "Format Left",
+    "compare": "Compare",
+    "formatRight": "Format Right",
+    "clearRight": "Clear Right"
   },
   "header": {
     "back": "Back",
@@ -17,9 +17,9 @@
     "homeAria": "Go to the Smart JSON Diff home page",
     "languageLabel": "Language",
     "subtitle": "Compare JSON, YAML and JSONL semantically with smart array matching",
-    "primaryNav": "TODO",
-    "backNav": "TODO",
-    "homeNav": "TODO"
+    "primaryNav": "Primary navigation",
+    "backNav": "Back navigation",
+    "homeNav": "Home navigation"
   },
   "editor": {
     "placeholder": "Paste or drag your input here...",
@@ -122,13 +122,13 @@
     "placeholder": "Paste or drag your input here...",
     "loading": "Loading editor...",
     "formatLabel": "Language",
-    "leftInput": "TODO",
-    "rightInput": "TODO",
-    "clearLeft": "TODO",
-    "formatLeft": "TODO",
-    "compare": "TODO",
-    "formatRight": "TODO",
-    "clearRight": "TODO",
+    "leftInput": "Left Input",
+    "rightInput": "Right Input",
+    "clearLeft": "Clear left input",
+    "formatLeft": "Format left input",
+    "compare": "Compare the two inputs",
+    "formatRight": "Format right input",
+    "clearRight": "Clear right input",
     "inputEditors": "Diff input editors",
     "comparisonActions": "Comparison actions",
     "comparisonResults": "Comparison results",
