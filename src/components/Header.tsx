@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { gtag } from '../services/analytics';
 import { Json2ToonCta } from './Json2ToonCta';
 import { useTranslation } from 'react-i18next';
@@ -17,19 +17,19 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
-  const { locale } = useParams<{ locale: string }>();
-  const activeLocale: Locale = isLocale(locale) ? locale : DEFAULT_LOCALE;
   const isFaq = location.pathname.endsWith('/faq');
+  const currentLanguage: Locale = isLocale(i18n.language) ? i18n.language : DEFAULT_LOCALE;
 
-  // Build a locale-prefixed path, preserving the current sub-route (/faq).
-  const localePath = (target: '' | 'faq') =>
-    target === 'faq' ? `/${activeLocale}/faq` : `/${activeLocale}`;
+  const getLocalePath = (lng: Locale, target: '' | 'faq') =>
+    target === 'faq' ? `/${lng}/faq` : `/${lng}`;
 
   const changeLanguage = (lng: Locale) => {
     i18n.changeLanguage(lng);
+    // Persist the language choice
+    localStorage.setItem('i18nextLng', lng);
     gtag('event', 'language_change', { language: lng });
     // Keep the URL in sync with the chosen locale while preserving the route.
-    navigate(localePath(isFaq ? 'faq' : ''));
+    navigate(getLocalePath(lng, isFaq ? 'faq' : ''));
   };
 
   return (
@@ -57,7 +57,7 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
               </button>
             ) : (
               <Link
-                to={localePath('faq')}
+                to={getLocalePath(currentLanguage, 'faq')}
                 onClick={() => {
                   gtag('event', 'faq_open_click');
                 }}
@@ -68,7 +68,6 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
             )}
             {/* Language selector */}
             <LanguageSelector
-              currentLocale={activeLocale}
               onSelect={changeLanguage}
               className="ml-4"
             />
@@ -76,7 +75,7 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
         ) : homeLink ? (
           <nav aria-label="Primary">
             <Link
-              to={localePath('')}
+              to={getLocalePath(currentLanguage, '')}
               className="text-sm text-gray-400 hover:text-gray-200"
               aria-label="Go to the Smart JSON Diff home page"
             >
