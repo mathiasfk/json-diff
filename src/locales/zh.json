@@ -1,7 +1,7 @@
 {
   "app": {
     "title": "Smart JSON Diff",
-    "subtitle": "对 JSON、YAML 和 JSONL 进行语义比较，并智能匹配数组元素",
+    "subtitle": "Compare JSON, YAML and JSONL semantically with smart array matching",
     "clearLeft": "清除左侧",
     "language": "语言",
     "formatLeft": "格式化左侧",
