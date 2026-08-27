@@ -1,127 +1,127 @@
 {
   "app": {
-    "title": "智能JSON差异",
-    "subtitle": "将JSON、YAML和JSONL语义与智能数组匹配进行比较",
-    "clearLeft": "Clear Left",
-    "language": "Language",
+    "title": "Smart JSON Diff",
+    "subtitle": "对 JSON、YAML 和 JSONL 进行语义比较，并智能匹配数组元素",
+    "clearLeft": "清除左侧",
+    "language": "语言",
     "formatLeft": "格式化左侧",
     "compare": "比较",
     "formatRight": "格式化右侧",
     "clearRight": "清除右侧"
   },
   "header": {
-    "back": "回到",
-    "faq": "常见问题解答",
+    "back": "返回",
+    "faq": "常见问题",
     "home": "首页",
-    "backAria": "转到上一视图",
-    "homeAria": "转到智能JSON差异主页",
+    "backAria": "返回上一页",
+    "homeAria": "前往 Smart JSON Diff 首页",
     "languageLabel": "语言",
-    "subtitle": "Compare JSON, YAML and JSONL semantically with smart array matching",
+    "subtitle": "对 JSON、YAML 和 JSONL 进行语义比较，并智能匹配数组元素",
     "primaryNav": "主导航",
-    "backNav": "返回导航",
-    "homeNav": "主页导航"
+    "backNav": "返回",
+    "homeNav": "首页"
   },
   "editor": {
-    "placeholder": "将您的输入粘贴或拖动到此处...",
+    "placeholder": "在此粘贴或拖入您的内容...",
     "leftInput": "左侧输入",
     "rightInput": "右侧输入",
     "format": "格式",
-    "loading": "正在加载编辑器....",
-    "invalidJsonl": "JSONL无效：行{{line}}不是单行JSON值({{message}})"
+    "loading": "正在加载编辑器...",
+    "invalidJsonl": "JSONL 无效：第 {{line}} 行不是单行 JSON 值（{{message}}）"
   },
   "actions": {
     "clearLeft": "清除左侧",
-    "formatLeft": "向左设置格式",
+    "formatLeft": "格式化左侧",
     "compare": "比较",
-    "formatRight": "向右设置格式",
+    "formatRight": "格式化右侧",
     "clearRight": "清除右侧",
     "clearLeftAria": "清除左侧输入",
-    "formatLeftAria": "格式化和美化左侧输入",
-    "compareAria": "在语义上比较两个输入",
-    "formatRightAria": "格式化和美化正确的输入",
-    "clearRightAria": "清除正确的输入"
+    "formatLeftAria": "格式化并美化左侧输入",
+    "compareAria": "对两个输入进行语义比较",
+    "formatRightAria": "格式化并美化右侧输入",
+    "clearRightAria": "清除右侧输入"
   },
   "diff": {
-    "results": "BOM比对结果",
+    "results": "比较结果",
     "backToEdit": "返回编辑",
-    "equivalent": "输入是等效的！",
-    "noDifferences": "语义归一化后，两个输入之间未发现差异。",
+    "equivalent": "两个输入等价！",
+    "noDifferences": "语义规范化后未发现差异。",
     "backAria": "返回输入编辑器",
-    "resultsAria": "BOM比对结果",
+    "resultsAria": "比较结果",
     "diffAria": "差异视图",
-    "loading": "加载"
+    "loading": "正在加载差异..."
   },
   "cta": {
-    "json2toon": "尝试我们的JSON到卡通转换器"
+    "json2toon": "试试我们的 JSON 转 TOON 转换器"
   },
   "faq": {
-    "title": "经常问的问题",
+    "title": "常见问题",
     "home": "首页",
-    "breadcrumbCurrent": "常见问题解答",
+    "breadcrumbCurrent": "常见问题",
     "q1": "比较是如何进行的？",
-    "a1": "Smart JSON Diff执行语义比较，而不是朴素的diff。它通过按字母顺序排列对象属性来规范化两个输入，并重新排列数组以对齐等效项。当两个数组中都存在唯一键时，项目将按该键对齐；否则，项目将按归一化内容进行匹配，以最大限度地减少噪点，并仅显示最相关的差异。比较完全在浏览器中使用jsondiffpatch进行。",
-    "q2": "这与其他数以千计的JSON diff工具有何不同？",
-    "a2": "Smart JSON Diff将数组项视为多集，这意味着它认为数组中项的顺序无关紧要。这与其他将数组视为序列的JSON diff工具形成鲜明对比，这意味着数组中项的顺序很重要。例如，数组[1、2、3]和[3、2、1]被Smart JSON Diff视为等价，而它们被其他JSON Diff工具视为不同。",
+    "a1": "Smart JSON Diff 不只是进行简单的文本 Diff，而是执行语义比较。它会通过按字母顺序排列对象属性来规范化两个输入，并智能地对齐数组元素。当两个数组都包含唯一键时，元素会根据该键进行对齐；否则，会根据规范化后的内容进行匹配，以尽量减少无关差异，并突出显示最相关的变化。整个比较过程都在您的浏览器中完成，并使用 jsondiffpatch 进行底层 Diff 处理。",
+    "q2": "Smart JSON Diff 与其他 JSON Diff 工具有何不同？",
+    "a2": "许多传统的 JSON Diff 工具会将数组视为有序序列，因此元素的顺序会影响比较结果。Smart JSON Diff 将数组元素视为多重集合，这意味着元素的顺序不会影响结果，但重复元素仍会被计入。例如，[1, 2, 3] 和 [3, 2, 1] 会被 Smart JSON Diff 视为等价。",
     "q3": "差异中的颜色是什么意思？",
-    "a3": "绿色表示添加，红色表示删除。整个更改后的线条突出显示，准确更改后的线段以更饱和的口音突出显示。",
-    "q4": "属性顺序是否会影响结果？",
-    "a4": "否。属性在比较前按字母顺序排序，因此具有相同含义但不同键顺序的对象被认为是等效的。例如，对象{a: 1, b: 2}和{b: 2, a: 1}被认为是等价的。",
-    "q5": "数组顺序是否会影响结果？",
-    "a5": "否。最佳排序键是自动找到的，因此具有相同项目但不同顺序的数组被认为是等效的。例如，数组[{id: 1, name: \"John\"}, {id: 2, name: \"Jane\"}]和[{id: 2, name: \"Jane\"}, {id: 1, name: \"John\"}]被认为是等效的。",
-    "q6": "如何处理数组差异？",
-    "a6": "我们发现了一种最大限度地提高两个版本之间相似性的排序。当两个数组中都存在唯一键时，项目将按该键对齐；否则，项目将按标准化内容对齐，因此只能看到最相关的差异。数组项目被视为多集：重新排序相同的项目不会产生差异，因此[1, 2, 3]和[3, 2, 1]被认为是等效的。",
-    "q7": "粘贴敏感数据是否安全？",
-    "a7": "是的。所有处理都在您的浏览器中本地进行。我们不会收集您比较的数据。",
-    "q8": "如何报告漏洞？",
-    "a8": "发送电子邮件至admin@smartjsondiff.com。",
+    "a3": "绿色表示新增，红色表示删除。整行发生变化时会被突出显示，而具体发生变化的部分会使用更明显的颜色进一步突出。",
+    "q4": "属性顺序会影响结果吗？",
+    "a4": "不会。比较前会按字母顺序对属性进行排序，因此内容相同但属性顺序不同的对象会被视为等价。例如，对象 { \"a\": 1, \"b\": 2 } 和 { \"b\": 2, \"a\": 1 } 会被视为等价。",
+    "q5": "数组顺序会影响结果吗？",
+    "a5": "不会。Smart JSON Diff 会自动找到最佳方式来对齐数组元素，因此包含相同元素但顺序不同的数组会被视为等价。例如，数组 [{ \"id\": 1, \"name\": \"John\" }, { \"id\": 2, \"name\": \"Jane\" }] 和 [{ \"id\": 2, \"name\": \"Jane\" }, { \"id\": 1, \"name\": \"John\" }] 会被视为等价。",
+    "q6": "数组差异是如何处理的？",
+    "a6": "Smart JSON Diff 会寻找能够最大化两个版本相似度的对齐方式。当两个数组都包含唯一键时，元素会根据该键进行对齐；否则，会根据规范化后的内容进行对齐。这样可以尽量减少无关差异，并突出显示最相关的变化。重新排列相同的元素不会产生差异，而新增、删除或修改的元素仍然会被检测出来。",
+    "q7": "粘贴敏感数据安全吗？",
+    "a7": "是的。您的 JSON、YAML 和 JSONL 数据完全在浏览器中处理，不会上传到我们的服务器。",
+    "q8": "如何报告错误？",
+    "a8": "请发送电子邮件至 admin@smartjsondiff.com。",
     "items": [
       {
-        "q": "How does the comparison work?",
-        "a": "Instead of a naive diff, Smart JSON Diff performs a semantic comparison. It normalizes both inputs by sorting object properties alphabetically and reorders arrays to align equivalent items. When a unique key exists across both arrays, items are aligned by that key; otherwise, items are matched by normalized content to minimize noise and surface only the most relevant differences. The comparison runs entirely in your browser using jsondiffpatch under the hood."
+        "q": "比较是如何进行的？",
+        "a": "Smart JSON Diff 不只是进行简单的文本 Diff，而是执行语义比较。它会通过按字母顺序排列对象属性来规范化两个输入，并智能地对齐数组元素。当两个数组都包含唯一键时，元素会根据该键进行对齐；否则，会根据规范化后的内容进行匹配，以尽量减少无关差异，并突出显示最相关的变化。整个比较过程都在您的浏览器中完成，并使用 jsondiffpatch 进行底层 Diff 处理。"
       },
       {
-        "q": "How is this different from other thousands of JSON diff tools?",
-        "a": "Smart JSON Diff treats array items as multisets, meaning it considers the order of items in the array to be irrelevant. This is in contrast to other JSON diff tools that treat arrays as sequences, meaning the order of items in the array is significant. For example, the arrays [1, 2, 3] and [3, 2, 1] are considered equivalent by Smart JSON Diff, while they are considered different by other JSON diff tools."
+        "q": "Smart JSON Diff 与其他 JSON Diff 工具有何不同？",
+        "a": "许多传统的 JSON Diff 工具会将数组视为有序序列，因此元素的顺序会影响比较结果。Smart JSON Diff 将数组元素视为多重集合，这意味着元素的顺序不会影响结果，但重复元素仍会被计入。例如，[1, 2, 3] 和 [3, 2, 1] 会被 Smart JSON Diff 视为等价。"
       },
       {
-        "q": "What do the colors mean in the diff?",
-        "a": "Green indicates additions and red indicates removals. The entire changed line is highlighted, and the exact changed segment is emphasized with a more saturated accent."
+        "q": "差异中的颜色是什么意思？",
+        "a": "绿色表示新增，红色表示删除。整行发生变化时会被突出显示，而具体发生变化的部分会使用更明显的颜色进一步突出。"
       },
       {
-        "q": "Does property order affect the result?",
-        "a": "No. Properties are sorted alphabetically before comparison, so objects with the same meaning but different key order are considered equivalent. For example, the objects { a: 1, b: 2 } and { b: 2, a: 1 } are considered equivalent."
+        "q": "属性顺序会影响结果吗？",
+        "a": "不会。比较前会按字母顺序对属性进行排序，因此内容相同但属性顺序不同的对象会被视为等价。例如，对象 { \"a\": 1, \"b\": 2 } 和 { \"b\": 2, \"a\": 1 } 会被视为等价。"
       },
       {
-        "q": "Does array order affect the result?",
-        "a": "No. The best sorting key is found automatically, so arrays with the same items but different order are considered equivalent. For example, the arrays [{ id: 1, name: \"John\" }, { id: 2, name: \"Jane\" }] and [{ id: 2, name: \"Jane\" }, { id: 1, name: \"John\" }] are considered equivalent."
+        "q": "数组顺序会影响结果吗？",
+        "a": "不会。Smart JSON Diff 会自动找到最佳方式来对齐数组元素，因此包含相同元素但顺序不同的数组会被视为等价。例如，数组 [{ \"id\": 1, \"name\": \"John\" }, { \"id\": 2, \"name\": \"Jane\" }] 和 [{ \"id\": 2, \"name\": \"Jane\" }, { \"id\": 1, \"name\": \"John\" }] 会被视为等价。"
       },
       {
-        "q": "How are array differences handled?",
-        "a": "We find an ordering that maximizes similarity between the two versions. When a unique key is present in both arrays, items are aligned by that key; otherwise items are aligned by normalized content, so you see only the most relevant differences. Array items are treated as a multiset: reordering the same items produces no diff, so [1, 2, 3] and [3, 2, 1] are considered equivalent."
+        "q": "数组差异是如何处理的？",
+        "a": "Smart JSON Diff 会寻找能够最大化两个版本相似度的对齐方式。当两个数组都包含唯一键时，元素会根据该键进行对齐；否则，会根据规范化后的内容进行对齐。这样可以尽量减少无关差异，并突出显示最相关的变化。重新排列相同的元素不会产生差异，而新增、删除或修改的元素仍然会被检测出来。"
       },
       {
-        "q": "Is it safe to paste sensitive data?",
-        "a": "Yes. All processing happens locally in your browser. We do not collect the data you compare."
+        "q": "粘贴敏感数据安全吗？",
+        "a": "是的。您的 JSON、YAML 和 JSONL 数据完全在浏览器中处理，不会上传到我们的服务器。"
       },
       {
-        "q": "How do I report bugs?",
-        "a": "Send an email to admin@smartjsondiff.com."
+        "q": "如何报告错误？",
+        "a": "请发送电子邮件至 admin@smartjsondiff.com。"
       }
     ],
-    "breadcrumbHome": "Home",
-    "breadcrumbFaq": "FAQ"
+    "breadcrumbHome": "首页",
+    "breadcrumbFaq": "常见问题"
   },
   "formatSelector": {
-    "ariaWithLabel": "{{label}} format",
-    "ariaDefault": "Input format"
+    "ariaWithLabel": "{{label}} 格式",
+    "ariaDefault": "输入格式"
   },
   "json2toon": {
-    "cta": "Try our JSON to TOON converter"
+    "cta": "试试我们的 JSON 转 TOON 转换器"
   },
   "jsonEditor": {
-    "placeholder": "Paste or drag your input here...",
-    "loading": "Loading editor...",
-    "formatLabel": "Language",
+    "placeholder": "在此粘贴或拖入您的内容...",
+    "loading": "正在加载编辑器...",
+    "formatLabel": "格式",
     "leftInput": "左侧输入",
     "rightInput": "右侧输入",
     "clearLeft": "清除左侧输入",
@@ -129,17 +129,17 @@
     "compare": "比较两个输入",
     "formatRight": "格式化右侧输入",
     "clearRight": "清除右侧输入",
-    "inputEditors": "Diff input editors",
-    "comparisonActions": "Comparison actions",
-    "comparisonResults": "Comparison results",
-    "loadingDiff": "Loading editor..."
+    "inputEditors": "Diff 输入编辑器",
+    "comparisonActions": "比较操作",
+    "comparisonResults": "比较结果",
+    "loadingDiff": "正在加载比较结果..."
   },
   "diffViewer": {
-    "title": "Untitled",
-    "back": "Back",
-    "resultsRegion": "Comparison results",
-    "differencesView": "Differences view",
-    "equivalentTitle": "Inputs are equivalent!",
-    "equivalentBody": "No differences found between the two inputs after semantic normalization."
+    "title": "无标题",
+    "back": "返回",
+    "resultsRegion": "比较结果",
+    "differencesView": "差异视图",
+    "equivalentTitle": "两个输入等价！",
+    "equivalentBody": "语义规范化后未发现差异。"
   }
 }
