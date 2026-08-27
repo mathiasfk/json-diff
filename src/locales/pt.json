@@ -1,7 +1,7 @@
 {
   "app": {
     "title": "Smart JSON Diff",
-    "subtitle": "Compare JSON, YAML and JSONL semantically with smart array matching",
+    "subtitle": "Compare JSON, YAML e JSONL semanticamente com comparação inteligente de arrays",
     "clearLeft": "Limpar esquerda",
     "language": "Idioma",
     "formatLeft": "Formatar esquerda",

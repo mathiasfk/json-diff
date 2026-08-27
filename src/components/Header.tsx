@@ -37,7 +37,7 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
         <div>
           <h1 className="text-2xl font-bold">{t('app.title')}</h1>
           <p className="text-sm text-gray-400 mt-1">
-            {t('app.subtitle')}
+            Compare JSON, YAML and JSONL semantically with smart array matching
           </p>
         </div>
         {showNav ? (
