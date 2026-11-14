@@ -185,7 +185,7 @@ formatJSON(obj: any, normalize: boolean = false): string
 2. **Additional Output Formats**
    - Create new formatting functions in utils/
    - Add export/download buttons in DiffViewer
-   - Support for JSON patch, side-by-side XML, etc.
+   - Support for JSON patch and additional comparison views.
 
 3. **Enhanced Analytics**
    - Track specific diff types (array moves, value changes, etc.)

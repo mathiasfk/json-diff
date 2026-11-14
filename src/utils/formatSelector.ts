@@ -88,15 +88,13 @@ export function detectFormatFromFilename(filename: string): Format {
  *
  * Detection order matters: JSONL only "smells" right when every data line
  * parses, so JSON is attempted first (the strict, cheap check), then JSONL
- * (one JSON value per line), then XML, then YAML. Anything that matches
+ * (one JSON value per line), then YAML. Anything that matches
  * nothing is reported as plain text.
  *
- * Note: the tool only diffs the 3 serialization formats, so `xml`/`plaintext`
- * are returned as `'json'` (the default) by callers that need a `Format`. The
- * dedicated `detectInputFormat` return type (`DetectedFormat`) is broader so
- * the UI can surface "this isn't a supported diff format" without guessing.
+ * Unrecognized content is reported as plain text; callers that need a
+ * selectable format fall back to JSON.
  */
-export type DetectedFormat = Format | 'xml' | 'plaintext';
+export type DetectedFormat = Format | 'plaintext';
 
 /** Result of {@link detectInputFormat}: the guessed format plus a confidence flag. */
 export interface DetectResult {
@@ -163,15 +161,6 @@ export function detectInputFormat(text: string): DetectResult {
     if (allJson) {
       return { format: 'jsonl', confident: true };
     }
-  }
-
-  // XML: a document or fragment wrapped in tags (also tolerates a leading
-  // `<?xml ...?>` declaration). Require a matching closing tag for confidence.
-  if (
-    /^\s*<\?xml\b/.test(trimmed) ||
-    (/^\s*<([a-zA-Z_][\w.-]*)(\s[^>]*)?>/.test(trimmed) && trimmed.includes('</'))
-  ) {
-    return { format: 'xml', confident: true };
   }
 
   // YAML: block mapping (lines of "key: value") or block sequence ("- item").

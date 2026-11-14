@@ -33,7 +33,7 @@ describe('formatSelector', () => {
     });
 
     it('falls back to JSON for unknown formats', () => {
-      expect(normalizeFormat('xml')).toBe('json');
+      expect(normalizeFormat('csv')).toBe('json');
       expect(normalizeFormat('toml')).toBe('json');
     });
 

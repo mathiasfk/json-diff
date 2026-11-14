@@ -134,15 +134,9 @@ Tuesday we fixed the regression.`;
     });
   });
 
-  describe('XML / mixed / plaintext', () => {
-    it('detects XML documents', () => {
-      const input = `<?xml version="1.0"?>
-<note><to>Alice</to><from>Bob</from></note>`;
-      expect(detectInputFormat(input)).toEqual({ format: 'xml', confident: true });
-    });
-
-    it('detects an XML fragment with closing tags', () => {
-      expect(detectInputFormat('<root><child>1</child></root>')).toEqual({ format: 'xml', confident: true });
+  describe('mixed / plaintext', () => {
+    it('treats unsupported markup as plain text', () => {
+      expect(detectInputFormat('<root><child>1</child></root>')).toEqual({ format: 'plaintext', confident: false });
     });
 
     it('returns plaintext for plain prose', () => {
