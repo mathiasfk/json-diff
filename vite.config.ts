@@ -21,7 +21,7 @@ export default defineConfig({
       mangle: {
         safari10: true
       },
-      output: {
+      format: {
         comments: false,
       }
     },

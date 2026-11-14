@@ -82,7 +82,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
     // Configure validation only for JSON-family inputs; other formats use a
     // plain text editor without schema validation.
     if (format === 'json') {
-      monacoInstance.languages.json.jsonDefaults.setDiagnosticsOptions({
+      monacoInstance.json.jsonDefaults.setDiagnosticsOptions({
         validate: true,
         allowComments: false,
         schemas: [],
@@ -92,7 +92,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
       // jsonl uses its own line-level validation (validateJsonlLines) rather
       // than the schema-validating JSON worker, so disable JSON diagnostics
       // for every non-json language to avoid spurious cross-line errors.
-      monacoInstance.languages.json.jsonDefaults.setDiagnosticsOptions({
+      monacoInstance.json.jsonDefaults.setDiagnosticsOptions({
         validate: false,
         schemas: [],
         enableSchemaRequest: false,

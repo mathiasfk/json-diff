@@ -16,14 +16,16 @@ export default defineConfig({
     include: ['src/**/*.{test,spec}.{ts,tsx,js,jsx}'],
     projects: [
       {
+        extends: false,
         test: {
           name: 'node',
+          exclude: ['src/**/*.integration.test.{ts,tsx}'],
           environment: 'node',
           include: ['src/**/*.{test,spec}.{ts,tsx,js,jsx}'],
-          exclude: ['src/**/*.integration.test.{ts,tsx}'],
         },
       },
       {
+        extends: false,
         test: {
           name: 'jsdom',
           environment: 'jsdom',
