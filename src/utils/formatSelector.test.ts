@@ -33,7 +33,7 @@ describe('formatSelector', () => {
     });
 
     it('falls back to JSON for unknown formats', () => {
-      expect(normalizeFormat('xml')).toBe('json');
+      expect(normalizeFormat('csv')).toBe('json');
       expect(normalizeFormat('toml')).toBe('json');
     });
 
@@ -164,5 +164,16 @@ describe('formatSelector', () => {
       expect(normalizeFormat(f)).toBe('yaml');
       expect(normalizeFormat('yaml')).toBe('yaml');
     });
+  });
+});
+
+
+describe('YAML flow collection validation', () => {
+  it.each(['a: [unterminated', '{a: 1'])('rejects an unclosed flow collection: %s', input => {
+    expect(() => parse(input, 'yaml')).toThrow();
+  });
+  it('preserves valid flow collections', () => {
+    expect(parse('a: [1, 2]', 'yaml')).toEqual({ a: [1, 2] });
+    expect(parse('{a: 1}', 'yaml')).toEqual({ a: 1 });
   });
 });

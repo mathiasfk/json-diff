@@ -43,7 +43,7 @@ export default function Faq() {
     <div className="min-h-screen bg-gray-900 text-gray-100">
       <Header showNav={false} homeLink={true} />
       <main className="max-w-screen-2xl mx-auto p-6" role="main">
-        <nav aria-label="Breadcrumb" className="mb-4">
+        <nav aria-label={t('faq.breadcrumbNav')} className="mb-4">
           <a href="/" className="text-sm text-gray-400 hover:text-gray-200">{t('faq.breadcrumbHome')}</a>
           <span className="px-2 text-gray-500" aria-hidden="true">/</span>
           <span className="text-sm text-gray-300">{t('faq.breadcrumbFaq')}</span>

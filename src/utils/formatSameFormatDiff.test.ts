@@ -14,17 +14,17 @@ describe('formatSameFormatDiff', () => {
     expect(SAME_FORMAT_DIFF_FORMATS).toEqual(['json', 'jsonl', 'yaml']);
   });
 
-  it('returns null for unsupported formats (xml/plaintext) so callers fall back to JSON', () => {
+  it('returns null for unsupported formats (csv/plaintext) so callers fall back to JSON', () => {
     const left = { a: 1 };
     const right = { a: 2 };
-    expect(formatSameFormatDiff(left, right, 'xml' as Format)).toBeNull();
+    expect(formatSameFormatDiff(left, right, 'csv' as Format)).toBeNull();
     expect(formatSameFormatDiff(left, right, 'plaintext' as Format)).toBeNull();
   });
 
   it('returns null for unsupported formats so callers fall back to JSON', () => {
     const left = { a: 1 };
     const right = { a: 2 };
-    expect(formatSameFormatDiff(left, right, 'xml' as Format)).toBeNull();
+    expect(formatSameFormatDiff(left, right, 'csv' as Format)).toBeNull();
   });
 });
 

@@ -19,9 +19,11 @@ i18n
     fallbackLng: 'en',
     debug: import.meta.env.DEV,
     returnObjects: true,
+    interpolation: { escapeValue: false }, // React escapes interpolated text when rendering.
     detection: {
       order: ['localStorage', 'navigator'],
-      caches: ['localStorage'],
+      // Header persists explicitly with error handling for blocked storage.
+      caches: [],
     },
     react: {
       useSuspense: false,

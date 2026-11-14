@@ -109,7 +109,8 @@
       }
     ],
     "breadcrumbHome": "Início",
-    "breadcrumbFaq": "Perguntas frequentes"
+    "breadcrumbFaq": "Perguntas frequentes",
+    "breadcrumbNav": "Navegação estrutural"
   },
   "formatSelector": {
     "ariaWithLabel": "Formato {{label}}",
@@ -135,11 +136,16 @@
     "loadingDiff": "Carregando comparação..."
   },
   "diffViewer": {
-    "title": "Sem título",
+    "title": "Resultado da comparação",
     "back": "Voltar",
     "resultsRegion": "Resultados da comparação",
     "differencesView": "Visualização das diferenças",
     "equivalentTitle": "As entradas são equivalentes!",
     "equivalentBody": "Nenhuma diferença encontrada após a normalização semântica."
+  },
+  "errors": {
+    "empty": "A entrada não pode estar vazia",
+    "invalid": "Entrada inválida",
+    "invalidDetail": "Entrada inválida: {{message}}"
   }
 }

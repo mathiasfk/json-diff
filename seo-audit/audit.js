@@ -77,10 +77,6 @@ function auditHome(html, headers, status, robotsText) {
   const title = getTag(html, 'title') || '';
   const desc = getMeta(html, 'description') || '';
   const h1Count = countTags(html, 'h1');
-  const headings = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
-    .map((t) => countTags(html, t))
-    .map((c, i) => (c ? i + 1 : null))
-    .filter((x) => x !== null);
   // heading skip detection within sequence of distinct levels present
   const present = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].map((t, i) => ({ lvl: i + 1, c: countTags(html, t) })).filter((x) => x.c > 0).map((x) => x.lvl);
   let skip = false;

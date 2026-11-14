@@ -37,7 +37,7 @@ function setupDom() {
     get: () => 1000,
   });
   (globalThis as any).window = win;
-  (globalThis as any).document = win.document;
+  Object.defineProperty(globalThis, 'document', { configurable: true, writable: true, value: win.document });
   return dom;
 }
 

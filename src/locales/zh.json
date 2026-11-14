@@ -109,7 +109,8 @@
       }
     ],
     "breadcrumbHome": "首页",
-    "breadcrumbFaq": "常见问题"
+    "breadcrumbFaq": "常见问题",
+    "breadcrumbNav": "面包屑导航"
   },
   "formatSelector": {
     "ariaWithLabel": "{{label}} 格式",
@@ -135,11 +136,16 @@
     "loadingDiff": "正在加载比较结果..."
   },
   "diffViewer": {
-    "title": "无标题",
+    "title": "比较结果",
     "back": "返回",
     "resultsRegion": "比较结果",
     "differencesView": "差异视图",
     "equivalentTitle": "两个输入等价！",
     "equivalentBody": "语义规范化后未发现差异。"
+  },
+  "errors": {
+    "empty": "输入不能为空",
+    "invalid": "输入无效",
+    "invalidDetail": "输入无效：{{message}}"
   }
 }
