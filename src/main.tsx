@@ -6,7 +6,7 @@ import Faq from './pages/Faq'
 import { LocaleLayout } from './LocaleLayout'
 import { DEFAULT_LOCALE, detectInitialLocale } from './i18n-config'
 import './index.css'
-import './i18n' // Ensure i18n is initialized
+import './i18n'
 
 // Disable StrictMode in production to reduce TBT
 const isProduction = import.meta.env.PROD
@@ -29,9 +29,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           path="/:locale/faq"
           element={
             <LocaleLayout>
-              <React.Suspense fallback={<div className="flex items-center justify-center min-h-screen bg-gray-900 text-gray-300">Loading...</div>}>
-                <Faq />
-              </React.Suspense>
+              <Faq />
             </LocaleLayout>
           }
         />

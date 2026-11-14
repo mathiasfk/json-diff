@@ -22,6 +22,7 @@ export function LocaleLayout({ children }: LocaleLayoutProps) {
   const validLocale = isLocale(locale) ? locale : null;
 
   useEffect(() => {
+    if (validLocale) document.documentElement.lang = validLocale;
     if (validLocale && i18n.language !== validLocale) {
       // changeLanguage is idempotent if already set; no analytics event here
       // (the language selector in Header owns that signal).

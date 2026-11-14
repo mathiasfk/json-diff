@@ -166,3 +166,14 @@ describe('formatSelector', () => {
     });
   });
 });
+
+
+describe('YAML flow collection validation', () => {
+  it.each(['a: [unterminated', '{a: 1'])('rejects an unclosed flow collection: %s', input => {
+    expect(() => parse(input, 'yaml')).toThrow();
+  });
+  it('preserves valid flow collections', () => {
+    expect(parse('a: [1, 2]', 'yaml')).toEqual({ a: [1, 2] });
+    expect(parse('{a: 1}', 'yaml')).toEqual({ a: 1 });
+  });
+});

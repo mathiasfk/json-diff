@@ -17,7 +17,7 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const isFaq = location.pathname.endsWith('/faq');
-  const currentLanguage: Locale = isLocale(i18n.language) ? i18n.language : DEFAULT_LOCALE;
+  const currentLanguage: Locale = isLocale(i18n.resolvedLanguage) ? i18n.resolvedLanguage : DEFAULT_LOCALE;
 
   const getLocalePath = (lng: Locale, target: '' | 'faq') =>
     target === 'faq' ? `/${lng}/faq` : `/${lng}`;
@@ -25,7 +25,7 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
   const changeLanguage = (lng: Locale) => {
     i18n.changeLanguage(lng);
     // Persist the language choice
-    localStorage.setItem('i18nextLng', lng);
+    try { localStorage.setItem('i18nextLng', lng); } catch { /* Storage may be unavailable. */ }
     gtag('event', 'language_change', { language: lng });
     // Keep the URL in sync with the chosen locale while preserving the route.
     navigate(getLocalePath(lng, isFaq ? 'faq' : ''));
@@ -37,11 +37,11 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
         <div>
           <h1 className="text-2xl font-bold">{t('app.title')}</h1>
           <p className="text-sm text-gray-400 mt-1">
-            Compare JSON, YAML and JSONL semantically with smart array matching
+            {t('header.subtitle')}
           </p>
         </div>
         {showNav ? (
-          <nav aria-label="Primary" className="flex flex-col items-center gap-2 md:flex-row md:items-center md:gap-4">
+          <nav aria-label={t('header.primaryNav')} className="flex flex-col items-center gap-2 md:flex-row md:items-center md:gap-4">
             {isFaq ? (
               <button
                 onClick={() => {
@@ -49,9 +49,9 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
                   navigate(-1);
                 }}
                 className="text-sm text-gray-400 hover:text-gray-200"
-                aria-label="Go back to previous view"
+                aria-label={t('header.backAria')}
               >
-                ← Back
+                ← {t('header.back')}
               </button>
             ) : (
               <Link
@@ -61,22 +61,23 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
                 }}
                 className="text-sm text-gray-400 hover:text-gray-200"
               >
-                FAQ
+                {t('header.faq')}
               </Link>
             )}
             {/* Language selector */}
             <LanguageSelector
+              currentLocale={currentLanguage}
               onSelect={changeLanguage}
             />
           </nav>
         ) : homeLink ? (
-          <nav aria-label="Primary">
+          <nav aria-label={t('header.primaryNav')}>
             <Link
               to={getLocalePath(currentLanguage, '')}
               className="text-sm text-gray-400 hover:text-gray-200"
-              aria-label="Go to the Smart JSON Diff home page"
+              aria-label={t('header.homeAria')}
             >
-              ← Home
+              ← {t('header.home')}
             </Link>
           </nav>
         ) : null}

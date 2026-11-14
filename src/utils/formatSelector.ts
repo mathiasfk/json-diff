@@ -510,6 +510,10 @@ function parseYamlNodeFromLines(lines: LogicalLine[], parentIndent: number, bloc
 /** Parse YAML flow collection ([...] or {...}) — supports one level of nesting. */
 function parseYamlFlow(token: string): unknown {
   const trimmed = token.trim();
+  if ((trimmed.startsWith('[') && !trimmed.endsWith(']')) ||
+      (trimmed.startsWith('{') && !trimmed.endsWith('}'))) {
+    throw new Error('Unclosed YAML flow collection');
+  }
   if (trimmed.startsWith('[')) {
     const inner = trimmed.slice(1, -1).trim();
     if (inner === '') return [];

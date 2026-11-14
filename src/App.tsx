@@ -9,6 +9,7 @@ import type { Format } from './utils/formatSelector';
 import { gtag } from './services/analytics';
 
 type ViewMode = 'edit' | 'compare';
+type InputError = { key: 'errors.empty' | 'errors.invalid' | 'errors.invalidDetail'; message?: string };
 
 function App() {
   const { t } = useTranslation();
@@ -26,8 +27,8 @@ function App() {
   const [rightJson, setRightJson] = useState('');
   const [leftFormat, setLeftFormat] = useState<Format>(DEFAULT_FORMAT);
   const [rightFormat, setRightFormat] = useState<Format>(DEFAULT_FORMAT);
-  const [leftError, setLeftError] = useState('');
-  const [rightError, setRightError] = useState('');
+  const [leftError, setLeftError] = useState<InputError | null>(null);
+  const [rightError, setRightError] = useState<InputError | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>('edit');
   const [diffResult, setDiffResult] = useState<{
     left: string;
@@ -130,9 +131,9 @@ function App() {
     } catch { void 0; }
   }, [diffResult, storageLoaded]);
 
-  const parseInput = (text: string, format: Format): { valid: boolean; parsed?: unknown; error?: string } => {
+  const parseInput = (text: string, format: Format): { valid: boolean; parsed?: unknown; error?: InputError } => {
     if (!text.trim()) {
-      return { valid: false, error: 'Input cannot be empty' };
+      return { valid: false, error: { key: 'errors.empty' } };
     }
 
     try {
@@ -143,14 +144,14 @@ function App() {
         ? error.message
         : error instanceof Error
           ? error.message
-          : 'Invalid input';
-      return { valid: false, error: message };
+          : '';
+      return { valid: false, error: message ? { key: 'errors.invalidDetail', message } : { key: 'errors.invalid' } };
     }
   };
 
   const handleCompare = () => {
-    setLeftError('');
-    setRightError('');
+    setLeftError(null);
+    setRightError(null);
 
     gtag('event', 'compare_click', { left_chars: leftJson.length, right_chars: rightJson.length });
 
@@ -159,13 +160,13 @@ function App() {
 
     if (!leftResult.valid) {
       gtag('event', 'invalid_input', { side: 'left', format: leftFormat });
-      setLeftError(leftResult.error || 'Invalid input');
+      setLeftError(leftResult.error || { key: 'errors.invalid' });
       return;
     }
 
     if (!rightResult.valid) {
       gtag('event', 'invalid_input', { side: 'right', format: rightFormat });
-      setRightError(rightResult.error || 'Invalid input');
+      setRightError(rightResult.error || { key: 'errors.invalid' });
       return;
     }
 
@@ -206,8 +207,8 @@ function App() {
     gtag('event', 'back_to_edit');
     setViewMode('edit');
     setDiffResult(null);
-    setLeftError('');
-    setRightError('');
+    setLeftError(null);
+    setRightError(null);
   };
 
   const handleFormat = (side: 'left' | 'right') => {
@@ -224,11 +225,15 @@ function App() {
         : serialize(result.parsed, format);
       if (side === 'left') {
         setLeftJson(formatted);
-        setLeftError('');
+        setLeftError(null);
       } else {
         setRightJson(formatted);
-        setRightError('');
+        setRightError(null);
       }
+    } else if (side === 'left') {
+      setLeftError(result.error || { key: 'errors.invalid' });
+    } else {
+      setRightError(result.error || { key: 'errors.invalid' });
     }
   };
 
@@ -236,29 +241,23 @@ function App() {
     gtag('event', 'clear_click', { side });
     if (side === 'left') {
       setLeftJson('');
-      setLeftError('');
+      setLeftError(null);
     } else {
       setRightJson('');
-      setRightError('');
+      setRightError(null);
     }
   };
 
   const handleLeftChange = (newValue: string) => {
     setLeftJson(newValue);
     // Clear error if the input becomes parseable
-    if (newValue.trim()) {
-      const result = parseInput(newValue, leftFormat);
-      if (result.valid) setLeftError('');
-    }
+    if (!newValue.trim() || parseInput(newValue, leftFormat).valid) setLeftError(null);
   };
 
   const handleRightChange = (newValue: string) => {
     setRightJson(newValue);
     // Clear error if the input becomes parseable
-    if (newValue.trim()) {
-      const result = parseInput(newValue, rightFormat);
-      if (result.valid) setRightError('');
-    }
+    if (!newValue.trim() || parseInput(newValue, rightFormat).valid) setRightError(null);
   };
 
   return (
@@ -272,18 +271,18 @@ function App() {
               <JsonEditor
                 value={leftJson}
                 onChange={handleLeftChange}
-                onFormatChange={setLeftFormat}
+                onFormatChange={(format) => { setLeftFormat(format); setLeftError(null); }}
                 format={leftFormat}
-                error={leftError}
+                error={leftError ? t(leftError.key, { message: leftError.message }) : undefined}
                 label={t('jsonEditor.leftInput')}
                 side="left"
               />
               <JsonEditor
                 value={rightJson}
                 onChange={handleRightChange}
-                onFormatChange={setRightFormat}
+                onFormatChange={(format) => { setRightFormat(format); setRightError(null); }}
                 format={rightFormat}
-                error={rightError}
+                error={rightError ? t(rightError.key, { message: rightError.message }) : undefined}
                 label={t('jsonEditor.rightInput')}
                 side="right"
               />

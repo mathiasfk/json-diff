@@ -109,7 +109,8 @@
       }
     ],
     "breadcrumbHome": "Home",
-    "breadcrumbFaq": "FAQ"
+    "breadcrumbFaq": "FAQ",
+    "breadcrumbNav": "Breadcrumb"
   },
   "formatSelector": {
     "ariaWithLabel": "{{label}} format",
@@ -141,5 +142,10 @@
     "differencesView": "Differences view",
     "equivalentTitle": "Inputs are equivalent!",
     "equivalentBody": "No differences found after semantic normalization."
+  },
+  "errors": {
+    "empty": "Input cannot be empty",
+    "invalid": "Invalid input",
+    "invalidDetail": "Invalid input: {{message}}"
   }
 }

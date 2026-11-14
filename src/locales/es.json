@@ -109,7 +109,8 @@
       }
     ],
     "breadcrumbHome": "Inicio",
-    "breadcrumbFaq": "Preguntas frecuentes"
+    "breadcrumbFaq": "Preguntas frecuentes",
+    "breadcrumbNav": "Ruta de navegación"
   },
   "formatSelector": {
     "ariaWithLabel": "Formato {{label}}",
@@ -141,5 +142,10 @@
     "differencesView": "Vista de diferencias",
     "equivalentTitle": "¡Las entradas son equivalentes!",
     "equivalentBody": "No se encontraron diferencias después de la normalización semántica."
+  },
+  "errors": {
+    "empty": "La entrada no puede estar vacía",
+    "invalid": "Entrada no válida",
+    "invalidDetail": "Entrada no válida: {{message}}"
   }
 }

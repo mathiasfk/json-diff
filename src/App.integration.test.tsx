@@ -5,8 +5,8 @@ import App from './App';
 vi.mock('./components/Header', () => ({ Header: () => null }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 vi.mock('./components/JsonEditor', () => ({
-  JsonEditor: ({ value, onChange, side }: { value: string; onChange: (value: string) => void; side: string }) =>
-    <textarea aria-label={side} value={value} onChange={e => onChange(e.target.value)} />,
+  JsonEditor: ({ value, onChange, side, format, onFormatChange, error }: { value: string; onChange: (value: string) => void; side: string; format: string; onFormatChange: (value: string) => void; error?: string }) =>
+    <><textarea aria-label={side} value={value} onChange={e => onChange(e.target.value)} /><select aria-label={`${side} format`} value={format} onChange={e => onFormatChange(e.target.value)}><option>json</option><option>jsonl</option><option>yaml</option></select>{error && <div role="alert">{side}: {error}</div>}</>,
 }));
 vi.mock('./components/DiffViewer', () => ({ DiffViewer: () => <div>Saved comparison</div> }));
 
@@ -38,4 +38,31 @@ describe('comparison state and formatting', () => {
     fireEvent.click(screen.getByLabelText('jsonEditor.formatLeft'));
     expect(input.value).toBe(value);
   });
+  it.each(['left', 'right'])('reports and clears errors for each format on the %s side', side => {
+    render(<App />);
+    const input = screen.getByLabelText(side) as HTMLTextAreaElement;
+    const selector = screen.getByLabelText(`${side} format`);
+    const button = screen.getByLabelText(side === 'left' ? 'jsonEditor.formatLeft' : 'jsonEditor.formatRight');
+    for (const format of ['json', 'jsonl', 'yaml']) {
+      fireEvent.change(selector, { target: { value: format } });
+      fireEvent.change(input, { target: { value: format === 'yaml' ? 'a: [unterminated' : '{bad' } });
+      fireEvent.click(button);
+      expect(screen.getByRole('alert').textContent).toContain(side);
+      expect(input.value).toBe(format === 'yaml' ? 'a: [unterminated' : '{bad');
+      fireEvent.change(input, { target: { value: format === 'yaml' ? 'a: 1' : '{}' } });
+      expect(screen.queryByRole('alert')).toBeNull();
+    }
+  });
+
+  it('clears a stale error on format switch without affecting the other side', () => {
+    render(<App />);
+    fireEvent.change(screen.getByLabelText('left'), { target: { value: '{bad' } });
+    fireEvent.change(screen.getByLabelText('right'), { target: { value: '{bad' } });
+    fireEvent.click(screen.getByLabelText('jsonEditor.formatLeft'));
+    fireEvent.click(screen.getByLabelText('jsonEditor.formatRight'));
+    fireEvent.change(screen.getByLabelText('left format'), { target: { value: 'yaml' } });
+    expect(screen.getAllByRole('alert')).toHaveLength(1);
+    expect(screen.getByRole('alert').textContent).toContain('right');
+  });
+
 });

@@ -43,6 +43,10 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const monacoRef = useRef<typeof monaco | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [mountedEditor, setMountedEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const pasteListenerRef = useRef<monaco.IDisposable | null>(null);
+  const modelListenerRef = useRef<monaco.IDisposable | null>(null);
+  const [modelVersion, setModelVersion] = useState(0);
 
   // Keep the latest onFormatChange in a ref so the Monaco paste listener
   // (registered once on mount) always calls the current callback.
@@ -68,7 +72,8 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
     monacoRef.current = monacoInstance;
 
     // Auto-detect format from pasted content and switch the selector.
-    editor.onDidPaste((e: { range: monaco.IRange }) => {
+    pasteListenerRef.current?.dispose();
+    pasteListenerRef.current = editor.onDidPaste((e: { range: monaco.IRange }) => {
       const model = editor.getModel();
       if (!model) return;
       const pasted = model.getValueInRange(e.range);
@@ -79,25 +84,16 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
     // no formatting / no auto-indent). Idempotent — safe to call per mount.
     registerJsonlLanguage(monacoInstance);
 
-    // Configure validation only for JSON-family inputs; other formats use a
-    // plain text editor without schema validation.
-    if (format === 'json') {
-      monacoInstance.json.jsonDefaults.setDiagnosticsOptions({
-        validate: true,
-        allowComments: false,
-        schemas: [],
-        enableSchemaRequest: false,
-      });
-    } else {
-      // jsonl uses its own line-level validation (validateJsonlLines) rather
-      // than the schema-validating JSON worker, so disable JSON diagnostics
-      // for every non-json language to avoid spurious cross-line errors.
-      monacoInstance.json.jsonDefaults.setDiagnosticsOptions({
-        validate: false,
-        schemas: [],
-        enableSchemaRequest: false,
-      });
-    }
+    // JSON diagnostics are global to Monaco, not scoped to an editor.
+    monacoInstance.json.jsonDefaults.setDiagnosticsOptions({
+      validate: true,
+      allowComments: false,
+      schemas: [],
+      enableSchemaRequest: false,
+    });
+    modelListenerRef.current?.dispose();
+    modelListenerRef.current = editor.onDidChangeModel(() => setModelVersion(version => version + 1));
+    setMountedEditor(editor);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -165,75 +161,44 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
   };
 
   useEffect(() => {
-    // Update editor markers for errors
-    const model = editorRef.current?.getModel();
-    if (!model || !monacoRef.current) return;
+    const model = mountedEditor?.getModel();
+    const instance = monacoRef.current;
+    if (!model || !instance) return;
 
-    if (format === 'jsonl') {
-      // Line-level JSONL validation: flag each line that is not a single,
-      // complete JSON value. Independent of Monaco's JSON worker so it never
-      // reports cross-line pretty-printed JSON as a cascade of errors.
-      const errors = validateJsonlLines(value);
-      const markers: monaco.editor.IMarkerData[] = errors.map((err) => ({
-        severity: monacoRef.current!.MarkerSeverity.Error,
-        startLineNumber: err.lineNumber,
-        startColumn: 1,
-        endLineNumber: err.lineNumber,
-        endColumn: model.getLineMaxColumn(err.lineNumber),
-        message: `Invalid JSONL: line ${err.lineNumber} is not a single-line JSON value (${err.message})`,
-      }));
-      monacoRef.current.editor.setModelMarkers(model, 'jsonl-validation', markers);
-      return;
-    }
-
-    if (error) {
-      const markers: monaco.editor.IMarkerData[] = [];
-      try {
-        // Try to find the error line if possible
-        const lines = model.getLinesContent();
-        lines.forEach((line, index) => {
-          if (error.toLowerCase().includes(`line ${index + 1}`) ||
-              error.toLowerCase().includes(`position ${index + 1}`)) {
-            markers.push({
-              severity: monacoRef.current!.MarkerSeverity.Error,
-              startLineNumber: index + 1,
-              startColumn: 1,
-              endLineNumber: index + 1,
-              endColumn: line.length + 1,
-              message: error,
-            });
-          }
-        });
-
-        // If no specific line found, mark the entire document
-        if (markers.length === 0 && value.trim()) {
-          markers.push({
-            severity: monacoRef.current!.MarkerSeverity.Error,
-            startLineNumber: 1,
-            startColumn: 1,
-            endLineNumber: model.getLineCount(),
-            endColumn: model.getLineMaxColumn(model.getLineCount()),
-            message: error,
-          });
-        }
-      } catch {
-        // If parsing fails, just mark the whole document
-        markers.push({
-          severity: monacoRef.current!.MarkerSeverity.Error,
+    const jsonlMarkers: monaco.editor.IMarkerData[] = format === 'jsonl'
+      ? validateJsonlLines(value).map((err) => ({
+          severity: instance.MarkerSeverity.Error,
+          startLineNumber: err.lineNumber,
+          startColumn: 1,
+          endLineNumber: err.lineNumber,
+          endColumn: model.getLineMaxColumn(err.lineNumber),
+          message: t('editor.invalidJsonl', { line: err.lineNumber, message: err.message }),
+        }))
+      : [];
+    const errorMarkers: monaco.editor.IMarkerData[] = format !== 'jsonl' && error && value.trim()
+      ? [{
+          severity: instance.MarkerSeverity.Error,
           startLineNumber: 1,
           startColumn: 1,
           endLineNumber: model.getLineCount(),
           endColumn: model.getLineMaxColumn(model.getLineCount()),
           message: error,
-        });
+        }]
+      : [];
+    instance.editor.setModelMarkers(model, 'jsonl-validation', jsonlMarkers);
+    instance.editor.setModelMarkers(model, 'json-validation', errorMarkers);
+    return () => {
+      if (!model.isDisposed()) {
+        instance.editor.setModelMarkers(model, 'jsonl-validation', []);
+        instance.editor.setModelMarkers(model, 'json-validation', []);
       }
+    };
+  }, [mountedEditor, modelVersion, error, value, format, t]);
 
-      monacoRef.current.editor.setModelMarkers(model, 'json-validation', markers);
-    } else {
-      // Clear markers when there's no error
-      monacoRef.current.editor.setModelMarkers(model, 'json-validation', []);
-    }
-  }, [error, value, format]);
+  useEffect(() => () => {
+    pasteListenerRef.current?.dispose();
+    modelListenerRef.current?.dispose();
+  }, []);
 
   // Keep the no-pretty-print options in sync when the format toggles at runtime,
   // since `options` prop changes alone aren't always applied live.
@@ -245,7 +210,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
       formatOnType: format !== 'jsonl',
       autoIndent: format === 'jsonl' ? 'none' : 'advanced',
     });
-  }, [format]);
+  }, [format, mountedEditor]);
 
   return (
     <div className="flex flex-col h-full">
@@ -307,7 +272,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
           }}
         />
         {error && (
-          <div className="absolute bottom-2 left-2 right-2 bg-red-900/90 text-red-200 text-xs p-2 rounded z-10 pointer-events-none">
+          <div role="alert" className="absolute bottom-2 left-2 right-2 bg-red-900/90 text-red-200 text-xs p-2 rounded z-10 pointer-events-none">
             {error}
           </div>
         )}
