@@ -135,7 +135,7 @@
     "loadingDiff": "正在加载比较结果..."
   },
   "diffViewer": {
-    "title": "无标题",
+    "title": "比较结果",
     "back": "返回",
     "resultsRegion": "比较结果",
     "differencesView": "差异视图",

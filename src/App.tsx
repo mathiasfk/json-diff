@@ -36,6 +36,8 @@ function App() {
     hasDifferences: boolean;
   } | null>(null);
 
+  const [storageLoaded, setStorageLoaded] = useState(false);
+
   // Load from localStorage after initial render to avoid blocking
   useEffect(() => {
     try {
@@ -56,52 +58,69 @@ function App() {
           storedRightFormat === 'yaml') {
         setRightFormat(storedRightFormat);
       }
-      if (storedMode === 'compare') setViewMode('compare');
       if (storedDiff) {
         try {
-          setDiffResult(JSON.parse(storedDiff));
+          const saved: unknown = JSON.parse(storedDiff);
+          if (saved && typeof saved === 'object' &&
+              'left' in saved && typeof saved.left === 'string' &&
+              'right' in saved && typeof saved.right === 'string' &&
+              'language' in saved && typeof saved.language === 'string' &&
+              ['json', 'jsonl', 'yaml'].includes(saved.language) &&
+              'hasDifferences' in saved && typeof saved.hasDifferences === 'boolean') {
+            setDiffResult({ left: saved.left, right: saved.right, language: saved.language, hasDifferences: saved.hasDifferences });
+            if (storedMode === 'compare') setViewMode('compare');
+          }
         } catch {
           // Ignore parse errors
         }
       }
     } catch {
       // Ignore localStorage errors
+    } finally {
+      setStorageLoaded(true);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Only run once on mount
 
+  // Persist only after restoring saved state.
   // Persist changes
   useEffect(() => {
+    if (!storageLoaded) return;
     try {
       localStorage.setItem('jsonDiff.left', leftJson);
     } catch { void 0; }
-  }, [leftJson]);
+  }, [leftJson, storageLoaded]);
 
   useEffect(() => {
+    if (!storageLoaded) return;
     try {
       localStorage.setItem('jsonDiff.right', rightJson);
     } catch { void 0; }
-  }, [rightJson]);
+  }, [rightJson, storageLoaded]);
 
   useEffect(() => {
+    if (!storageLoaded) return;
     try {
       localStorage.setItem('jsonDiff.leftFormat', leftFormat);
     } catch { void 0; }
-  }, [leftFormat]);
+  }, [leftFormat, storageLoaded]);
 
   useEffect(() => {
+    if (!storageLoaded) return;
     try {
       localStorage.setItem('jsonDiff.rightFormat', rightFormat);
     } catch { void 0; }
-  }, [rightFormat]);
+  }, [rightFormat, storageLoaded]);
 
   useEffect(() => {
+    if (!storageLoaded) return;
     try {
       localStorage.setItem('jsonDiff.viewMode', viewMode);
     } catch { void 0; }
-  }, [viewMode]);
+  }, [viewMode, storageLoaded]);
 
   useEffect(() => {
+    if (!storageLoaded) return;
     try {
       if (diffResult) {
         localStorage.setItem('jsonDiff.diffResult', JSON.stringify(diffResult));
@@ -109,7 +128,7 @@ function App() {
         localStorage.removeItem('jsonDiff.diffResult');
       }
     } catch { void 0; }
-  }, [diffResult]);
+  }, [diffResult, storageLoaded]);
 
   const parseInput = (text: string, format: Format): { valid: boolean; parsed?: unknown; error?: string } => {
     if (!text.trim()) {
@@ -197,7 +216,7 @@ function App() {
     const format = side === 'left' ? leftFormat : rightFormat;
     const result = parseInput(text, format);
 
-    if (result.valid && result.parsed) {
+    if (result.valid) {
       // Apply the same normalization used in comparison (sort arrays and
       // properties) for JSON; for other formats re-serialize cleanly.
       const formatted = format === 'json'

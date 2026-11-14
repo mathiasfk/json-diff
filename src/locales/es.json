@@ -135,7 +135,7 @@
     "loadingDiff": "Cargando comparación..."
   },
   "diffViewer": {
-    "title": "Sin título",
+    "title": "Resultados de la comparación",
     "back": "Atrás",
     "resultsRegion": "Resultados de la comparación",
     "differencesView": "Vista de diferencias",
