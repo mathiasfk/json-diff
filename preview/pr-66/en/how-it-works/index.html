@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-adsense-account" content="ca-pub-6364476119143776">
+  <title>How it works — Smart JSON Diff</title><meta name="description" content="Paste the two inputs you want to compare into the left and right editors, or drop a file into each editor. Check the format selected for each side, then select Compare. To explore the tool first, use load example below Compare. Format and Clear affect only their corresponding editor.">
+  <link rel="canonical" href="https://smartjsondiff.com/en/how-it-works/">
+  <meta name="robots" content="noindex, nofollow"><link rel="alternate" hreflang="en"
+      href="https://smartjsondiff.com/en/how-it-works/"><link rel="alternate" hreflang="pt"
+      href="https://smartjsondiff.com/pt/how-it-works/"><link rel="alternate" hreflang="es"
+      href="https://smartjsondiff.com/es/how-it-works/"><link rel="alternate" hreflang="zh"
+      href="https://smartjsondiff.com/zh/how-it-works/">
+  <meta name="theme-color" content="#111827"><style>
+  * { box-sizing: border-box }
+  body { margin: 0; background: #111827; color: #e5e7eb; font: 16px/1.65 system-ui, -apple-system, sans-serif }
+  a { color: #93c5fd; text-underline-offset: 3px }
+  a:hover { color: #dbeafe }
+  a:focus-visible { outline: 3px solid #93c5fd; outline-offset: 4px }
+  header { background: #1f2937; border-bottom: 1px solid #374151 }
+  main, footer { max-width: 860px; margin: auto; padding: 20px 24px }
+  header > div { max-width: 1536px; min-height: 88px; margin: auto; padding: 16px 24px;
+    display: flex; justify-content: space-between; gap: 16px; align-items: center }
+  .brand { color: #f9fafb; font-size: 1.5rem; font-weight: 700; text-decoration: none }
+  .header-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; font-size: .875rem }
+  .language-picker { display: flex; align-items: center; gap: 8px; color: #9ca3af; font-size: .75rem }
+  .language-picker select { background: #111827; border: 1px solid #374151; color: #e5e7eb;
+    border-radius: 4px; padding: 4px 8px; font: inherit }
+  .language-picker select:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px }
+  @media (max-width: 767px) {
+    header > div { flex-direction: column; align-items: stretch }
+    .header-actions { justify-content: center }
+  }
+  main { padding-top: 38px; padding-bottom: 48px; min-height: 60vh }
+  h1 { font-size: 2rem; line-height: 1.2; color: #f9fafb; margin: 0 0 28px }
+  h2 { font-size: 1.2rem; line-height: 1.35; color: #f9fafb; margin: 0 0 8px }
+  h3 { font-size: 1rem; margin: 24px 0 6px; color: #f9fafb }
+  section { margin: 0 0 30px }
+  p { margin: 0 0 16px; overflow-wrap: anywhere }
+  .examples { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 12px }
+  .examples span { font-size: .85rem; color: #cbd5e1 }
+  .faq-example { margin-top: 20px }
+  .faq-example p { margin-top: 10px; color: #cbd5e1 }
+  pre { margin: 4px 0 0; padding: 12px; background: #1f2937; border: 1px solid #374151;
+    border-radius: 6px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere }
+  footer { border-top: 1px solid #374151; color: #9ca3af; font-size: .9rem }
+  nav { display: flex; flex-wrap: wrap; gap: 10px 20px }
+  footer nav + nav { margin-top: 18px }
+  a[aria-current] { color: #f9fafb; font-weight: 600 }
+  @media (max-width: 480px) {
+    header > div, main, footer { padding-left: 20px; padding-right: 20px }
+    h1 { font-size: 1.65rem }
+    main { padding-top: 30px }
+  }
+</style>
+</head><body>
+  <header><div><a class="brand" href="/preview/pr-66/#/en">Smart JSON Diff</a>
+    <div class="header-actions"><a href="/preview/pr-66/#/en">← Back to tool</a>
+      <label class="language-picker" for="language-selector"><span>Language</span>
+        <select id="language-selector"><option value="/preview/pr-66/en/how-it-works/"
+      lang="en" selected>English</option><option value="/preview/pr-66/pt/how-it-works/"
+      lang="pt" >Português</option><option value="/preview/pr-66/es/how-it-works/"
+      lang="es" >Español</option><option value="/preview/pr-66/zh/how-it-works/"
+      lang="zh" >中文</option></select></label>
+    </div></div></header>
+  <main><h1>How it works</h1><section><h2>Start a comparison</h2><p>Paste the two inputs you want to compare into the left and right editors, or drop a file into each editor. Check the format selected for each side, then select Compare. To explore the tool first, use load example below Compare. Format and Clear affect only their corresponding editor.</p></section><section><h2>What the tool compares</h2><p>The tool compares parsed values rather than the original lines of text. It ignores formatting, object property order and array item order, including in nested data. Duplicate array items still count. Objects in arrays are aligned using identifying fields or their content to make changes easier to inspect.</p></section><section><h2>Read the result</h2><p>The diff uses the left input as its reference: red marks removals and green marks additions needed to reach the right input. Different values appear as a removal and an addition, with the differing segment emphasized. This direction is a display convention; the inputs need not represent earlier and later versions. The result shows normalized data, so its order and formatting can differ from what you pasted. An equivalent result means no differences were found under these comparison rules; the original texts may still differ. Select Back to edit your inputs again.</p></section><section><h2>Choose an input format</h2><p>Each editor accepts JSON, JSONL or a limited subset of YAML. JSONL requires one complete JSON value per nonempty line; blank lines are skipped and the records are compared as an array, ignoring their order. If both sides use the same format, the result is displayed in that format. If the formats differ, the parsed values are compared and the result is displayed in JSON. Comments and original formatting are not preserved.</p></section><section><h2>When order matters</h2><p>This tool is useful for comparing API responses, configuration data and unordered collections. It is not suitable for checking changes to sequences, rankings or histories where position is meaningful: reordering alone produces no difference. Use an order-sensitive comparison for those cases.</p></section><section><h2>Other limits</h2><p>YAML support covers common mappings, sequences and simple flow collections; it does not implement the full YAML specification. For complex YAML, convert the documents to JSON with a full YAML parser before comparing. Numbers use JavaScript precision: very large integers can lose digits, so represent exact identifiers as strings. Large inputs can slow the browser or exceed available memory.</p></section><section><h2>Examples</h2>
+    <h3>Same content</h3><p>These inputs are equivalent: the keys and array items changed order, but the values and their counts are unchanged.</p>
+    <div class="examples">
+    <div><span>Left</span><pre><code>{&quot;a&quot;: 1, &quot;b&quot;: [1, 2]}</code></pre></div>
+    <div><span>Right</span><pre><code>{&quot;b&quot;: [2, 1], &quot;a&quot;: 1}</code></pre></div>
+  </div>
+    <h3>Different values</h3><p>The same field has different values: 10 on the left and 20 on the right. The comparison highlights the value difference even though the structure is the same.</p>
+    <div class="examples">
+    <div><span>Left</span><pre><code>{&quot;value&quot;: 10}</code></pre></div>
+    <div><span>Right</span><pre><code>{&quot;value&quot;: 20}</code></pre></div>
+  </div>
+    <h3>Different counts</h3><p>The value 1 occurs twice on the left and once on the right. Ignoring array order does not ignore how many times each value occurs.</p>
+    <div class="examples">
+    <div><span>Left</span><pre><code>[1, 1, 2]</code></pre></div>
+    <div><span>Right</span><pre><code>[1, 2]</code></pre></div>
+  </div></section></main>
+  <footer><nav aria-label="Support"><a 
+      href="/preview/pr-66/en/faq/">FAQ</a><a aria-current="page"
+      href="/preview/pr-66/en/how-it-works/">How it works</a><a 
+      href="/preview/pr-66/en/privacy/">Privacy</a><a 
+      href="/preview/pr-66/en/contact/">Contact</a></nav>
+    <noscript><nav aria-label="Languages"><a href="/preview/pr-66/en/how-it-works/" lang="en"
+      aria-current="true">English</a><a href="/preview/pr-66/pt/how-it-works/" lang="pt"
+      >Português</a><a href="/preview/pr-66/es/how-it-works/" lang="es"
+      >Español</a><a href="/preview/pr-66/zh/how-it-works/" lang="zh"
+      >中文</a></nav></noscript></footer>
+  <script>
+    document.getElementById('language-selector').addEventListener('change', function () {
+      window.location.assign(this.value);
+    });
+  </script>
+</body></html>

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh"><head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-adsense-account" content="ca-pub-6364476119143776">
+  <title>常见问题 — Smart JSON Diff</title><meta name="description" content="Smart JSON Diff 不只是进行简单的文本 Diff，而是执行语义比较。它会通过按字母顺序排列对象属性来规范化两个输入，并智能地对齐数组元素。当两个数组都包含唯一键时，元素会根据该键进行对齐；否则，会根据规范化后的内容进行匹配，以尽量减少无关差异，并突出显示最相关的变化。整个比较过程都在您的浏览器中完成，并使用 jsondiffpatch 进行底层 Diff 处理。">
+  <link rel="canonical" href="https://smartjsondiff.com/zh/faq/">
+  <meta name="robots" content="noindex, nofollow"><link rel="alternate" hreflang="en"
+      href="https://smartjsondiff.com/en/faq/"><link rel="alternate" hreflang="pt"
+      href="https://smartjsondiff.com/pt/faq/"><link rel="alternate" hreflang="es"
+      href="https://smartjsondiff.com/es/faq/"><link rel="alternate" hreflang="zh"
+      href="https://smartjsondiff.com/zh/faq/">
+  <meta name="theme-color" content="#111827"><style>
+  * { box-sizing: border-box }
+  body { margin: 0; background: #111827; color: #e5e7eb; font: 16px/1.65 system-ui, -apple-system, sans-serif }
+  a { color: #93c5fd; text-underline-offset: 3px }
+  a:hover { color: #dbeafe }
+  a:focus-visible { outline: 3px solid #93c5fd; outline-offset: 4px }
+  header { background: #1f2937; border-bottom: 1px solid #374151 }
+  main, footer { max-width: 860px; margin: auto; padding: 20px 24px }
+  header > div { max-width: 1536px; min-height: 88px; margin: auto; padding: 16px 24px;
+    display: flex; justify-content: space-between; gap: 16px; align-items: center }
+  .brand { color: #f9fafb; font-size: 1.5rem; font-weight: 700; text-decoration: none }
+  .header-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; font-size: .875rem }
+  .language-picker { display: flex; align-items: center; gap: 8px; color: #9ca3af; font-size: .75rem }
+  .language-picker select { background: #111827; border: 1px solid #374151; color: #e5e7eb;
+    border-radius: 4px; padding: 4px 8px; font: inherit }
+  .language-picker select:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px }
+  @media (max-width: 767px) {
+    header > div { flex-direction: column; align-items: stretch }
+    .header-actions { justify-content: center }
+  }
+  main { padding-top: 38px; padding-bottom: 48px; min-height: 60vh }
+  h1 { font-size: 2rem; line-height: 1.2; color: #f9fafb; margin: 0 0 28px }
+  h2 { font-size: 1.2rem; line-height: 1.35; color: #f9fafb; margin: 0 0 8px }
+  h3 { font-size: 1rem; margin: 24px 0 6px; color: #f9fafb }
+  section { margin: 0 0 30px }
+  p { margin: 0 0 16px; overflow-wrap: anywhere }
+  .examples { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 12px }
+  .examples span { font-size: .85rem; color: #cbd5e1 }
+  .faq-example { margin-top: 20px }
+  .faq-example p { margin-top: 10px; color: #cbd5e1 }
+  pre { margin: 4px 0 0; padding: 12px; background: #1f2937; border: 1px solid #374151;
+    border-radius: 6px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere }
+  footer { border-top: 1px solid #374151; color: #9ca3af; font-size: .9rem }
+  nav { display: flex; flex-wrap: wrap; gap: 10px 20px }
+  footer nav + nav { margin-top: 18px }
+  a[aria-current] { color: #f9fafb; font-weight: 600 }
+  @media (max-width: 480px) {
+    header > div, main, footer { padding-left: 20px; padding-right: 20px }
+    h1 { font-size: 1.65rem }
+    main { padding-top: 30px }
+  }
+</style>
+</head><body>
+  <header><div><a class="brand" href="/preview/pr-66/#/zh">Smart JSON Diff</a>
+    <div class="header-actions"><a href="/preview/pr-66/#/zh">← 返回工具</a>
+      <label class="language-picker" for="language-selector"><span>语言</span>
+        <select id="language-selector"><option value="/preview/pr-66/en/faq/"
+      lang="en" >English</option><option value="/preview/pr-66/pt/faq/"
+      lang="pt" >Português</option><option value="/preview/pr-66/es/faq/"
+      lang="es" >Español</option><option value="/preview/pr-66/zh/faq/"
+      lang="zh" selected>中文</option></select></label>
+    </div></div></header>
+  <main><h1>常见问题</h1><section><h2>比较是如何进行的？</h2><p>Smart JSON Diff 不只是进行简单的文本 Diff，而是执行语义比较。它会通过按字母顺序排列对象属性来规范化两个输入，并智能地对齐数组元素。当两个数组都包含唯一键时，元素会根据该键进行对齐；否则，会根据规范化后的内容进行匹配，以尽量减少无关差异，并突出显示最相关的变化。整个比较过程都在您的浏览器中完成，并使用 jsondiffpatch 进行底层 Diff 处理。</p>
+      </section><section><h2>Smart JSON Diff 与其他 JSON Diff 工具有何不同？</h2><p>许多传统的 JSON Diff 工具会将数组视为有序序列，因此元素的顺序会影响比较结果。Smart JSON Diff 将数组元素视为多重集合，这意味着元素的顺序不会影响结果，但重复元素仍会被计入。</p>
+      <div class="faq-example">
+        <div class="examples">
+    <div><span>左侧</span><pre><code>[1, 2, 3]</code></pre></div>
+    <div><span>右侧</span><pre><code>[3, 2, 1]</code></pre></div>
+  </div>
+        <p>等价：顺序不同，但值相同。</p></div></section><section><h2>差异中的颜色是什么意思？</h2><p>绿色表示新增，红色表示删除。整行发生变化时会被突出显示，而具体发生变化的部分会使用更明显的颜色进一步突出。</p>
+      </section><section><h2>属性顺序会影响结果吗？</h2><p>不会。比较前会按字母顺序对属性进行排序，因此内容相同但属性顺序不同的对象会被视为等价。</p>
+      <div class="faq-example">
+        <div class="examples">
+    <div><span>左侧</span><pre><code>{&quot;a&quot;: 1, &quot;b&quot;: 2}</code></pre></div>
+    <div><span>右侧</span><pre><code>{&quot;b&quot;: 2, &quot;a&quot;: 1}</code></pre></div>
+  </div>
+        <p>等价：属性顺序不影响比较。</p></div></section><section><h2>数组顺序会影响结果吗？</h2><p>不会。Smart JSON Diff 会自动找到最佳方式来对齐数组元素，因此包含相同元素但顺序不同的数组会被视为等价。</p>
+      <div class="faq-example">
+        <div class="examples">
+    <div><span>左侧</span><pre><code>[
+  {
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;Ana&quot;
+  },
+  {
+    &quot;id&quot;: 2,
+    &quot;name&quot;: &quot;Sam&quot;
+  }
+]</code></pre></div>
+    <div><span>右侧</span><pre><code>[
+  {
+    &quot;id&quot;: 2,
+    &quot;name&quot;: &quot;Sam&quot;
+  },
+  {
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;Ana&quot;
+  }
+]</code></pre></div>
+  </div>
+        <p>等价：数组顺序不同，但每个对象的值保持不变。</p></div></section><section><h2>数组差异是如何处理的？</h2><p>Smart JSON Diff 会寻找能够最大化两个版本相似度的对齐方式。当两个数组都包含唯一键时，元素会根据该键进行对齐；否则，会根据规范化后的内容进行对齐。这样可以尽量减少无关差异，并突出显示最相关的变化。重新排列相同的元素不会产生差异，而新增、删除或修改的元素仍然会被检测出来。</p>
+      </section><section><h2>重复项和修改的值如何处理？</h2><p>重复元素仍会计数，即使结构相同，不同的值也会被检测出来。</p>
+      <div class="faq-example">
+        <div class="examples">
+    <div><span>左侧</span><pre><code>[1, 1, 2]</code></pre></div>
+    <div><span>右侧</span><pre><code>[1, 2]</code></pre></div>
+  </div>
+        <p>不等价：左侧的数字 1 多出现一次。</p></div><div class="faq-example">
+        <div class="examples">
+    <div><span>左侧</span><pre><code>{&quot;value&quot;: 10}</code></pre></div>
+    <div><span>右侧</span><pre><code>{&quot;value&quot;: 20}</code></pre></div>
+  </div>
+        <p>不等价：该字段在左侧为 10，右侧为 20。</p></div></section><section><h2>粘贴敏感数据安全吗？</h2><p>比较在浏览器中进行。输入和结果可能保留在 localStorage 中；有关存储和外部服务，请参阅隐私页面。</p>
+      </section><section><h2>如何报告错误？</h2><p>请发送电子邮件至 admin@smartjsondiff.com。</p>
+      </section></main>
+  <footer><nav aria-label="帮助"><a aria-current="page"
+      href="/preview/pr-66/zh/faq/">常见问题</a><a 
+      href="/preview/pr-66/zh/how-it-works/">使用说明</a><a 
+      href="/preview/pr-66/zh/privacy/">隐私</a><a 
+      href="/preview/pr-66/zh/contact/">联系</a></nav>
+    <noscript><nav aria-label="语言"><a href="/preview/pr-66/en/faq/" lang="en"
+      >English</a><a href="/preview/pr-66/pt/faq/" lang="pt"
+      >Português</a><a href="/preview/pr-66/es/faq/" lang="es"
+      >Español</a><a href="/preview/pr-66/zh/faq/" lang="zh"
+      aria-current="true">中文</a></nav></noscript></footer>
+  <script>
+    document.getElementById('language-selector').addEventListener('change', function () {
+      window.location.assign(this.value);
+    });
+  </script>
+</body></html>
