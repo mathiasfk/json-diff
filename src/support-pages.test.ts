@@ -1,0 +1,27 @@
+import { describe, expect, it } from 'vitest';
+import { supportPages } from '../scripts/support-pages.js';
+import en from './locales/en.json';
+
+describe('static support pages', () => {
+  it('emits readable localized pages with shared FAQ content', () => {
+    const pages = supportPages('/');
+    expect(Object.keys(pages)).toHaveLength(16);
+    for (const locale of ['en', 'pt', 'es', 'zh']) {
+      for (const page of ['faq', 'how-it-works', 'privacy', 'contact']) {
+        const html = pages[`${locale}/${page}/index.html`];
+        expect(html).toContain(`<html lang="${locale}">`);
+        expect(html).toContain(`<link rel="canonical" href="https://smartjsondiff.com/${locale}/${page}/">`);
+        expect(html).toContain(`href="/#/${locale}"`);
+        expect(html).not.toContain('<script');
+      }
+    }
+    expect(pages['en/faq/index.html']).toContain(en.faq.items[0].q);
+    expect(pages['en/how-it-works/index.html']).toContain('<pre><code>');
+  });
+  it('keeps links under the preview base and prevents preview indexing', () => {
+    const html = supportPages('/preview/')['pt/privacy/index.html'];
+    expect(html).toContain('href="/preview/pt/faq/"');
+    expect(html).toContain('href="/preview/#/pt"');
+    expect(html).toContain('noindex, nofollow');
+  });
+});

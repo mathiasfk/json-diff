@@ -103,8 +103,12 @@
         "a": "Smart JSON Diff finds an alignment that maximizes similarity between the two versions. When both arrays contain a unique key, items are aligned by that key; otherwise, items are aligned by normalized content, helping minimize noise and highlight the most relevant changes. Reordering the same items produces no diff, while added, removed, or changed items are still detected."
       },
       {
+        "q": "What happens to duplicates and changed values?",
+        "a": "Duplicate items count: [1, 1, 2] and [1, 2] differ by one 1. A real value change also remains visible: {\"role\":\"developer\"} and {\"role\":\"lead\"} differ in role."
+      },
+      {
         "q": "Is it safe to paste sensitive data?",
-        "a": "Yes. Your JSON, YAML, and JSONL are processed entirely in your browser and are not uploaded to our servers."
+        "a": "The comparison runs in your browser. Inputs and results may remain in localStorage; see the privacy page for storage and external services."
       },
       {
         "q": "How do I report bugs?",

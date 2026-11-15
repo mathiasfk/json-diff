@@ -18,8 +18,6 @@
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <link rel="preconnect" href="https://www.google-analytics.com" crossorigin>
     <link rel="dns-prefetch" href="https://www.google-analytics.com">
-    <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
-    <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com">
 
     <!-- Canonical URL -->
     <link rel="canonical" href="https://smartjsondiff.com/" />
@@ -121,26 +119,14 @@
     }
     </script>
 
-    <!-- Google AdSense (auto-ads) -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6364476119143776" crossorigin="anonymous"></script>
   </head>
   <body><!-- Pre-hydration SEO shell (Q1): replaced by React on mount, so exactly one H1 remains.
          Crawlers that do not execute JS still see a crawlable H1 + internal link. -->
-    <!-- Ad slots -->
-    <div class="ad-slot vertical vertical-left" data-slot="vertical-top">
-      <!-- AdSense ad code goes here -->
-    </div>
-    <div class="ad-slot vertical vertical-right" data-slot="vertical-bottom">
-      <!-- AdSense ad code goes here -->
-    </div>
-    <div class="ad-slot horizontal" data-slot="horizontal">
-      <!-- AdSense ad code goes here -->
-    </div>
     <div id="root">
       <h1>Smart JSON Diff</h1>
       <p>Compare JSON objects semantically with smart array matching.</p>
       <nav aria-label="Primary">
-        <a href="#/en/faq">FAQ</a>
+        <a href="%BASE_URL%en/faq/">FAQ</a>
       </nav>
     </div>
     <noscript>
@@ -148,11 +134,6 @@
         Smart JSON Diff requires JavaScript.
       </div>
     </noscript>
-    <script src="/js/AdSlots.js"></script>
-    <script>
-      window.addEventListener('load', window.AdSlots.updateVisibility);
-      window.addEventListener('resize', window.AdSlots.updateVisibility);
-    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

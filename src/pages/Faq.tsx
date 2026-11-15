@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { Header } from '../components/Header';
+import { SupportFooter } from '../components/SupportFooter';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { DEFAULT_LOCALE, isLocale } from '../i18n-config';
@@ -62,6 +63,7 @@ export default function Faq() {
           ))}
         </div>
       </main>
+      <SupportFooter />
     </div>
   );
 }

@@ -103,8 +103,12 @@
         "a": "O Smart JSON Diff encontra um alinhamento que maximiza a similaridade entre as duas versões. Quando os dois arrays contêm uma chave única, os elementos são alinhados por essa chave; caso contrário, são alinhados pelo conteúdo normalizado. Isso ajuda a minimizar o ruído e destacar as alterações mais relevantes. Reordenar os mesmos elementos não produz nenhuma diferença, enquanto elementos adicionados, removidos ou modificados continuam sendo detectados."
       },
       {
+        "q": "O que acontece com duplicatas e valores alterados?",
+        "a": "Duplicatas contam: [1, 1, 2] e [1, 2] diferem por um 1. Uma alteração real também aparece: {\"role\":\"developer\"} e {\"role\":\"lead\"} diferem em role."
+      },
+      {
         "q": "É seguro colar dados confidenciais?",
-        "a": "Sim. Seus dados JSON, YAML e JSONL são processados inteiramente no seu navegador e não são enviados aos nossos servidores."
+        "a": "A comparação ocorre no navegador. Entradas e resultados podem permanecer no localStorage; consulte a página de privacidade sobre armazenamento e serviços externos."
       },
       {
         "q": "Como posso reportar bugs?",

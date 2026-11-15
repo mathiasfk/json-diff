@@ -1,5 +1,7 @@
 import { defineConfig } from 'vite'
+import path from 'node:path'
 import react from '@vitejs/plugin-react'
+import { supportPagesPlugin } from './scripts/support-pages.js'
 import monacoEditorPluginModule from 'vite-plugin-monaco-editor'
 const monacoEditorPlugin: any = (monacoEditorPluginModule as any)?.default || (monacoEditorPluginModule as any)
 
@@ -8,7 +10,11 @@ export default defineConfig({
   base: process.env.PREVIEW_BASE || '/',
   plugins: [
     react(),
-    monacoEditorPlugin({ languageWorkers: ['json'] })
+    supportPagesPlugin(),
+    monacoEditorPlugin({
+      languageWorkers: ['json'],
+      customDistPath: (root: string, outDir: string) => path.resolve(root, outDir, 'monacoeditorwork'),
+    })
   ],
   build: {
     minify: 'terser',

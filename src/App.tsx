@@ -1,5 +1,6 @@
 import { Suspense, lazy, useState, useEffect } from 'react';
 import { Header } from './components/Header';
+import { SupportFooter } from './components/SupportFooter';
 import { useTranslation } from 'react-i18next';
 import { JsonEditor } from './components/JsonEditor';
 const DiffViewer = lazy(() => import('./components/DiffViewer').then(m => ({ default: m.DiffViewer })));
@@ -307,7 +308,7 @@ function App() {
               />
             </div>
 
-            <div className="grid grid-cols-[repeat(5,auto)] items-center justify-center gap-x-4 gap-y-2 mt-6 shrink-0" role="toolbar" aria-label={t('jsonEditor.comparisonActions')}>
+            <div className="grid grid-cols-2 lg:grid-cols-[repeat(5,auto)] items-center justify-center gap-x-2 lg:gap-x-4 gap-y-2 mt-6 shrink-0" role="toolbar" aria-label={t('jsonEditor.comparisonActions')}>
               <button
                 onClick={() => handleClear('left')}
                 className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -326,7 +327,7 @@ function App() {
               </button>
               <button
                 onClick={handleCompare}
-                className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="col-span-2 row-start-3 justify-self-center lg:col-span-1 lg:col-start-3 lg:row-start-1 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={!leftJson.trim() || !rightJson.trim()}
                 aria-label={t('jsonEditor.compare')}
               >
@@ -348,7 +349,7 @@ function App() {
               >
                 {t('app.clearRight')}
               </button>
-              <div className="col-start-3 justify-self-center flex items-baseline gap-1 text-sm text-gray-400">
+              <div className="col-span-2 row-start-4 lg:col-span-1 lg:col-start-3 lg:row-start-2 justify-self-center flex items-baseline gap-1 text-sm text-gray-400">
                 <span>{t('app.or')}</span>
                 <button
                   type="button"
@@ -360,13 +361,6 @@ function App() {
                 </button>
               </div>
             </div>
-            {/* Horizontal ad slot */}
-            <aside
-              data-ad-slot="horiz1"
-              role="complementary"
-              aria-label="Horizontal ad slot"
-              className="mt-4 w-full hidden"
-            />
           </div>
         ) : (
           <div className="h-[calc(100vh-180px)]" role="region" aria-label={t('jsonEditor.comparisonResults')}>
@@ -384,19 +378,7 @@ function App() {
           </div>
         )}
       </main>
-      {/* Vertical ad slots */}
-      <aside
-        data-ad-slot="vert1"
-        role="complementary"
-        aria-label="Left vertical ad slot"
-        className="absolute left-0 top-0 bottom-0 w-64 hidden"
-      />
-      <aside
-        data-ad-slot="vert2"
-        role="complementary"
-        aria-label="Right vertical ad slot"
-        className="absolute right-0 top-0 bottom-0 w-64 hidden"
-      />
+      <SupportFooter />
     </div>
   );
 }
