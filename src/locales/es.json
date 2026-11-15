@@ -1,7 +1,10 @@
 {
   "app": {
+    "or": "o",
+    "replaceWithExample": "¿Reemplazar el contenido de ambos editores con el ejemplo?",
+    "loadExample": "cargar ejemplo",
     "title": "Smart JSON Diff",
-    "subtitle": "Compara JSON, YAML y JSONL semánticamente con comparación inteligente de arrays",
+    "subtitle": "Compara JSON, YAML y JSONL semánticamente con alineación automática de arrays",
     "clearLeft": "Limpiar izquierda",
     "language": "Idioma",
     "formatLeft": "Formatear izquierda",
@@ -16,7 +19,7 @@
     "backAria": "Volver a la vista anterior",
     "homeAria": "Ir a la página de inicio de Smart JSON Diff",
     "languageLabel": "Idioma",
-    "subtitle": "Compara JSON, YAML y JSONL semánticamente con comparación inteligente de arrays",
+    "subtitle": "Compara JSON, YAML y JSONL semánticamente con alineación automática de arrays",
     "primaryNav": "Navegación principal",
     "backNav": "Atrás",
     "homeNav": "Inicio"
@@ -81,7 +84,14 @@
       },
       {
         "q": "¿En qué se diferencia Smart JSON Diff de otras herramientas de comparación JSON?",
-        "a": "Muchas herramientas tradicionales de comparación JSON tratan los arrays como secuencias, por lo que el orden de los elementos afecta al resultado. Smart JSON Diff trata los elementos de los arrays como un multiconjunto, lo que significa que el orden de los elementos no importa, pero los elementos duplicados siguen contando. Por ejemplo, los arrays [1, 2, 3] y [3, 2, 1] se consideran equivalentes."
+        "a": "Muchas herramientas tradicionales de comparación JSON tratan los arrays como secuencias, por lo que el orden de los elementos afecta al resultado. Smart JSON Diff trata los elementos de los arrays como un multiconjunto, lo que significa que el orden de los elementos no importa, pero los elementos duplicados siguen contando.",
+        "examples": [
+          {
+            "left": "[1, 2, 3]",
+            "right": "[3, 2, 1]",
+            "explanation": "Equivalentes: los valores son los mismos, aunque el orden sea distinto."
+          }
+        ]
       },
       {
         "q": "¿Qué significan los colores en la comparación?",
@@ -89,19 +99,49 @@
       },
       {
         "q": "¿El orden de las propiedades afecta al resultado?",
-        "a": "No. Las propiedades se ordenan alfabéticamente antes de la comparación, por lo que los objetos con el mismo contenido pero con un orden de propiedades diferente se consideran equivalentes. Por ejemplo, los objetos { \"a\": 1, \"b\": 2 } y { \"b\": 2, \"a\": 1 } se consideran equivalentes."
+        "a": "No. Las propiedades se ordenan alfabéticamente antes de la comparación, por lo que los objetos con el mismo contenido pero con un orden de propiedades diferente se consideran equivalentes.",
+        "examples": [
+          {
+            "left": "{\"a\": 1, \"b\": 2}",
+            "right": "{\"b\": 2, \"a\": 1}",
+            "explanation": "Equivalentes: el orden de las propiedades no afecta a la comparación."
+          }
+        ]
       },
       {
         "q": "¿El orden de los arrays afecta al resultado?",
-        "a": "No. Smart JSON Diff encuentra automáticamente la mejor forma de alinear los elementos de los arrays, por lo que los arrays que contienen los mismos elementos en un orden diferente se consideran equivalentes. Por ejemplo, los arrays [{ \"id\": 1, \"name\": \"John\" }, { \"id\": 2, \"name\": \"Jane\" }] y [{ \"id\": 2, \"name\": \"Jane\" }, { \"id\": 1, \"name\": \"John\" }] se consideran equivalentes."
+        "a": "No. Smart JSON Diff encuentra automáticamente la mejor forma de alinear los elementos de los arrays, por lo que los arrays que contienen los mismos elementos en un orden diferente se consideran equivalentes.",
+        "examples": [
+          {
+            "left": "[\n  {\n    \"id\": 1,\n    \"name\": \"Ana\"\n  },\n  {\n    \"id\": 2,\n    \"name\": \"Sam\"\n  }\n]",
+            "right": "[\n  {\n    \"id\": 2,\n    \"name\": \"Sam\"\n  },\n  {\n    \"id\": 1,\n    \"name\": \"Ana\"\n  }\n]",
+            "explanation": "Equivalentes: cada objeto conserva sus valores, aunque cambie su orden en el array."
+          }
+        ]
       },
       {
         "q": "¿Cómo se gestionan las diferencias entre arrays?",
         "a": "Smart JSON Diff encuentra una alineación que maximiza la similitud entre las dos versiones. Cuando ambos arrays contienen una clave única, los elementos se alinean mediante esa clave; de lo contrario, se alinean mediante su contenido normalizado. Esto ayuda a minimizar el ruido y a destacar los cambios más relevantes. Reordenar los mismos elementos no produce ninguna diferencia, mientras que los elementos añadidos, eliminados o modificados siguen detectándose."
       },
       {
+        "q": "¿Qué ocurre con duplicados y valores modificados?",
+        "a": "Los duplicados siguen contando y se detectan valores diferentes aunque la estructura sea la misma.",
+        "examples": [
+          {
+            "left": "[1, 1, 2]",
+            "right": "[1, 2]",
+            "explanation": "Diferentes: el lado izquierdo contiene una aparición más del número 1."
+          },
+          {
+            "left": "{\"value\": 10}",
+            "right": "{\"value\": 20}",
+            "explanation": "Diferentes: el campo contiene 10 a la izquierda y 20 a la derecha."
+          }
+        ]
+      },
+      {
         "q": "¿Es seguro pegar datos confidenciales?",
-        "a": "Sí. Tus datos JSON, YAML y JSONL se procesan completamente en tu navegador y no se envían a nuestros servidores."
+        "a": "La comparación se realiza en el navegador. Las entradas y los resultados pueden permanecer en localStorage; consulte la página de privacidad sobre almacenamiento y servicios externos."
       },
       {
         "q": "¿Cómo puedo reportar errores?",

@@ -24,7 +24,7 @@ describe('localized navigation', () => {
     await waitFor(() => expect(document.documentElement.lang).toBe('pt'));
     expect(screen.getByText(i18n.t('header.subtitle'))).toBeTruthy();
     expect(screen.getByRole('navigation', { name: i18n.t('header.primaryNav') })).toBeTruthy();
-    expect(screen.getByRole('link', { name: i18n.t('header.faq') }).getAttribute('href')).toBe('/pt/faq');
+    expect(screen.queryByRole('link', { name: i18n.t('header.faq') })).toBeNull();
   });
 
   it('localizes the FAQ home link and initial route', async () => {

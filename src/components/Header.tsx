@@ -42,7 +42,7 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
         </div>
         {showNav ? (
           <nav aria-label={t('header.primaryNav')} className="flex flex-col items-center gap-2 md:flex-row md:items-center md:gap-4">
-            {isFaq ? (
+            {isFaq && (
               <button
                 onClick={() => {
                   gtag('event', 'faq_back_click');
@@ -53,16 +53,6 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
               >
                 ← {t('header.back')}
               </button>
-            ) : (
-              <Link
-                to={getLocalePath(currentLanguage, 'faq')}
-                onClick={() => {
-                  gtag('event', 'faq_open_click');
-                }}
-                className="text-sm text-gray-400 hover:text-gray-200"
-              >
-                {t('header.faq')}
-              </Link>
             )}
             {/* Language selector */}
             <LanguageSelector
@@ -71,7 +61,7 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
             />
           </nav>
         ) : homeLink ? (
-          <nav aria-label={t('header.primaryNav')}>
+          <nav aria-label={t('header.primaryNav')} className="flex items-center justify-center gap-4 flex-wrap">
             <Link
               to={getLocalePath(currentLanguage, '')}
               className="text-sm text-gray-400 hover:text-gray-200"
@@ -79,6 +69,7 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
             >
               ← {t('header.home')}
             </Link>
+            <LanguageSelector currentLocale={currentLanguage} onSelect={changeLanguage} />
           </nav>
         ) : null}
       </div>

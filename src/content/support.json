@@ -1,0 +1,262 @@
+{
+  "en": {
+    "home": "Back to tool",
+    "nav": "Support",
+    "faq": "FAQ",
+    "how-it-works": "How it works",
+    "privacy": "Privacy",
+    "contact": "Contact",
+    "languages": "Languages",
+    "how": [
+      [
+        "Start a comparison",
+        "Paste the two inputs you want to compare into the left and right editors, or drop a file into each editor. Check the format selected for each side, then select Compare. To explore the tool first, use load example below Compare. Format and Clear affect only their corresponding editor."
+      ],
+      [
+        "What the tool compares",
+        "The tool compares parsed values rather than the original lines of text. It ignores formatting, object property order and array item order, including in nested data. Duplicate array items still count. Objects in arrays are aligned using identifying fields or their content to make changes easier to inspect."
+      ],
+      [
+        "Read the result",
+        "The diff uses the left input as its reference: red marks removals and green marks additions needed to reach the right input. Different values appear as a removal and an addition, with the differing segment emphasized. This direction is a display convention; the inputs need not represent earlier and later versions. The result shows normalized data, so its order and formatting can differ from what you pasted. An equivalent result means no differences were found under these comparison rules; the original texts may still differ. Select Back to edit your inputs again."
+      ],
+      [
+        "Choose an input format",
+        "Each editor accepts JSON, JSONL or a limited subset of YAML. JSONL requires one complete JSON value per nonempty line; blank lines are skipped and the records are compared as an array, ignoring their order. If both sides use the same format, the result is displayed in that format. If the formats differ, the parsed values are compared and the result is displayed in JSON. Comments and original formatting are not preserved."
+      ],
+      [
+        "When order matters",
+        "This tool is useful for comparing API responses, configuration data and unordered collections. It is not suitable for checking changes to sequences, rankings or histories where position is meaningful: reordering alone produces no difference. Use an order-sensitive comparison for those cases."
+      ],
+      [
+        "Other limits",
+        "YAML support covers common mappings, sequences and simple flow collections; it does not implement the full YAML specification. For complex YAML, convert the documents to JSON with a full YAML parser before comparing. Numbers use JavaScript precision: very large integers can lose digits, so represent exact identifiers as strings. Large inputs can slow the browser or exceed available memory."
+      ]
+    ],
+    "privacyText": [
+      "Comparison happens in your browser. The tool stores input text, selected formats, view state and comparison result in localStorage so they can be restored; the language choice is stored there too. Clear site data in your browser to remove this stored information.",
+      "The site uses Google Analytics and sends usage events including actions, formats, input character counts and some file metadata (including rejected file names); its event code does not send the input text. Google receives requests when Analytics loads. The editor may also load resources from a CDN. Consider your browser, extensions and device before entering sensitive information. Hosting on GitHub Pages also involves requests to GitHub. No ads are currently loaded."
+    ],
+    "contactText": "For bugs or feedback, email admin@smartjsondiff.com. Include the steps to reproduce an issue and avoid sending sensitive input.",
+    "examples": {
+      "heading": "Examples",
+      "items": [
+        {
+          "title": "Same content",
+          "explanation": "These inputs are equivalent: the keys and array items changed order, but the values and their counts are unchanged.",
+          "left": "{\"a\": 1, \"b\": [1, 2]}",
+          "right": "{\"b\": [2, 1], \"a\": 1}"
+        },
+        {
+          "title": "Different values",
+          "explanation": "The same field has different values: 10 on the left and 20 on the right. The comparison highlights the value difference even though the structure is the same.",
+          "left": "{\"value\": 10}",
+          "right": "{\"value\": 20}"
+        },
+        {
+          "title": "Different counts",
+          "explanation": "The value 1 occurs twice on the left and once on the right. Ignoring array order does not ignore how many times each value occurs.",
+          "left": "[1, 1, 2]",
+          "right": "[1, 2]"
+        }
+      ],
+      "leftLabel": "Left",
+      "rightLabel": "Right"
+    }
+  },
+  "pt": {
+    "home": "Voltar à ferramenta",
+    "nav": "Ajuda",
+    "faq": "Perguntas frequentes",
+    "how-it-works": "Como funciona",
+    "privacy": "Privacidade",
+    "contact": "Contato",
+    "languages": "Idiomas",
+    "how": [
+      [
+        "Comece uma comparação",
+        "Cole as duas entradas que deseja comparar nos editores esquerdo e direito, ou arraste um arquivo para cada editor. Confira o formato selecionado de cada lado e clique em Comparar. Para experimentar primeiro, use carregar exemplo abaixo de Comparar. Formatar e Limpar afetam apenas o editor correspondente."
+      ],
+      [
+        "O que a ferramenta compara",
+        "A ferramenta compara os valores interpretados, em vez das linhas originais do texto. Ela ignora a formatação, a ordem das propriedades dos objetos e a ordem dos elementos dos arrays, inclusive em estruturas aninhadas. Elementos duplicados continuam contando. Objetos em arrays são alinhados por campos identificadores ou pelo conteúdo para facilitar a leitura das alterações."
+      ],
+      [
+        "Leia o resultado",
+        "O diff usa a entrada esquerda como referência: vermelho indica remoções e verde indica adições necessárias para chegar à entrada direita. Valores diferentes aparecem como remoção e adição, com destaque no trecho que difere. Essa direção é uma convenção de exibição; as entradas não precisam representar versões anteriores e posteriores. O resultado mostra dados normalizados, portanto a ordem e a formatação podem ser diferentes das entradas. Um resultado equivalente significa que não foram encontradas diferenças segundo essas regras de comparação; os textos originais ainda podem ser diferentes. Clique em Voltar para editar as entradas novamente."
+      ],
+      [
+        "Escolha o formato das entradas",
+        "Cada editor aceita JSON, JSONL ou um subconjunto limitado de YAML. JSONL exige um valor JSON completo por linha não vazia; linhas em branco são ignoradas e os registros são comparados como um array, sem considerar a ordem. Se os dois lados usarem o mesmo formato, o resultado será exibido nesse formato. Se usarem formatos diferentes, os valores interpretados serão comparados e o resultado será exibido em JSON. Comentários e formatação original não são preservados."
+      ],
+      [
+        "Quando a ordem importa",
+        "A ferramenta é útil para comparar respostas de APIs, dados de configuração e coleções sem ordem definida. Ela não é adequada para verificar alterações em sequências, rankings ou históricos nos quais a posição tem significado: uma simples reordenação não produz diferença. Nesses casos, use uma comparação que considere a ordem."
+      ],
+      [
+        "Outras limitações",
+        "O suporte a YAML cobre mapeamentos, sequências e coleções simples comuns; não implementa toda a especificação YAML. Para YAML complexo, converta os documentos para JSON com um parser completo de YAML antes de comparar. Os números usam a precisão do JavaScript: inteiros muito grandes podem perder dígitos, portanto represente identificadores exatos como strings. Entradas grandes podem tornar o navegador lento ou exceder a memória disponível."
+      ]
+    ],
+    "privacyText": [
+      "A comparação ocorre no navegador. A ferramenta salva textos, formatos selecionados, estado da tela e resultado no localStorage para restaurá-los; a escolha de idioma também é salva. Limpe os dados do site no navegador para removê-los.",
+      "O site usa o Google Analytics e envia eventos de uso, incluindo ações, formatos, contagens de caracteres e alguns metadados de arquivos (incluindo nomes de arquivos rejeitados); o código desses eventos não envia o texto das entradas. O Google recebe requisições ao carregar o Analytics. O editor também pode carregar recursos de uma CDN. Considere o navegador, as extensões e o dispositivo antes de inserir dados sensíveis. A hospedagem no GitHub Pages também envolve requisições ao GitHub. Nenhum anúncio é carregado atualmente."
+    ],
+    "contactText": "Para erros ou sugestões, envie um e-mail para admin@smartjsondiff.com. Inclua os passos para reproduzir o problema e evite enviar dados sensíveis.",
+    "examples": {
+      "heading": "Exemplos",
+      "items": [
+        {
+          "title": "Mesmo conteúdo",
+          "explanation": "As entradas são equivalentes: as propriedades e os elementos do array mudaram de ordem, mas os valores e suas quantidades continuam iguais.",
+          "left": "{\"a\": 1, \"b\": [1, 2]}",
+          "right": "{\"b\": [2, 1], \"a\": 1}"
+        },
+        {
+          "title": "Valores diferentes",
+          "explanation": "O mesmo campo tem valores diferentes: 10 à esquerda e 20 à direita. A comparação destaca a diferença de valor, mesmo com a mesma estrutura.",
+          "left": "{\"value\": 10}",
+          "right": "{\"value\": 20}"
+        },
+        {
+          "title": "Quantidades diferentes",
+          "explanation": "O número 1 aparece duas vezes à esquerda e uma vez à direita. Ignorar a ordem do array não significa ignorar quantas vezes cada valor aparece.",
+          "left": "[1, 1, 2]",
+          "right": "[1, 2]"
+        }
+      ],
+      "leftLabel": "Esquerda",
+      "rightLabel": "Direita"
+    }
+  },
+  "es": {
+    "home": "Volver a la herramienta",
+    "nav": "Ayuda",
+    "faq": "Preguntas frecuentes",
+    "how-it-works": "Cómo funciona",
+    "privacy": "Privacidad",
+    "contact": "Contacto",
+    "languages": "Idiomas",
+    "how": [
+      [
+        "Inicie una comparación",
+        "Pegue las dos entradas que desea comparar en los editores izquierdo y derecho, o arrastre un archivo a cada editor. Compruebe el formato seleccionado en cada lado y pulse Comparar. Para probar la herramienta, use cargar ejemplo debajo de Comparar. Formatear y Limpiar solo afectan al editor correspondiente."
+      ],
+      [
+        "Qué compara la herramienta",
+        "La herramienta compara los valores interpretados, no las líneas originales del texto. Ignora el formato, el orden de las propiedades de los objetos y el orden de los elementos de los arrays, incluso en estructuras anidadas. Los duplicados siguen contando. Los objetos de los arrays se alinean mediante campos identificadores o su contenido para facilitar la lectura de los cambios."
+      ],
+      [
+        "Lea el resultado",
+        "El diff usa la entrada izquierda como referencia: el rojo indica eliminaciones y el verde adiciones necesarias para llegar a la entrada derecha. Los valores diferentes aparecen como una eliminación y una adición, con énfasis en el fragmento que difiere. Esta dirección es una convención visual; las entradas no tienen que representar versiones anteriores y posteriores. El resultado muestra datos normalizados, por lo que el orden y el formato pueden diferir de las entradas. Un resultado equivalente significa que no se encontraron diferencias según estas reglas; los textos originales pueden seguir siendo distintos. Pulse Volver para editar las entradas de nuevo."
+      ],
+      [
+        "Elija el formato de las entradas",
+        "Cada editor acepta JSON, JSONL o un subconjunto limitado de YAML. JSONL requiere un valor JSON completo por línea no vacía; se omiten las líneas en blanco y los registros se comparan como un array, sin considerar su orden. Si ambos lados usan el mismo formato, el resultado se muestra en ese formato. Si usan formatos diferentes, se comparan los valores interpretados y el resultado se muestra en JSON. No se conservan los comentarios ni el formato original."
+      ],
+      [
+        "Cuándo importa el orden",
+        "La herramienta resulta útil para comparar respuestas de API, datos de configuración y colecciones sin orden definido. No es adecuada para comprobar cambios en secuencias, clasificaciones o historiales donde la posición tiene significado: cambiar solo el orden no produce diferencias. En esos casos, use una comparación que tenga en cuenta el orden."
+      ],
+      [
+        "Otras limitaciones",
+        "El soporte de YAML cubre mapeos, secuencias y colecciones simples comunes; no implementa toda la especificación YAML. Para YAML complejo, convierta los documentos a JSON con un analizador completo de YAML antes de comparar. Los números usan la precisión de JavaScript: los enteros muy grandes pueden perder dígitos, por lo que conviene representar identificadores exactos como cadenas. Las entradas grandes pueden ralentizar el navegador o superar la memoria disponible."
+      ]
+    ],
+    "privacyText": [
+      "La comparación se realiza en el navegador. La herramienta guarda los textos, formatos, estado de la vista y resultado en localStorage para restaurarlos; también guarda el idioma. Borre los datos del sitio en su navegador para eliminarlos.",
+      "El sitio usa Google Analytics y envía eventos de uso con acciones, formatos, número de caracteres y algunos metadatos de archivos (incluidos nombres de archivos rechazados); el código de eventos no envía el texto de entrada. Google recibe solicitudes al cargar Analytics. El editor también puede cargar recursos de una CDN. Considere el navegador, las extensiones y el dispositivo antes de introducir datos sensibles. El alojamiento en GitHub Pages también implica solicitudes a GitHub. Actualmente no se cargan anuncios."
+    ],
+    "contactText": "Para errores o comentarios, escriba a admin@smartjsondiff.com. Incluya los pasos para reproducir el problema y evite enviar datos sensibles.",
+    "examples": {
+      "heading": "Ejemplos",
+      "items": [
+        {
+          "title": "Mismo contenido",
+          "explanation": "Las entradas son equivalentes: las propiedades y los elementos del array cambiaron de orden, pero los valores y sus cantidades son iguales.",
+          "left": "{\"a\": 1, \"b\": [1, 2]}",
+          "right": "{\"b\": [2, 1], \"a\": 1}"
+        },
+        {
+          "title": "Valores diferentes",
+          "explanation": "El mismo campo tiene valores diferentes: 10 a la izquierda y 20 a la derecha. La comparación resalta la diferencia de valor aunque la estructura sea la misma.",
+          "left": "{\"value\": 10}",
+          "right": "{\"value\": 20}"
+        },
+        {
+          "title": "Cantidades diferentes",
+          "explanation": "El número 1 aparece dos veces a la izquierda y una a la derecha. Ignorar el orden del array no significa ignorar cuántas veces aparece cada valor.",
+          "left": "[1, 1, 2]",
+          "right": "[1, 2]"
+        }
+      ],
+      "leftLabel": "Izquierda",
+      "rightLabel": "Derecha"
+    }
+  },
+  "zh": {
+    "home": "返回工具",
+    "nav": "帮助",
+    "faq": "常见问题",
+    "how-it-works": "使用说明",
+    "privacy": "隐私",
+    "contact": "联系",
+    "languages": "语言",
+    "how": [
+      [
+        "开始比较",
+        "在左右编辑器中粘贴要比较的两份数据，也可以将文件拖入各编辑器。检查两侧选择的格式，然后点击比较。若想先试用，可点击比较按钮下方的加载示例。格式化和清除仅作用于对应的编辑器。"
+      ],
+      [
+        "工具比较什么",
+        "工具比较解析后的值，而不是原始文本行。它会忽略格式、对象属性顺序和数组元素顺序，包括嵌套结构中的顺序。重复元素仍会计数。数组中的对象会根据标识字段或内容对齐，方便查看修改。"
+      ],
+      [
+        "阅读结果",
+        "差异视图以左侧输入为基准：红色表示得到右侧输入时需要删除的内容，绿色表示需要新增的内容。不同的值显示为删除和新增，并突出显示不同的部分。这只是显示方向的约定，两份输入不必代表先后版本。结果展示规范化后的数据，因此顺序和格式可能与输入不同。结果等价表示按照这些规则未发现差异，并不代表原始文本完全相同。点击返回可继续编辑输入。"
+      ],
+      [
+        "选择输入格式",
+        "每个编辑器支持 JSON、JSONL 或有限的 YAML 子集。JSONL 的每个非空行须包含一个完整的 JSON 值；空行会被跳过，记录作为数组比较，忽略其顺序。两侧格式相同时，结果以该格式显示；格式不同时，比较解析后的值，并以 JSON 显示结果。注释和原始格式不会保留。"
+      ],
+      [
+        "何时需要考虑顺序",
+        "该工具适合比较 API 响应、配置数据和无序集合。对于位置具有意义的序列、排名或历史记录，它不适合检查顺序变化：仅重新排列元素不会产生差异。这些情况应使用考虑顺序的比较方式。"
+      ],
+      [
+        "其他限制",
+        "YAML 支持常见映射、序列和简单流式集合，并未实现完整的 YAML 规范。对于复杂 YAML，请先用完整的 YAML 解析器将文档转换为 JSON，再进行比较。数字受 JavaScript 精度限制：很大的整数可能丢失数字，需精确保留的标识符应使用字符串。较大的输入可能使浏览器变慢或超出可用内存。"
+      ]
+    ],
+    "privacyText": [
+      "比较在浏览器中进行。工具将输入文本、所选格式、视图状态和比较结果保存在 localStorage 中以便恢复；语言选择也保存在此。可在浏览器中清除网站数据以移除这些内容。",
+      "本网站使用 Google Analytics，并发送操作、格式、输入字符数和部分文件元数据（包括被拒绝文件的名称）等使用事件；事件代码不会发送输入文本。加载 Analytics 时 Google 会收到请求。编辑器也可能从 CDN 加载资源。输入敏感信息前，请考虑浏览器、扩展和设备的情况。 GitHub Pages 托管也会产生对 GitHub 的请求。目前不会加载广告。"
+    ],
+    "contactText": "如需报告错误或提供反馈，请发送邮件至 admin@smartjsondiff.com。请附上重现步骤，避免发送敏感输入。",
+    "examples": {
+      "heading": "示例",
+      "items": [
+        {
+          "title": "内容相同",
+          "explanation": "这些输入等价：属性和数组元素的顺序不同，但值及其出现次数相同。",
+          "left": "{\"a\": 1, \"b\": [1, 2]}",
+          "right": "{\"b\": [2, 1], \"a\": 1}"
+        },
+        {
+          "title": "值不同",
+          "explanation": "同一字段在左侧的值为 10，右侧为 20。即使结构相同，比较仍会突出显示值的差异。",
+          "left": "{\"value\": 10}",
+          "right": "{\"value\": 20}"
+        },
+        {
+          "title": "出现次数不同",
+          "explanation": "数字 1 在左侧出现两次，在右侧出现一次。忽略数组顺序并不意味着忽略每个值的出现次数。",
+          "left": "[1, 1, 2]",
+          "right": "[1, 2]"
+        }
+      ],
+      "leftLabel": "左侧",
+      "rightLabel": "右侧"
+    }
+  }
+}

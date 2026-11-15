@@ -282,3 +282,6 @@ User Input → Validation → Semantic Diff Processing → Result Formatting →
                     ↓
                Analytics Tracking
 ```
+### Support pages
+
+The Vite support-pages plugin (`scripts/support-pages.js`) emits localized, static HTML at `/<locale>/<page>/` for FAQ, how-it-works, privacy and contact. It serves the same pages in development and respects `PREVIEW_BASE` for internal links. FAQ answers come from the locale JSON used by the legacy hash FAQ view; other support copy is in `src/content/support.json`. The existing `#/<locale>/faq` routes remain available. Update the sitemap when adding pages.
