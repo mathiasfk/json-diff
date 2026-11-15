@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es"><head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-adsense-account" content="ca-pub-6364476119143776">
+  <title>Preguntas frecuentes — Smart JSON Diff</title><meta name="description" content="En lugar de realizar una comparación de texto simple, Smart JSON Diff realiza una comparación semántica. Normaliza ambas entradas ordenando alfabéticamente las propiedades de los objetos y alineando inteligentemente los elementos de los arrays. Cuando ambos arrays contienen una clave única, los elementos se alinean mediante esa clave; de lo contrario, se comparan mediante su contenido normalizado para minimizar el ruido y mostrar solo las diferencias más relevantes. La comparación se ejecuta completamente en su navegador y utiliza jsondiffpatch internamente.">
+  <link rel="canonical" href="https://smartjsondiff.com/es/faq/">
+  <meta name="robots" content="noindex, nofollow"><link rel="alternate" hreflang="en"
+      href="https://smartjsondiff.com/en/faq/"><link rel="alternate" hreflang="pt"
+      href="https://smartjsondiff.com/pt/faq/"><link rel="alternate" hreflang="es"
+      href="https://smartjsondiff.com/es/faq/"><link rel="alternate" hreflang="zh"
+      href="https://smartjsondiff.com/zh/faq/">
+  <meta name="theme-color" content="#111827"><style>
+  * { box-sizing: border-box }
+  body { margin: 0; background: #111827; color: #e5e7eb; font: 16px/1.65 system-ui, -apple-system, sans-serif }
+  a { color: #93c5fd; text-underline-offset: 3px }
+  a:hover { color: #dbeafe }
+  a:focus-visible { outline: 3px solid #93c5fd; outline-offset: 4px }
+  header { background: #1f2937; border-bottom: 1px solid #374151 }
+  main, footer { max-width: 860px; margin: auto; padding: 20px 24px }
+  header > div { max-width: 1536px; min-height: 88px; margin: auto; padding: 16px 24px;
+    display: flex; justify-content: space-between; gap: 16px; align-items: center }
+  .brand { color: #f9fafb; font-size: 1.5rem; font-weight: 700; text-decoration: none }
+  .header-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; font-size: .875rem }
+  .language-picker { display: flex; align-items: center; gap: 8px; color: #9ca3af; font-size: .75rem }
+  .language-picker select { background: #111827; border: 1px solid #374151; color: #e5e7eb;
+    border-radius: 4px; padding: 4px 8px; font: inherit }
+  .language-picker select:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px }
+  @media (max-width: 767px) {
+    header > div { flex-direction: column; align-items: stretch }
+    .header-actions { justify-content: center }
+  }
+  main { padding-top: 38px; padding-bottom: 48px; min-height: 60vh }
+  h1 { font-size: 2rem; line-height: 1.2; color: #f9fafb; margin: 0 0 28px }
+  h2 { font-size: 1.2rem; line-height: 1.35; color: #f9fafb; margin: 0 0 8px }
+  h3 { font-size: 1rem; margin: 24px 0 6px; color: #f9fafb }
+  section { margin: 0 0 30px }
+  p { margin: 0 0 16px; overflow-wrap: anywhere }
+  .examples { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 12px }
+  .examples span { font-size: .85rem; color: #cbd5e1 }
+  .faq-example { margin-top: 20px }
+  .faq-example p { margin-top: 10px; color: #cbd5e1 }
+  pre { margin: 4px 0 0; padding: 12px; background: #1f2937; border: 1px solid #374151;
+    border-radius: 6px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere }
+  footer { border-top: 1px solid #374151; color: #9ca3af; font-size: .9rem }
+  nav { display: flex; flex-wrap: wrap; gap: 10px 20px }
+  footer nav + nav { margin-top: 18px }
+  a[aria-current] { color: #f9fafb; font-weight: 600 }
+  @media (max-width: 480px) {
+    header > div, main, footer { padding-left: 20px; padding-right: 20px }
+    h1 { font-size: 1.65rem }
+    main { padding-top: 30px }
+  }
+</style>
+</head><body>
+  <header><div><a class="brand" href="/preview/pr-65/#/es">Smart JSON Diff</a>
+    <div class="header-actions"><a href="/preview/pr-65/#/es">← Volver a la herramienta</a>
+      <label class="language-picker" for="language-selector"><span>Idioma</span>
+        <select id="language-selector"><option value="/preview/pr-65/en/faq/"
+      lang="en" >English</option><option value="/preview/pr-65/pt/faq/"
+      lang="pt" >Português</option><option value="/preview/pr-65/es/faq/"
+      lang="es" selected>Español</option><option value="/preview/pr-65/zh/faq/"
+      lang="zh" >中文</option></select></label>
+    </div></div></header>
+  <main><h1>Preguntas frecuentes</h1><section><h2>¿Cómo funciona la comparación?</h2><p>En lugar de realizar una comparación de texto simple, Smart JSON Diff realiza una comparación semántica. Normaliza ambas entradas ordenando alfabéticamente las propiedades de los objetos y alineando inteligentemente los elementos de los arrays. Cuando ambos arrays contienen una clave única, los elementos se alinean mediante esa clave; de lo contrario, se comparan mediante su contenido normalizado para minimizar el ruido y mostrar solo las diferencias más relevantes. La comparación se ejecuta completamente en su navegador y utiliza jsondiffpatch internamente.</p>
+      </section><section><h2>¿En qué se diferencia Smart JSON Diff de otras herramientas de comparación JSON?</h2><p>Muchas herramientas tradicionales de comparación JSON tratan los arrays como secuencias, por lo que el orden de los elementos afecta al resultado. Smart JSON Diff trata los elementos de los arrays como un multiconjunto, lo que significa que el orden de los elementos no importa, pero los elementos duplicados siguen contando.</p>
+      <div class="faq-example">
+        <div class="examples">
+    <div><span>Izquierda</span><pre><code>[1, 2, 3]</code></pre></div>
+    <div><span>Derecha</span><pre><code>[3, 2, 1]</code></pre></div>
+  </div>
+        <p>Equivalentes: los valores son los mismos, aunque el orden sea distinto.</p></div></section><section><h2>¿Qué significan los colores en la comparación?</h2><p>El verde indica adiciones y el rojo indica eliminaciones. Se resalta toda la línea modificada, mientras que el segmento exacto que cambió se destaca con mayor intensidad.</p>
+      </section><section><h2>¿El orden de las propiedades afecta al resultado?</h2><p>No. Las propiedades se ordenan alfabéticamente antes de la comparación, por lo que los objetos con el mismo contenido pero con un orden de propiedades diferente se consideran equivalentes.</p>
+      <div class="faq-example">
+        <div class="examples">
+    <div><span>Izquierda</span><pre><code>{&quot;a&quot;: 1, &quot;b&quot;: 2}</code></pre></div>
+    <div><span>Derecha</span><pre><code>{&quot;b&quot;: 2, &quot;a&quot;: 1}</code></pre></div>
+  </div>
+        <p>Equivalentes: el orden de las propiedades no afecta a la comparación.</p></div></section><section><h2>¿El orden de los arrays afecta al resultado?</h2><p>No. Smart JSON Diff encuentra automáticamente la mejor forma de alinear los elementos de los arrays, por lo que los arrays que contienen los mismos elementos en un orden diferente se consideran equivalentes.</p>
+      <div class="faq-example">
+        <div class="examples">
+    <div><span>Izquierda</span><pre><code>[
+  {
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;Ana&quot;
+  },
+  {
+    &quot;id&quot;: 2,
+    &quot;name&quot;: &quot;Sam&quot;
+  }
+]</code></pre></div>
+    <div><span>Derecha</span><pre><code>[
+  {
+    &quot;id&quot;: 2,
+    &quot;name&quot;: &quot;Sam&quot;
+  },
+  {
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;Ana&quot;
+  }
+]</code></pre></div>
+  </div>
+        <p>Equivalentes: cada objeto conserva sus valores, aunque cambie su orden en el array.</p></div></section><section><h2>¿Cómo se gestionan las diferencias entre arrays?</h2><p>Smart JSON Diff encuentra una alineación que maximiza la similitud entre las dos versiones. Cuando ambos arrays contienen una clave única, los elementos se alinean mediante esa clave; de lo contrario, se alinean mediante su contenido normalizado. Esto ayuda a minimizar el ruido y a destacar los cambios más relevantes. Reordenar los mismos elementos no produce ninguna diferencia, mientras que los elementos añadidos, eliminados o modificados siguen detectándose.</p>
+      </section><section><h2>¿Qué ocurre con duplicados y valores modificados?</h2><p>Los duplicados siguen contando y se detectan valores diferentes aunque la estructura sea la misma.</p>
+      <div class="faq-example">
+        <div class="examples">
+    <div><span>Izquierda</span><pre><code>[1, 1, 2]</code></pre></div>
+    <div><span>Derecha</span><pre><code>[1, 2]</code></pre></div>
+  </div>
+        <p>Diferentes: el lado izquierdo contiene una aparición más del número 1.</p></div><div class="faq-example">
+        <div class="examples">
+    <div><span>Izquierda</span><pre><code>{&quot;value&quot;: 10}</code></pre></div>
+    <div><span>Derecha</span><pre><code>{&quot;value&quot;: 20}</code></pre></div>
+  </div>
+        <p>Diferentes: el campo contiene 10 a la izquierda y 20 a la derecha.</p></div></section><section><h2>¿Es seguro pegar datos confidenciales?</h2><p>La comparación se realiza en el navegador. Las entradas y los resultados pueden permanecer en localStorage; consulte la página de privacidad sobre almacenamiento y servicios externos.</p>
+      </section><section><h2>¿Cómo puedo reportar errores?</h2><p>Envíe un correo electrónico a admin@smartjsondiff.com.</p>
+      </section></main>
+  <footer><nav aria-label="Ayuda"><a aria-current="page"
+      href="/preview/pr-65/es/faq/">Preguntas frecuentes</a><a 
+      href="/preview/pr-65/es/how-it-works/">Cómo funciona</a><a 
+      href="/preview/pr-65/es/privacy/">Privacidad</a><a 
+      href="/preview/pr-65/es/contact/">Contacto</a></nav>
+    <noscript><nav aria-label="Idiomas"><a href="/preview/pr-65/en/faq/" lang="en"
+      >English</a><a href="/preview/pr-65/pt/faq/" lang="pt"
+      >Português</a><a href="/preview/pr-65/es/faq/" lang="es"
+      aria-current="true">Español</a><a href="/preview/pr-65/zh/faq/" lang="zh"
+      >中文</a></nav></noscript></footer>
+  <script>
+    document.getElementById('language-selector').addEventListener('change', function () {
+      window.location.assign(this.value);
+    });
+  </script>
+</body></html>
