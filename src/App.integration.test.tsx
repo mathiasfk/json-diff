@@ -11,9 +11,39 @@ vi.mock('./components/JsonEditor', () => ({
 vi.mock('./components/DiffViewer', () => ({ DiffViewer: () => <div>Saved comparison</div> }));
 
 beforeEach(() => localStorage.clear());
-afterEach(cleanup);
+afterEach(() => { cleanup(); vi.restoreAllMocks(); });
 
 describe('comparison state and formatting', () => {
+  it('loads a comparable example and resets previously selected formats', async () => {
+    localStorage.setItem('jsonDiff.leftFormat', 'yaml');
+    localStorage.setItem('jsonDiff.rightFormat', 'jsonl');
+    render(<App />);
+    fireEvent.click(screen.getByRole('button', { name: 'app.loadExample' }));
+    const left = JSON.parse((screen.getByLabelText('left') as HTMLTextAreaElement).value);
+    const right = JSON.parse((screen.getByLabelText('right') as HTMLTextAreaElement).value);
+    expect(left.members[0]).toMatchObject({ id: 1, role: 'developer' });
+    expect(right.members[1]).toMatchObject({ id: 1, role: 'lead' });
+    expect((screen.getByLabelText('left format') as HTMLSelectElement).value).toBe('json');
+    expect((screen.getByLabelText('right format') as HTMLSelectElement).value).toBe('json');
+    expect(screen.getByRole('button', { name: 'app.loadExample' })).toBeTruthy();
+    fireEvent.click(screen.getByLabelText('jsonEditor.compare'));
+    await waitFor(() => expect(screen.getByText('Saved comparison')).toBeTruthy());
+    expect(screen.queryByRole('alert')).toBeNull();
+  });
+
+  it.each(['left', 'right'])('preserves saved user content on the %s side', side => {
+    localStorage.setItem(`jsonDiff.${side}`, '{"user":true}');
+    render(<App />);
+    expect(screen.getByRole('button', { name: 'app.loadExample' })).toBeTruthy();
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    fireEvent.click(screen.getByRole('button', { name: 'app.loadExample' }));
+    expect(confirm).toHaveBeenCalled();
+    expect((screen.getByLabelText(side) as HTMLTextAreaElement).value).toBe('{"user":true}');
+    confirm.mockReturnValue(true);
+    fireEvent.click(screen.getByRole('button', { name: 'app.loadExample' }));
+    expect(JSON.parse((screen.getByLabelText(side) as HTMLTextAreaElement).value)).toHaveProperty('members');
+  });
+
   it.each(['null', '{}', '{bad', '{"left":1}'])('recovers from invalid saved comparison %s', saved => {
     localStorage.setItem('jsonDiff.viewMode', 'compare');
     localStorage.setItem('jsonDiff.diffResult', saved);

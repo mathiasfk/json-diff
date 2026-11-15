@@ -1,5 +1,8 @@
 {
   "app": {
+    "or": "ou",
+    "replaceWithExample": "Substituir o conteúdo dos dois editores pelo exemplo?",
+    "loadExample": "carregar exemplo",
     "title": "Smart JSON Diff",
     "subtitle": "Compare JSON, YAML e JSONL semanticamente com comparação inteligente de arrays",
     "clearLeft": "Limpar esquerda",

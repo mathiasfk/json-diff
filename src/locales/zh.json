@@ -1,5 +1,8 @@
 {
   "app": {
+    "or": "或",
+    "replaceWithExample": "要用示例替换两个编辑器中的内容吗？",
+    "loadExample": "加载示例",
     "title": "Smart JSON Diff",
     "subtitle": "对 JSON、YAML 和 JSONL 进行语义比较，并智能匹配数组元素",
     "clearLeft": "清除左侧",

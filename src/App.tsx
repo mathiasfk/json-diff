@@ -39,6 +39,25 @@ function App() {
 
   const [storageLoaded, setStorageLoaded] = useState(false);
 
+  const handleLoadExample = () => {
+    if (!storageLoaded) return;
+    if ((leftJson.trim() || rightJson.trim()) && !window.confirm(t('app.replaceWithExample'))) return;
+    setLeftFormat('json');
+    setRightFormat('json');
+    setLeftError(null);
+    setRightError(null);
+    setDiffResult(null);
+    setLeftJson(JSON.stringify({ team: 'Demo', members: [
+      { id: 1, name: 'Ana', role: 'developer' },
+      { id: 2, name: 'Sam', role: 'designer' },
+    ] }, null, 2));
+    setRightJson(JSON.stringify({ members: [
+      { role: 'designer', name: 'Sam', id: 2 },
+      { role: 'lead', name: 'Ana', id: 1 },
+    ], team: 'Demo' }, null, 2));
+    gtag('event', 'load_example');
+  };
+
   // Load from localStorage after initial render to avoid blocking
   useEffect(() => {
     try {
@@ -288,7 +307,7 @@ function App() {
               />
             </div>
 
-            <div className="flex items-center justify-center gap-4 mt-6" role="toolbar" aria-label={t('jsonEditor.comparisonActions')}>
+            <div className="grid grid-cols-[repeat(5,auto)] items-center justify-center gap-x-4 gap-y-2 mt-6 shrink-0" role="toolbar" aria-label={t('jsonEditor.comparisonActions')}>
               <button
                 onClick={() => handleClear('left')}
                 className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -329,6 +348,17 @@ function App() {
               >
                 {t('app.clearRight')}
               </button>
+              <div className="col-start-3 justify-self-center flex items-baseline gap-1 text-sm text-gray-400">
+                <span>{t('app.or')}</span>
+                <button
+                  type="button"
+                  onClick={handleLoadExample}
+                  disabled={!storageLoaded}
+                  className="hover:text-gray-200 underline underline-offset-4 disabled:opacity-50"
+                >
+                  {t('app.loadExample')}
+                </button>
+              </div>
             </div>
             {/* Horizontal ad slot */}
             <aside
