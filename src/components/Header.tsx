@@ -61,7 +61,7 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
             />
           </nav>
         ) : homeLink ? (
-          <nav aria-label={t('header.primaryNav')}>
+          <nav aria-label={t('header.primaryNav')} className="flex items-center justify-center gap-4 flex-wrap">
             <Link
               to={getLocalePath(currentLanguage, '')}
               className="text-sm text-gray-400 hover:text-gray-200"
@@ -69,6 +69,7 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
             >
               ← {t('header.home')}
             </Link>
+            <LanguageSelector currentLocale={currentLanguage} onSelect={changeLanguage} />
           </nav>
         ) : null}
       </div>

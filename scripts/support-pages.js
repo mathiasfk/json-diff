@@ -16,9 +16,19 @@ const styles = `
   a:hover { color: #dbeafe }
   a:focus-visible { outline: 3px solid #93c5fd; outline-offset: 4px }
   header { background: #1f2937; border-bottom: 1px solid #374151 }
-  header > div, main, footer { max-width: 860px; margin: auto; padding: 20px 24px }
-  header > div { display: flex; justify-content: space-between; gap: 16px; align-items: center; flex-wrap: wrap }
-  .brand { color: #f9fafb; font-size: 1.2rem; font-weight: 700; text-decoration: none }
+  main, footer { max-width: 860px; margin: auto; padding: 20px 24px }
+  header > div { max-width: 1536px; min-height: 88px; margin: auto; padding: 16px 24px;
+    display: flex; justify-content: space-between; gap: 16px; align-items: center }
+  .brand { color: #f9fafb; font-size: 1.5rem; font-weight: 700; text-decoration: none }
+  .header-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; font-size: .875rem }
+  .language-picker { display: flex; align-items: center; gap: 8px; color: #9ca3af; font-size: .75rem }
+  .language-picker select { background: #111827; border: 1px solid #374151; color: #e5e7eb;
+    border-radius: 4px; padding: 4px 8px; font: inherit }
+  .language-picker select:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px }
+  @media (max-width: 767px) {
+    header > div { flex-direction: column; align-items: stretch }
+    .header-actions { justify-content: center }
+  }
   main { padding-top: 38px; padding-bottom: 48px; min-height: 60vh }
   h1 { font-size: 2rem; line-height: 1.2; color: #f9fafb; margin: 0 0 28px }
   h2 { font-size: 1.2rem; line-height: 1.35; color: #f9fafb; margin: 0 0 8px }
@@ -74,8 +84,9 @@ export function supportPages(base = '/') {
   const prefix = basePath(base);
   // Read on each generation so editing copy is visible in the dev server.
   const content = JSON.parse(fs.readFileSync(new URL('../src/content/support.json', import.meta.url)));
-  const faq = Object.fromEntries(locales.map(locale => [locale,
-    JSON.parse(fs.readFileSync(new URL(`../src/locales/${locale}.json`, import.meta.url))).faq.items]));
+  const translations = Object.fromEntries(locales.map(locale => [locale,
+    JSON.parse(fs.readFileSync(new URL(`../src/locales/${locale}.json`, import.meta.url)))]));
+  const faq = Object.fromEntries(locales.map(locale => [locale, translations[locale].faq.items]));
   const result = {};
   for (const locale of locales) for (const page of pages) {
     const c = content[locale];
@@ -84,6 +95,8 @@ export function supportPages(base = '/') {
       href="${href(locale, target)}">${escapeHtml(c[target])}</a>`).join('');
     const languages = locales.map(language => `<a href="${href(language, page)}" lang="${language}"
       ${language === locale ? 'aria-current="true"' : ''}>${languageNames[language]}</a>`).join('');
+    const languageOptions = locales.map(language => `<option value="${href(language, page)}"
+      lang="${language}" ${language === locale ? 'selected' : ''}>${languageNames[language]}</option>`).join('');
     const alternatives = locales.map(language => `<link rel="alternate" hreflang="${language}"
       href="https://smartjsondiff.com/${language}/${page}/">`).join('');
     const description = page === 'faq' ? faq[locale][0].a : page === 'how-it-works' ? c.how[0][1]
@@ -99,10 +112,18 @@ export function supportPages(base = '/') {
   <meta name="theme-color" content="#111827"><style>${styles}</style>
 </head><body>
   <header><div><a class="brand" href="${prefix}#/${locale}">Smart JSON Diff</a>
-    <a href="${prefix}#/${locale}">← ${escapeHtml(c.home)}</a></div></header>
+    <div class="header-actions"><a href="${prefix}#/${locale}">← ${escapeHtml(c.home)}</a>
+      <label class="language-picker" for="language-selector"><span>${escapeHtml(translations[locale].app.language)}</span>
+        <select id="language-selector">${languageOptions}</select></label>
+    </div></div></header>
   <main><h1>${title}</h1>${pageBody(page, c, faq[locale])}</main>
   <footer><nav aria-label="${escapeHtml(c.nav)}">${navigation}</nav>
-    <nav aria-label="${escapeHtml(c.languages)}">${languages}</nav></footer>
+    <noscript><nav aria-label="${escapeHtml(c.languages)}">${languages}</nav></noscript></footer>
+  <script>
+    document.getElementById('language-selector').addEventListener('change', function () {
+      window.location.assign(this.value);
+    });
+  </script>
 </body></html>`;
   }
   return result;

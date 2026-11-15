@@ -12,7 +12,9 @@ describe('static support pages', () => {
         expect(html).toContain(`<html lang="${locale}">`);
         expect(html).toContain(`<link rel="canonical" href="https://smartjsondiff.com/${locale}/${page}/">`);
         expect(html).toContain(`href="/#/${locale}"`);
-        expect(html).not.toContain('<script');
+        expect(html).toContain('<select id="language-selector">');
+        expect(html).toContain(`value="/${locale}/${page}/"\n      lang="${locale}" selected`);
+        expect(html).toContain('<noscript><nav');
       }
     }
     expect(pages['en/faq/index.html']).toContain(en.faq.items[0].q);
