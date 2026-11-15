@@ -1,6 +1,8 @@
 import { useEffect, useMemo } from 'react';
 import { Header } from '../components/Header';
 import { useTranslation } from 'react-i18next';
+import { Link, useParams } from 'react-router-dom';
+import { DEFAULT_LOCALE, isLocale } from '../i18n-config';
 
 interface FaqItem {
   q: string;
@@ -9,6 +11,8 @@ interface FaqItem {
 
 export default function Faq() {
   const { t } = useTranslation();
+  const { locale } = useParams<{ locale: string }>();
+  const homePath = `/${isLocale(locale) ? locale : DEFAULT_LOCALE}`;
   // `returnObjects` yields the localized array of { q, a } items; since every
   // locale carries the same keys, the array is always present in default (en).
   const items: FaqItem[] = useMemo(
@@ -44,7 +48,7 @@ export default function Faq() {
       <Header showNav={false} homeLink={true} />
       <main className="max-w-screen-2xl mx-auto p-6" role="main">
         <nav aria-label={t('faq.breadcrumbNav')} className="mb-4">
-          <a href="/" className="text-sm text-gray-400 hover:text-gray-200">{t('faq.breadcrumbHome')}</a>
+          <Link to={homePath} className="text-sm text-gray-400 hover:text-gray-200">{t('faq.breadcrumbHome')}</Link>
           <span className="px-2 text-gray-500" aria-hidden="true">/</span>
           <span className="text-sm text-gray-300">{t('faq.breadcrumbFaq')}</span>
         </nav>
