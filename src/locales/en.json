@@ -4,7 +4,7 @@
     "replaceWithExample": "Replace the contents of both editors with the example?",
     "loadExample": "load example",
     "title": "Smart JSON Diff",
-    "subtitle": "Compare JSON, YAML, and JSONL semantically with smart array matching",
+    "subtitle": "Compare JSON, YAML, and JSONL semantically with automatic array alignment",
     "clearLeft": "Clear Left",
     "language": "Language",
     "formatLeft": "Format Left",
@@ -19,7 +19,7 @@
     "backAria": "Go back to the previous view",
     "homeAria": "Go to the Smart JSON Diff home page",
     "languageLabel": "Language",
-    "subtitle": "Compare JSON, YAML, and JSONL semantically with smart array matching",
+    "subtitle": "Compare JSON, YAML, and JSONL semantically with automatic array alignment",
     "primaryNav": "Primary navigation",
     "backNav": "Back",
     "homeNav": "Home"

@@ -4,7 +4,7 @@
     "replaceWithExample": "要用示例替换两个编辑器中的内容吗？",
     "loadExample": "加载示例",
     "title": "Smart JSON Diff",
-    "subtitle": "对 JSON、YAML 和 JSONL 进行语义比较，并智能匹配数组元素",
+    "subtitle": "对 JSON、YAML 和 JSONL 进行语义比较，并自动对齐数组元素",
     "clearLeft": "清除左侧",
     "language": "语言",
     "formatLeft": "格式化左侧",
@@ -19,7 +19,7 @@
     "backAria": "返回上一页",
     "homeAria": "前往 Smart JSON Diff 首页",
     "languageLabel": "语言",
-    "subtitle": "对 JSON、YAML 和 JSONL 进行语义比较，并智能匹配数组元素",
+    "subtitle": "对 JSON、YAML 和 JSONL 进行语义比较，并自动对齐数组元素",
     "primaryNav": "主导航",
     "backNav": "返回",
     "homeNav": "首页"
