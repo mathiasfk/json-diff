@@ -84,7 +84,14 @@
       },
       {
         "q": "How is Smart JSON Diff different from other JSON diff tools?",
-        "a": "Many traditional JSON diff tools treat arrays as sequences, meaning that item order affects the comparison. Smart JSON Diff treats array items as a multiset, meaning that item order does not matter while duplicate items still count. For example, the arrays [1, 2, 3] and [3, 2, 1] are considered equivalent by Smart JSON Diff."
+        "a": "Many traditional JSON diff tools treat arrays as sequences, meaning that item order affects the comparison. Smart JSON Diff treats array items as a multiset, meaning that item order does not matter while duplicate items still count.",
+        "examples": [
+          {
+            "left": "[1, 2, 3]",
+            "right": "[3, 2, 1]",
+            "explanation": "Equivalent: the values are the same, despite their order."
+          }
+        ]
       },
       {
         "q": "What do the colors mean in the diff?",
@@ -92,11 +99,25 @@
       },
       {
         "q": "Does property order affect the result?",
-        "a": "No. Properties are sorted alphabetically before comparison, so objects with the same content but different key order are considered equivalent. For example, the objects { \"a\": 1, \"b\": 2 } and { \"b\": 2, \"a\": 1 } are considered equivalent."
+        "a": "No. Properties are sorted alphabetically before comparison, so objects with the same content but different key order are considered equivalent.",
+        "examples": [
+          {
+            "left": "{\"a\": 1, \"b\": 2}",
+            "right": "{\"b\": 2, \"a\": 1}",
+            "explanation": "Equivalent: property order does not affect the comparison."
+          }
+        ]
       },
       {
         "q": "Does array order affect the result?",
-        "a": "No. Smart JSON Diff automatically finds the best way to align array items, so arrays containing the same items in a different order are considered equivalent. For example, the arrays [{ \"id\": 1, \"name\": \"John\" }, { \"id\": 2, \"name\": \"Jane\" }] and [{ \"id\": 2, \"name\": \"Jane\" }, { \"id\": 1, \"name\": \"John\" }] are considered equivalent."
+        "a": "No. Smart JSON Diff automatically finds the best way to align array items, so arrays containing the same items in a different order are considered equivalent.",
+        "examples": [
+          {
+            "left": "[\n  {\n    \"id\": 1,\n    \"name\": \"Ana\"\n  },\n  {\n    \"id\": 2,\n    \"name\": \"Sam\"\n  }\n]",
+            "right": "[\n  {\n    \"id\": 2,\n    \"name\": \"Sam\"\n  },\n  {\n    \"id\": 1,\n    \"name\": \"Ana\"\n  }\n]",
+            "explanation": "Equivalent: each object keeps its values, despite the different array order."
+          }
+        ]
       },
       {
         "q": "How are array differences handled?",
@@ -104,7 +125,19 @@
       },
       {
         "q": "What happens to duplicates and changed values?",
-        "a": "Duplicate items count: [1, 1, 2] and [1, 2] differ by one 1. A real value change also remains visible: {\"role\":\"developer\"} and {\"role\":\"lead\"} differ in role."
+        "a": "Duplicate items count, and different values are detected even when the structure is the same.",
+        "examples": [
+          {
+            "left": "[1, 1, 2]",
+            "right": "[1, 2]",
+            "explanation": "Different: the left side contains one more occurrence of 1."
+          },
+          {
+            "left": "{\"value\": 10}",
+            "right": "{\"value\": 20}",
+            "explanation": "Different: the field contains 10 on the left and 20 on the right."
+          }
+        ]
       },
       {
         "q": "Is it safe to paste sensitive data?",

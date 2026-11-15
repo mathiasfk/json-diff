@@ -27,6 +27,8 @@ const styles = `
   p { margin: 0 0 16px; overflow-wrap: anywhere }
   .examples { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 12px }
   .examples span { font-size: .85rem; color: #cbd5e1 }
+  .faq-example { margin-top: 20px }
+  .faq-example p { margin-top: 10px; color: #cbd5e1 }
   pre { margin: 4px 0 0; padding: 12px; background: #1f2937; border: 1px solid #374151;
     border-radius: 6px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere }
   footer { border-top: 1px solid #374151; color: #9ca3af; font-size: .9rem }
@@ -40,19 +42,26 @@ const styles = `
   }
 `;
 
+function renderExamplePair(item, leftLabel, rightLabel) {
+  return `<div class="examples">
+    <div><span>${escapeHtml(leftLabel)}</span><pre><code>${escapeHtml(item.left)}</code></pre></div>
+    <div><span>${escapeHtml(rightLabel)}</span><pre><code>${escapeHtml(item.right)}</code></pre></div>
+  </div>`;
+}
+
 function renderExamples(examples) {
   const { heading, leftLabel, rightLabel, items } = examples;
   return `<section><h2>${escapeHtml(heading)}</h2>${items.map(item => `
     <h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.explanation)}</p>
-    <div class="examples">
-      <div><span>${escapeHtml(leftLabel)}</span><pre><code>${escapeHtml(item.left)}</code></pre></div>
-      <div><span>${escapeHtml(rightLabel)}</span><pre><code>${escapeHtml(item.right)}</code></pre></div>
-    </div>`).join('')}</section>`;
+    ${renderExamplePair(item, leftLabel, rightLabel)}`).join('')}</section>`;
 }
 
 function pageBody(page, content, faq) {
   if (page === 'faq') return faq.map(item =>
-    `<section><h2>${escapeHtml(item.q)}</h2><p>${escapeHtml(item.a)}</p></section>`).join('');
+    `<section><h2>${escapeHtml(item.q)}</h2><p>${escapeHtml(item.a)}</p>
+      ${(item.examples || []).map(example => `<div class="faq-example">
+        ${renderExamplePair(example, content.examples.leftLabel, content.examples.rightLabel)}
+        <p>${escapeHtml(example.explanation)}</p></div>`).join('')}</section>`).join('');
   if (page === 'how-it-works') return content.how.map(([title, text]) =>
     `<section><h2>${escapeHtml(title)}</h2><p>${escapeHtml(text)}</p></section>`).join('')
     + renderExamples(content.examples);

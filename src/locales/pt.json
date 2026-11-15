@@ -84,7 +84,14 @@
       },
       {
         "q": "Como o Smart JSON Diff é diferente de outras ferramentas de comparação de JSON?",
-        "a": "Muitas ferramentas tradicionais de comparação de JSON tratam arrays como sequências, o que significa que a ordem dos elementos afeta o resultado. O Smart JSON Diff trata os elementos dos arrays como um multiconjunto, ou seja, a ordem dos elementos não importa, mas elementos duplicados continuam sendo considerados. Por exemplo, os arrays [1, 2, 3] e [3, 2, 1] são considerados equivalentes."
+        "a": "Muitas ferramentas tradicionais de comparação de JSON tratam arrays como sequências, o que significa que a ordem dos elementos afeta o resultado. O Smart JSON Diff trata os elementos dos arrays como um multiconjunto, ou seja, a ordem dos elementos não importa, mas elementos duplicados continuam sendo considerados.",
+        "examples": [
+          {
+            "left": "[1, 2, 3]",
+            "right": "[3, 2, 1]",
+            "explanation": "Equivalentes: os valores são os mesmos, apesar da ordem."
+          }
+        ]
       },
       {
         "q": "O que significam as cores na comparação?",
@@ -92,11 +99,25 @@
       },
       {
         "q": "A ordem das propriedades afeta o resultado?",
-        "a": "Não. As propriedades são ordenadas alfabeticamente antes da comparação, portanto, objetos com o mesmo conteúdo, mas com propriedades em uma ordem diferente, são considerados equivalentes. Por exemplo, os objetos { \"a\": 1, \"b\": 2 } e { \"b\": 2, \"a\": 1 } são considerados equivalentes."
+        "a": "Não. As propriedades são ordenadas alfabeticamente antes da comparação, portanto, objetos com o mesmo conteúdo, mas com propriedades em uma ordem diferente, são considerados equivalentes.",
+        "examples": [
+          {
+            "left": "{\"a\": 1, \"b\": 2}",
+            "right": "{\"b\": 2, \"a\": 1}",
+            "explanation": "Equivalentes: a ordem das propriedades não afeta a comparação."
+          }
+        ]
       },
       {
         "q": "A ordem dos arrays afeta o resultado?",
-        "a": "Não. O Smart JSON Diff encontra automaticamente a melhor forma de alinhar os elementos dos arrays, portanto, arrays que contêm os mesmos elementos em uma ordem diferente são considerados equivalentes. Por exemplo, os arrays [{ \"id\": 1, \"name\": \"John\" }, { \"id\": 2, \"name\": \"Jane\" }] e [{ \"id\": 2, \"name\": \"Jane\" }, { \"id\": 1, \"name\": \"John\" }] são considerados equivalentes."
+        "a": "Não. O Smart JSON Diff encontra automaticamente a melhor forma de alinhar os elementos dos arrays, portanto, arrays que contêm os mesmos elementos em uma ordem diferente são considerados equivalentes.",
+        "examples": [
+          {
+            "left": "[\n  {\n    \"id\": 1,\n    \"name\": \"Ana\"\n  },\n  {\n    \"id\": 2,\n    \"name\": \"Sam\"\n  }\n]",
+            "right": "[\n  {\n    \"id\": 2,\n    \"name\": \"Sam\"\n  },\n  {\n    \"id\": 1,\n    \"name\": \"Ana\"\n  }\n]",
+            "explanation": "Equivalentes: cada objeto mantém seus valores, apesar da ordem diferente no array."
+          }
+        ]
       },
       {
         "q": "Como as diferenças entre arrays são tratadas?",
@@ -104,7 +125,19 @@
       },
       {
         "q": "O que acontece com duplicatas e valores alterados?",
-        "a": "Duplicatas contam: [1, 1, 2] e [1, 2] diferem por um 1. Uma alteração real também aparece: {\"role\":\"developer\"} e {\"role\":\"lead\"} diferem em role."
+        "a": "Elementos duplicados continuam contando, e valores diferentes são detectados mesmo quando a estrutura é a mesma.",
+        "examples": [
+          {
+            "left": "[1, 1, 2]",
+            "right": "[1, 2]",
+            "explanation": "Diferentes: o lado esquerdo contém uma ocorrência a mais do número 1."
+          },
+          {
+            "left": "{\"value\": 10}",
+            "right": "{\"value\": 20}",
+            "explanation": "Diferentes: o campo contém 10 à esquerda e 20 à direita."
+          }
+        ]
       },
       {
         "q": "É seguro colar dados confidenciais?",

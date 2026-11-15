@@ -4,16 +4,19 @@ import { SupportFooter } from '../components/SupportFooter';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { DEFAULT_LOCALE, isLocale } from '../i18n-config';
+import support from '../content/support.json';
 
 interface FaqItem {
   q: string;
   a: string;
+  examples?: Array<{ left: string; right: string; explanation: string }>;
 }
 
 export default function Faq() {
   const { t } = useTranslation();
   const { locale } = useParams<{ locale: string }>();
   const homePath = `/${isLocale(locale) ? locale : DEFAULT_LOCALE}`;
+  const exampleLabels = support[isLocale(locale) ? locale : DEFAULT_LOCALE].examples;
   // `returnObjects` yields the localized array of { q, a } items; since every
   // locale carries the same keys, the array is always present in default (en).
   const items: FaqItem[] = useMemo(
@@ -59,6 +62,19 @@ export default function Faq() {
             <section key={idx} className="bg-gray-800 border border-gray-700 rounded-lg p-5">
               <h3 className="text-lg font-semibold mb-2">{item.q}</h3>
               <p className="text-gray-300">{item.a}</p>
+              {item.examples?.map((example, exampleIndex) => (
+                <div key={exampleIndex} className="mt-5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 min-w-0">
+                    {(['left', 'right'] as const).map(side => (
+                      <div key={side} className="min-w-0">
+                        <span className="text-sm text-gray-300">{side === 'left' ? exampleLabels.leftLabel : exampleLabels.rightLabel}</span>
+                        <pre className="mt-1 p-3 bg-gray-900 border border-gray-700 rounded-md overflow-auto whitespace-pre-wrap wrap-anywhere"><code>{example[side]}</code></pre>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="mt-2 text-gray-300">{example.explanation}</p>
+                </div>
+              ))}
             </section>
           ))}
         </div>
