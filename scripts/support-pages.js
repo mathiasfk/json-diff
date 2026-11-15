@@ -41,12 +41,12 @@ const styles = `
 `;
 
 function renderExamples(examples) {
-  const { heading, beforeLabel, afterLabel, items } = examples;
+  const { heading, leftLabel, rightLabel, items } = examples;
   return `<section><h2>${escapeHtml(heading)}</h2>${items.map(item => `
     <h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.explanation)}</p>
     <div class="examples">
-      <div><span>${escapeHtml(beforeLabel)}</span><pre><code>${escapeHtml(item.before)}</code></pre></div>
-      <div><span>${escapeHtml(afterLabel)}</span><pre><code>${escapeHtml(item.after)}</code></pre></div>
+      <div><span>${escapeHtml(leftLabel)}</span><pre><code>${escapeHtml(item.left)}</code></pre></div>
+      <div><span>${escapeHtml(rightLabel)}</span><pre><code>${escapeHtml(item.right)}</code></pre></div>
     </div>`).join('')}</section>`;
 }
 
