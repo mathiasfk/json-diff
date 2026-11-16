@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { DEFAULT_LOCALE, isLocale } from '../i18n-config';
-import support from '../content/support.json';
+import support from '../content/support-nav.json';
 
 export function SupportFooter() {
   const { i18n } = useTranslation();

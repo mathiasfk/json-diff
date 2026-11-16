@@ -84,12 +84,13 @@ export function supportPages(base = '/') {
   const prefix = basePath(base);
   // Read on each generation so editing copy is visible in the dev server.
   const content = JSON.parse(fs.readFileSync(new URL('../src/content/support.json', import.meta.url)));
+  const sharedLabels = JSON.parse(fs.readFileSync(new URL('../src/content/support-nav.json', import.meta.url)));
   const translations = Object.fromEntries(locales.map(locale => [locale,
     JSON.parse(fs.readFileSync(new URL(`../src/locales/${locale}.json`, import.meta.url)))]));
   const faq = Object.fromEntries(locales.map(locale => [locale, translations[locale].faq.items]));
   const result = {};
   for (const locale of locales) for (const page of pages) {
-    const c = content[locale];
+    const c = { ...content[locale], ...sharedLabels[locale], examples: { ...content[locale].examples, ...sharedLabels[locale].examples } };
     const href = (language, target) => `${prefix}${language}/${target}/`;
     const navigation = pages.map(target => `<a ${target === page ? 'aria-current="page"' : ''}
       href="${href(locale, target)}">${escapeHtml(c[target])}</a>`).join('');
