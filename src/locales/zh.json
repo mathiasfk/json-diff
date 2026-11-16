@@ -194,7 +194,7 @@
     "semantic": "自动对齐",
     "semanticDescription": "对齐相似元素，忽略仅涉及顺序的变化。",
     "position": "按位置比较",
-    "positionDescription": "比较相同索引处的元素；顺序变化会被视为差异。",
+    "positionDescription": "比较相同位置的元素，并检测顺序变化。",
     "resultMode": "数组比较：{{mode}}"
   }
 }

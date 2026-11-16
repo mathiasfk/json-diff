@@ -344,11 +344,11 @@ function App() {
               />
             </div>
 
-            <fieldset className="mt-6 mx-auto max-w-3xl w-full border border-gray-700 rounded-lg px-4 pb-3 shrink-0">
-              <legend className="px-2 font-medium">{t('arrayComparison.legend')}</legend>
-              <div className="grid sm:grid-cols-2 gap-3">
+            <fieldset className="mt-4 mx-auto max-w-3xl w-full sm:w-fit border border-gray-700 rounded-lg px-4 pb-2 text-center shrink-0">
+              <legend className="mx-auto px-2 text-sm text-gray-400">{t('arrayComparison.legend')}</legend>
+              <div className="mt-1 flex flex-wrap justify-center gap-x-6 gap-y-1">
                 {(['semantic', 'position'] as const).map(mode => (
-                  <label key={mode} className="flex items-start gap-2 cursor-pointer rounded p-2 hover:bg-gray-800">
+                  <label key={mode} className="flex items-center gap-2 cursor-pointer rounded px-1 py-1 text-sm text-gray-200 hover:text-white">
                     <input
                       type="radio"
                       name="arrayComparison"
@@ -356,23 +356,32 @@ function App() {
                       checked={arrayComparison === mode}
                       onChange={() => handleArrayComparisonChange(mode)}
                       aria-labelledby={`array-${mode}-label`}
-                      aria-describedby={`array-${mode}-description`}
-                      className="mt-1 accent-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-400"
+                      aria-describedby={arrayComparison === mode ? 'array-comparison-description' : undefined}
+                      className="accent-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-400"
                     />
-                    <span>
-                      <span id={`array-${mode}-label`} className="block font-medium">
-                        {t(`arrayComparison.${mode}`)}
-                      </span>
-                      <span id={`array-${mode}-description`} className="block text-sm text-gray-400">
-                        {t(`arrayComparison.${mode}Description`)}
-                      </span>
+                    <span id={`array-${mode}-label`}>
+                      {t(`arrayComparison.${mode}`)}
                     </span>
                   </label>
                 ))}
               </div>
+              {/* Both descriptions size the same grid cell, so switching modes
+                  preserves its width and height at every viewport and locale. */}
+              <div aria-live="polite" aria-atomic="true" className="mt-1 grid text-sm text-gray-400">
+                {(['semantic', 'position'] as const).map(mode => (
+                  <p
+                    key={mode}
+                    id={arrayComparison === mode ? 'array-comparison-description' : undefined}
+                    aria-hidden={arrayComparison !== mode}
+                    className={`col-start-1 row-start-1 ${arrayComparison !== mode ? 'invisible' : ''}`}
+                  >
+                    {t(`arrayComparison.${mode}Description`)}
+                  </p>
+                ))}
+              </div>
             </fieldset>
 
-            <div className="grid grid-cols-2 lg:grid-cols-[repeat(5,auto)] items-center justify-center gap-x-2 lg:gap-x-4 gap-y-2 mt-6 shrink-0" role="toolbar" aria-label={t('jsonEditor.comparisonActions')}>
+            <div className="grid grid-cols-2 lg:grid-cols-[repeat(5,auto)] items-center justify-center gap-x-2 lg:gap-x-4 gap-y-2 mt-4 shrink-0" role="toolbar" aria-label={t('jsonEditor.comparisonActions')}>
               <button
                 onClick={() => handleClear('left')}
                 className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"

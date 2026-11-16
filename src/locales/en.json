@@ -194,7 +194,7 @@
     "semantic": "Automatic alignment",
     "semanticDescription": "Aligns similar items and ignores order-only changes.",
     "position": "Compare by position",
-    "positionDescription": "Compares items at the same index; order changes count as differences.",
+    "positionDescription": "Compares items at the same position and detects order changes.",
     "resultMode": "Array comparison: {{mode}}"
   }
 }

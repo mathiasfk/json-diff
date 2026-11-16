@@ -194,7 +194,7 @@
     "semantic": "Alineación automática",
     "semanticDescription": "Alinea elementos similares e ignora los cambios solo de orden.",
     "position": "Comparar por posición",
-    "positionDescription": "Compara los elementos del mismo índice; los cambios de orden cuentan como diferencias.",
+    "positionDescription": "Compara los elementos en la misma posición y detecta cambios de orden.",
     "resultMode": "Comparación de arrays: {{mode}}"
   }
 }
