@@ -382,47 +382,65 @@ function App() {
             </fieldset>
 
             <div className="grid grid-cols-2 lg:grid-cols-[repeat(5,auto)] items-center justify-center gap-x-2 lg:gap-x-4 gap-y-2 mt-4 shrink-0" role="toolbar" aria-label={t('jsonEditor.comparisonActions')}>
-              <button
-                onClick={() => handleClear('left')}
-                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!leftJson.trim()}
-                aria-label={t('jsonEditor.clearLeft')}
-              >
-                {t('app.clearLeft')}
-              </button>
-              <button
-                onClick={() => handleFormat('left')}
-                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!leftJson.trim()}
-                aria-label={t('jsonEditor.formatLeft')}
-              >
-                {t('app.formatLeft')}
-              </button>
+              <div role="group" aria-label={t('jsonEditor.leftInput')} className="flex flex-col items-center gap-1 lg:contents">
+                <span className="text-xs text-gray-400 lg:hidden">{t('jsonEditor.leftInput')}</span>
+                <div className="flex items-center gap-1 lg:contents">
+                  <button
+                    onClick={() => handleClear('left')}
+                    className="inline-flex items-center justify-center min-h-11 min-w-11 px-2 min-[380px]:px-4 text-xs text-gray-100 bg-gray-800 hover:bg-gray-700 lg:text-base lg:min-h-0 lg:min-w-0 lg:px-4 lg:py-2 lg:bg-gray-800 lg:hover:bg-gray-700 lg:text-gray-100 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={!leftJson.trim()}
+                    aria-label={t('jsonEditor.clearLeft')}
+                    title={t('jsonEditor.clearLeft')}
+                  >
+                    <span className="lg:hidden">{t('app.clear')}</span>
+                    <span className="hidden lg:inline">{t('app.clearLeft')}</span>
+                  </button>
+                  <button
+                    onClick={() => handleFormat('left')}
+                    className="inline-flex items-center justify-center min-h-11 min-w-11 px-2 min-[380px]:px-4 text-xs text-gray-100 bg-gray-700 hover:bg-gray-600 lg:text-base lg:min-h-0 lg:min-w-0 lg:px-4 lg:py-2 lg:bg-gray-700 lg:hover:bg-gray-600 lg:text-gray-100 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={!leftJson.trim()}
+                    aria-label={t('jsonEditor.formatLeft')}
+                    title={t('jsonEditor.formatLeft')}
+                  >
+                    <span className="lg:hidden">{t('app.format')}</span>
+                    <span className="hidden lg:inline">{t('app.formatLeft')}</span>
+                  </button>
+                </div>
+              </div>
               <button
                 onClick={handleCompare}
-                className="col-span-2 row-start-3 justify-self-center lg:col-span-1 lg:col-start-3 lg:row-start-1 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="col-span-2 row-start-2 w-full lg:w-auto justify-self-center lg:col-span-1 lg:col-start-3 lg:row-start-1 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={!leftJson.trim() || !rightJson.trim()}
                 aria-label={t('jsonEditor.compare')}
               >
                 {t('app.compare')}
               </button>
-              <button
-                onClick={() => handleFormat('right')}
-                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!rightJson.trim()}
-                aria-label={t('jsonEditor.formatRight')}
-              >
-                {t('app.formatRight')}
-              </button>
-              <button
-                onClick={() => handleClear('right')}
-                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!rightJson.trim()}
-                aria-label={t('jsonEditor.clearRight')}
-              >
-                {t('app.clearRight')}
-              </button>
-              <div className="col-span-2 row-start-4 lg:col-span-1 lg:col-start-3 lg:row-start-2 justify-self-center flex items-baseline gap-1 text-sm text-gray-400">
+              <div role="group" aria-label={t('jsonEditor.rightInput')} className="flex flex-col items-center gap-1 lg:contents">
+                <span className="text-xs text-gray-400 lg:hidden">{t('jsonEditor.rightInput')}</span>
+                <div className="flex items-center gap-1 lg:contents">
+                  <button
+                    onClick={() => handleFormat('right')}
+                    className="inline-flex items-center justify-center min-h-11 min-w-11 px-2 min-[380px]:px-4 text-xs text-gray-100 bg-gray-700 hover:bg-gray-600 lg:text-base lg:min-h-0 lg:min-w-0 lg:px-4 lg:py-2 lg:bg-gray-700 lg:hover:bg-gray-600 lg:text-gray-100 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={!rightJson.trim()}
+                    aria-label={t('jsonEditor.formatRight')}
+                    title={t('jsonEditor.formatRight')}
+                  >
+                    <span className="lg:hidden">{t('app.format')}</span>
+                    <span className="hidden lg:inline">{t('app.formatRight')}</span>
+                  </button>
+                  <button
+                    onClick={() => handleClear('right')}
+                    className="inline-flex items-center justify-center min-h-11 min-w-11 px-2 min-[380px]:px-4 text-xs text-gray-100 bg-gray-800 hover:bg-gray-700 lg:text-base lg:min-h-0 lg:min-w-0 lg:px-4 lg:py-2 lg:bg-gray-800 lg:hover:bg-gray-700 lg:text-gray-100 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={!rightJson.trim()}
+                    aria-label={t('jsonEditor.clearRight')}
+                    title={t('jsonEditor.clearRight')}
+                  >
+                    <span className="lg:hidden">{t('app.clear')}</span>
+                    <span className="hidden lg:inline">{t('app.clearRight')}</span>
+                  </button>
+                </div>
+              </div>
+              <div className="col-span-2 row-start-3 lg:col-span-1 lg:col-start-3 lg:row-start-2 justify-self-center flex items-baseline gap-1 text-sm text-gray-400">
                 <span>{t('app.or')}</span>
                 <button
                   type="button"

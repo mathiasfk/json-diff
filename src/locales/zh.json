@@ -5,6 +5,8 @@
     "loadExample": "加载示例",
     "title": "Smart JSON Diff",
     "subtitle": "对 JSON、YAML 和 JSONL 进行语义比较，并自动对齐数组元素",
+    "clear": "清除",
+    "format": "格式化",
     "clearLeft": "清除左侧",
     "language": "语言",
     "formatLeft": "格式化左侧",

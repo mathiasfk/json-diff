@@ -5,6 +5,8 @@
     "loadExample": "carregar exemplo",
     "title": "Smart JSON Diff",
     "subtitle": "Compare JSON, YAML e JSONL semanticamente com alinhamento automático de arrays",
+    "clear": "Limpar",
+    "format": "Formatar",
     "clearLeft": "Limpar esquerda",
     "language": "Idioma",
     "formatLeft": "Formatar esquerda",
