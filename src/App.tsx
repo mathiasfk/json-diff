@@ -387,7 +387,7 @@ function App() {
                 <div className="flex items-center gap-1 lg:contents">
                   <button
                     onClick={() => handleClear('left')}
-                    className="inline-flex items-center justify-center min-h-11 min-w-11 px-2 min-[380px]:px-4 text-xs text-gray-100 bg-gray-800 hover:bg-gray-700 lg:text-base lg:min-h-0 lg:min-w-0 lg:px-4 lg:py-2 lg:bg-gray-800 lg:hover:bg-gray-700 lg:text-gray-100 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="inline-flex items-center justify-center min-h-11 min-w-11 px-2 min-[380px]:px-4 text-xs text-gray-300 bg-gray-800 hover:bg-gray-700 lg:text-sm lg:min-h-0 lg:min-w-0 lg:px-4 lg:py-2 lg:bg-gray-800 lg:hover:bg-gray-700 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={!leftJson.trim()}
                     aria-label={t('jsonEditor.clearLeft')}
                     title={t('jsonEditor.clearLeft')}
@@ -397,7 +397,7 @@ function App() {
                   </button>
                   <button
                     onClick={() => handleFormat('left')}
-                    className="inline-flex items-center justify-center min-h-11 min-w-11 px-2 min-[380px]:px-4 text-xs text-gray-100 bg-gray-700 hover:bg-gray-600 lg:text-base lg:min-h-0 lg:min-w-0 lg:px-4 lg:py-2 lg:bg-gray-700 lg:hover:bg-gray-600 lg:text-gray-100 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="inline-flex items-center justify-center min-h-11 min-w-11 px-2 min-[380px]:px-4 text-xs text-gray-300 bg-gray-700 hover:bg-gray-600 lg:text-sm lg:min-h-0 lg:min-w-0 lg:px-4 lg:py-2 lg:bg-gray-700 lg:hover:bg-gray-600 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={!leftJson.trim()}
                     aria-label={t('jsonEditor.formatLeft')}
                     title={t('jsonEditor.formatLeft')}
@@ -420,7 +420,7 @@ function App() {
                 <div className="flex items-center gap-1 lg:contents">
                   <button
                     onClick={() => handleFormat('right')}
-                    className="inline-flex items-center justify-center min-h-11 min-w-11 px-2 min-[380px]:px-4 text-xs text-gray-100 bg-gray-700 hover:bg-gray-600 lg:text-base lg:min-h-0 lg:min-w-0 lg:px-4 lg:py-2 lg:bg-gray-700 lg:hover:bg-gray-600 lg:text-gray-100 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="inline-flex items-center justify-center min-h-11 min-w-11 px-2 min-[380px]:px-4 text-xs text-gray-300 bg-gray-700 hover:bg-gray-600 lg:text-sm lg:min-h-0 lg:min-w-0 lg:px-4 lg:py-2 lg:bg-gray-700 lg:hover:bg-gray-600 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={!rightJson.trim()}
                     aria-label={t('jsonEditor.formatRight')}
                     title={t('jsonEditor.formatRight')}
@@ -430,7 +430,7 @@ function App() {
                   </button>
                   <button
                     onClick={() => handleClear('right')}
-                    className="inline-flex items-center justify-center min-h-11 min-w-11 px-2 min-[380px]:px-4 text-xs text-gray-100 bg-gray-800 hover:bg-gray-700 lg:text-base lg:min-h-0 lg:min-w-0 lg:px-4 lg:py-2 lg:bg-gray-800 lg:hover:bg-gray-700 lg:text-gray-100 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="inline-flex items-center justify-center min-h-11 min-w-11 px-2 min-[380px]:px-4 text-xs text-gray-300 bg-gray-800 hover:bg-gray-700 lg:text-sm lg:min-h-0 lg:min-w-0 lg:px-4 lg:py-2 lg:bg-gray-800 lg:hover:bg-gray-700 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={!rightJson.trim()}
                     aria-label={t('jsonEditor.clearRight')}
                     title={t('jsonEditor.clearRight')}
