@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh"><head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-adsense-account" content="ca-pub-6364476119143776">
+  <title>使用说明 — Smart JSON Diff</title><meta name="description" content="在左右编辑器中粘贴要比较的两份数据，也可以将文件拖入各编辑器。检查两侧选择的格式，然后点击比较。若想先试用，可点击比较按钮下方的加载示例。格式化和清除仅作用于对应的编辑器。">
+  <link rel="canonical" href="https://smartjsondiff.com/zh/how-it-works/">
+  <meta name="robots" content="noindex, nofollow"><link rel="alternate" hreflang="en"
+      href="https://smartjsondiff.com/en/how-it-works/"><link rel="alternate" hreflang="pt"
+      href="https://smartjsondiff.com/pt/how-it-works/"><link rel="alternate" hreflang="es"
+      href="https://smartjsondiff.com/es/how-it-works/"><link rel="alternate" hreflang="zh"
+      href="https://smartjsondiff.com/zh/how-it-works/">
+  <meta name="theme-color" content="#111827"><style>
+  * { box-sizing: border-box }
+  body { margin: 0; background: #111827; color: #e5e7eb; font: 16px/1.65 system-ui, -apple-system, sans-serif }
+  a { color: #93c5fd; text-underline-offset: 3px }
+  a:hover { color: #dbeafe }
+  a:focus-visible { outline: 3px solid #93c5fd; outline-offset: 4px }
+  header { background: #1f2937; border-bottom: 1px solid #374151 }
+  main, footer { max-width: 860px; margin: auto; padding: 20px 24px }
+  header > div { max-width: 1536px; min-height: 88px; margin: auto; padding: 16px 24px;
+    display: flex; justify-content: space-between; gap: 16px; align-items: center }
+  .brand { color: #f9fafb; font-size: 1.5rem; font-weight: 700; text-decoration: none }
+  .header-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; font-size: .875rem }
+  .language-picker { display: flex; align-items: center; gap: 8px; color: #9ca3af; font-size: .75rem }
+  .language-picker select { background: #111827; border: 1px solid #374151; color: #e5e7eb;
+    border-radius: 4px; padding: 4px 8px; font: inherit }
+  .language-picker select:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px }
+  @media (max-width: 767px) {
+    header > div { flex-direction: column; align-items: stretch }
+    .header-actions { justify-content: center }
+  }
+  main { padding-top: 38px; padding-bottom: 48px; min-height: 60vh }
+  h1 { font-size: 2rem; line-height: 1.2; color: #f9fafb; margin: 0 0 28px }
+  h2 { font-size: 1.2rem; line-height: 1.35; color: #f9fafb; margin: 0 0 8px }
+  h3 { font-size: 1rem; margin: 24px 0 6px; color: #f9fafb }
+  section { margin: 0 0 30px }
+  p { margin: 0 0 16px; overflow-wrap: anywhere }
+  .examples { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 12px }
+  .examples span { font-size: .85rem; color: #cbd5e1 }
+  .faq-example { margin-top: 20px }
+  .faq-example p { margin-top: 10px; color: #cbd5e1 }
+  pre { margin: 4px 0 0; padding: 12px; background: #1f2937; border: 1px solid #374151;
+    border-radius: 6px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere }
+  footer { border-top: 1px solid #374151; color: #9ca3af; font-size: .9rem }
+  nav { display: flex; flex-wrap: wrap; gap: 10px 20px }
+  footer nav + nav { margin-top: 18px }
+  a[aria-current] { color: #f9fafb; font-weight: 600 }
+  @media (max-width: 480px) {
+    header > div, main, footer { padding-left: 20px; padding-right: 20px }
+    h1 { font-size: 1.65rem }
+    main { padding-top: 30px }
+  }
+</style>
+</head><body>
+  <header><div><a class="brand" href="/preview/branch-codex-performance-js-tbt/#/zh">Smart JSON Diff</a>
+    <div class="header-actions"><a href="/preview/branch-codex-performance-js-tbt/#/zh">← 返回工具</a>
+      <label class="language-picker" for="language-selector"><span>语言</span>
+        <select id="language-selector"><option value="/preview/branch-codex-performance-js-tbt/en/how-it-works/"
+      lang="en" >English</option><option value="/preview/branch-codex-performance-js-tbt/pt/how-it-works/"
+      lang="pt" >Português</option><option value="/preview/branch-codex-performance-js-tbt/es/how-it-works/"
+      lang="es" >Español</option><option value="/preview/branch-codex-performance-js-tbt/zh/how-it-works/"
+      lang="zh" selected>中文</option></select></label>
+    </div></div></header>
+  <main><h1>使用说明</h1><section><h2>开始比较</h2><p>在左右编辑器中粘贴要比较的两份数据，也可以将文件拖入各编辑器。检查两侧选择的格式，然后点击比较。若想先试用，可点击比较按钮下方的加载示例。格式化和清除仅作用于对应的编辑器。</p></section><section><h2>工具比较什么</h2><p>工具比较解析后的值，而不是原始文本行。它会忽略格式、对象属性顺序和数组元素顺序，包括嵌套结构中的顺序。重复元素仍会计数。数组中的对象会根据标识字段或内容对齐，方便查看修改。</p></section><section><h2>阅读结果</h2><p>差异视图以左侧输入为基准：红色表示得到右侧输入时需要删除的内容，绿色表示需要新增的内容。不同的值显示为删除和新增，并突出显示不同的部分。这只是显示方向的约定，两份输入不必代表先后版本。结果展示规范化后的数据，因此顺序和格式可能与输入不同。结果等价表示按照这些规则未发现差异，并不代表原始文本完全相同。点击返回可继续编辑输入。</p></section><section><h2>选择输入格式</h2><p>每个编辑器支持 JSON、JSONL 或有限的 YAML 子集。JSONL 的每个非空行须包含一个完整的 JSON 值；空行会被跳过，记录作为数组比较，忽略其顺序。两侧格式相同时，结果以该格式显示；格式不同时，比较解析后的值，并以 JSON 显示结果。注释和原始格式不会保留。</p></section><section><h2>何时需要考虑顺序</h2><p>该工具适合比较 API 响应、配置数据和无序集合。对于位置具有意义的序列、排名或历史记录，它不适合检查顺序变化：仅重新排列元素不会产生差异。这些情况应使用考虑顺序的比较方式。</p></section><section><h2>其他限制</h2><p>YAML 支持常见映射、序列和简单流式集合，并未实现完整的 YAML 规范。对于复杂 YAML，请先用完整的 YAML 解析器将文档转换为 JSON，再进行比较。数字受 JavaScript 精度限制：很大的整数可能丢失数字，需精确保留的标识符应使用字符串。较大的输入可能使浏览器变慢或超出可用内存。</p></section><section><h2>示例</h2>
+    <h3>内容相同</h3><p>这些输入等价：属性和数组元素的顺序不同，但值及其出现次数相同。</p>
+    <div class="examples">
+    <div><span>左侧</span><pre><code>{&quot;a&quot;: 1, &quot;b&quot;: [1, 2]}</code></pre></div>
+    <div><span>右侧</span><pre><code>{&quot;b&quot;: [2, 1], &quot;a&quot;: 1}</code></pre></div>
+  </div>
+    <h3>值不同</h3><p>同一字段在左侧的值为 10，右侧为 20。即使结构相同，比较仍会突出显示值的差异。</p>
+    <div class="examples">
+    <div><span>左侧</span><pre><code>{&quot;value&quot;: 10}</code></pre></div>
+    <div><span>右侧</span><pre><code>{&quot;value&quot;: 20}</code></pre></div>
+  </div>
+    <h3>出现次数不同</h3><p>数字 1 在左侧出现两次，在右侧出现一次。忽略数组顺序并不意味着忽略每个值的出现次数。</p>
+    <div class="examples">
+    <div><span>左侧</span><pre><code>[1, 1, 2]</code></pre></div>
+    <div><span>右侧</span><pre><code>[1, 2]</code></pre></div>
+  </div></section></main>
+  <footer><nav aria-label="帮助"><a 
+      href="/preview/branch-codex-performance-js-tbt/zh/faq/">常见问题</a><a aria-current="page"
+      href="/preview/branch-codex-performance-js-tbt/zh/how-it-works/">使用说明</a><a 
+      href="/preview/branch-codex-performance-js-tbt/zh/privacy/">隐私</a><a 
+      href="/preview/branch-codex-performance-js-tbt/zh/contact/">联系</a></nav>
+    <noscript><nav aria-label="语言"><a href="/preview/branch-codex-performance-js-tbt/en/how-it-works/" lang="en"
+      >English</a><a href="/preview/branch-codex-performance-js-tbt/pt/how-it-works/" lang="pt"
+      >Português</a><a href="/preview/branch-codex-performance-js-tbt/es/how-it-works/" lang="es"
+      >Español</a><a href="/preview/branch-codex-performance-js-tbt/zh/how-it-works/" lang="zh"
+      aria-current="true">中文</a></nav></noscript></footer>
+  <script>
+    document.getElementById('language-selector').addEventListener('change', function () {
+      window.location.assign(this.value);
+    });
+  </script>
+</body></html>
