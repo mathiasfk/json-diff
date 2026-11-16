@@ -7,6 +7,7 @@ A web application for comparing JSON objects semantically with intelligent array
 ## Features
 
 - **Semantic Comparison**: Compares JSON objects by meaning, not just structure
+- **Configurable Array Comparison**: Choose automatic alignment (default) or compare items by position, including nested arrays and JSONL records.
 - **Smart Array Matching**: Automatically detects the best field to match array items (id, index, name, etc.)
 - **Visual Diff**: Git-style diff visualization with additions/deletions highlighted using Monaco Editor
 - **Monaco Editor Integration**: Professional code editor (same as VSCode) with syntax highlighting and consistent visual experience
@@ -55,18 +56,20 @@ pnpm build
 1. Select the format for each side (JSON, JSONL, or YAML) using the format selector, then paste or drag your data into the editors
 2. The editor automatically validates syntax and highlights errors in real-time
 3. Optionally use the "Format Left" or "Format Right" buttons to prettify your input
-4. Click "Compare" to see the semantic diff in side-by-side view
-5. The diff view uses Monaco Editor's diff mode with visual highlighting of additions (green) and deletions (red)
-6. Click "Back to Edit" to return to the editing mode
+4. Choose automatic alignment or comparison by position for arrays
+5. Click "Compare" to see the diff in side-by-side view
+6. The diff view uses Monaco Editor's diff mode with visual highlighting of additions (green) and deletions (red)
+7. Click "Back to Edit" to return to the editing mode
 
 ## How It Works
 
 ### Semantic Comparison Algorithm
 
 1. **Object Normalization**: All object properties are sorted alphabetically
-2. **Array Matching**: The system automatically detects the best way to match array items:
-   - Priority fields: `id`, `index`, `name`, `key`, `uuid`, `_id`
-   - Falls back to similarity-based matching if no unique field is found
+2. **Array Matching**: With automatic alignment (the default), the system detects the best way to match array items:
+   - For object arrays, selects the alphabetically first field whose values are unique in each array; matching key values can identify corresponding items.
+   - Depending on the key values, it may match by content or similarity; without a common unique field it uses content matching.
+   Choose **Compare by position** to preserve array order and compare each index recursively. Object property order is ignored in both modes.
 3. **Intelligent Diff**: Uses jsondiffpatch with custom array matching to minimize noise and show meaningful differences
 
 ### Example
@@ -97,7 +100,7 @@ Given these two JSON objects:
 
 The comparator will recognize that:
 - The properties are just in different order (no diff)
-- The hobbies array has the same items, just reordered based on the `id` field (no diff)
+- With automatic alignment, the hobbies array has the same items, just reordered based on the `id` field (no diff). Comparing by position reports the changes.
 
 Result: **No differences** (semantically identical)
 

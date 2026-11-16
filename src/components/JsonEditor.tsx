@@ -213,7 +213,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
   }, [format, mountedEditor]);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-h-0">
       <div className="flex items-center justify-between mb-2">
         <label htmlFor={`${side}-editor`} className="text-sm font-medium text-gray-300">
           {label}
@@ -225,7 +225,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
         />
       </div>
       <div
-        className={`flex-1 relative rounded-lg overflow-hidden border transition-colors ${
+        className={`flex-1 min-h-0 relative rounded-lg overflow-hidden border transition-colors ${
           isDragging
             ? 'border-blue-500 border-2 bg-blue-500/10'
             : 'border-gray-700'

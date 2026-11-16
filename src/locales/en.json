@@ -62,17 +62,17 @@
     "home": "Home",
     "breadcrumbCurrent": "FAQ",
     "q1": "How does the comparison work?",
-    "a1": "Instead of a naive text-based diff, Smart JSON Diff performs a semantic comparison. It normalizes both inputs by sorting object properties alphabetically and intelligently aligns array items. When both arrays contain a unique key, items are aligned by that key; otherwise, items are matched by normalized content to minimize noise and surface only the most relevant differences. The comparison runs entirely in your browser using jsondiffpatch under the hood.",
+    "a1": "The tool compares parsed values and sorts object properties. Automatic alignment matches similar array items; Compare by position compares the same indices recursively. The comparison runs in your browser.",
     "q2": "How is Smart JSON Diff different from other JSON diff tools?",
-    "a2": "Many traditional JSON diff tools treat arrays as sequences, meaning that item order affects the comparison. Smart JSON Diff treats array items as a multiset, meaning that item order does not matter while duplicate items still count. For example, the arrays [1, 2, 3] and [3, 2, 1] are considered equivalent by Smart JSON Diff.",
+    "a2": "Automatic alignment ignores array order while counting duplicates. You can also compare by position when order matters.",
     "q3": "What do the colors mean in the diff?",
     "a3": "Green indicates additions and red indicates removals. The entire changed line is highlighted, while the exact changed segment is emphasized more strongly.",
     "q4": "Does property order affect the result?",
     "a4": "No. Properties are sorted alphabetically before comparison, so objects with the same content but different key order are considered equivalent. For example, the objects { \"a\": 1, \"b\": 2 } and { \"b\": 2, \"a\": 1 } are considered equivalent.",
     "q5": "Does array order affect the result?",
-    "a5": "No. Smart JSON Diff automatically finds the best way to align array items, so arrays containing the same items in a different order are considered equivalent. For example, the arrays [{ \"id\": 1, \"name\": \"John\" }, { \"id\": 2, \"name\": \"Jane\" }] and [{ \"id\": 2, \"name\": \"Jane\" }, { \"id\": 1, \"name\": \"John\" }] are considered equivalent.",
+    "a5": "With automatic alignment (the default), order alone does not affect the result. Compare by position treats changes in order as differences.",
     "q6": "How are array differences handled?",
-    "a6": "Smart JSON Diff finds an alignment that maximizes similarity between the two versions. When both arrays contain a unique key, items are aligned by that key; otherwise, items are aligned by normalized content, helping minimize noise and highlight the most relevant changes. Reordering the same items produces no diff, while added, removed, or changed items are still detected.",
+    "a6": "Automatic alignment matches similar items by identifying fields or content. Compare by position compares items at the same index, including nested arrays.",
     "q7": "Is it safe to paste sensitive data?",
     "a7": "Yes. Your JSON, YAML, and JSONL are processed entirely in your browser and are not uploaded to our servers.",
     "q8": "How do I report bugs?",
@@ -80,16 +80,16 @@
     "items": [
       {
         "q": "How does the comparison work?",
-        "a": "Instead of a naive text-based diff, Smart JSON Diff performs a semantic comparison. It normalizes both inputs by sorting object properties alphabetically and intelligently aligns array items. When both arrays contain a unique key, items are aligned by that key; otherwise, items are matched by normalized content to minimize noise and surface only the most relevant differences. The comparison runs entirely in your browser using jsondiffpatch under the hood."
+        "a": "The tool compares parsed values and sorts object properties. Automatic alignment matches similar array items; Compare by position compares the same indices recursively. The comparison runs in your browser."
       },
       {
         "q": "How is Smart JSON Diff different from other JSON diff tools?",
-        "a": "Many traditional JSON diff tools treat arrays as sequences, meaning that item order affects the comparison. Smart JSON Diff treats array items as a multiset, meaning that item order does not matter while duplicate items still count.",
+        "a": "Automatic alignment ignores array order while counting duplicates. You can also compare by position when order matters.",
         "examples": [
           {
             "left": "[1, 2, 3]",
             "right": "[3, 2, 1]",
-            "explanation": "Equivalent: the values are the same, despite their order."
+            "explanation": "Equivalent with automatic alignment: the values and counts are unchanged."
           }
         ]
       },
@@ -110,18 +110,18 @@
       },
       {
         "q": "Does array order affect the result?",
-        "a": "No. Smart JSON Diff automatically finds the best way to align array items, so arrays containing the same items in a different order are considered equivalent.",
+        "a": "With automatic alignment (the default), order alone does not affect the result. Compare by position treats changes in order as differences.",
         "examples": [
           {
             "left": "[\n  {\n    \"id\": 1,\n    \"name\": \"Ana\"\n  },\n  {\n    \"id\": 2,\n    \"name\": \"Sam\"\n  }\n]",
             "right": "[\n  {\n    \"id\": 2,\n    \"name\": \"Sam\"\n  },\n  {\n    \"id\": 1,\n    \"name\": \"Ana\"\n  }\n]",
-            "explanation": "Equivalent: each object keeps its values, despite the different array order."
+            "explanation": "Equivalent with automatic alignment: the values and counts are unchanged."
           }
         ]
       },
       {
         "q": "How are array differences handled?",
-        "a": "Smart JSON Diff finds an alignment that maximizes similarity between the two versions. When both arrays contain a unique key, items are aligned by that key; otherwise, items are aligned by normalized content, helping minimize noise and highlight the most relevant changes. Reordering the same items produces no diff, while added, removed, or changed items are still detected."
+        "a": "Automatic alignment matches similar items by identifying fields or content. Compare by position compares items at the same index, including nested arrays."
       },
       {
         "q": "What happens to duplicates and changed values?",
@@ -181,11 +181,20 @@
     "resultsRegion": "Comparison results",
     "differencesView": "Differences view",
     "equivalentTitle": "Inputs are equivalent!",
-    "equivalentBody": "No differences found after semantic normalization."
+    "equivalentBody": "No differences found after semantic normalization.",
+    "equivalentBodyPosition": "No differences found when comparing array items by position."
   },
   "errors": {
     "empty": "Input cannot be empty",
     "invalid": "Invalid input",
     "invalidDetail": "Invalid input: {{message}}"
+  },
+  "arrayComparison": {
+    "legend": "Array comparison",
+    "semantic": "Automatic alignment",
+    "semanticDescription": "Aligns similar items and ignores order-only changes.",
+    "position": "Compare by position",
+    "positionDescription": "Compares items at the same index; order changes count as differences.",
+    "resultMode": "Array comparison: {{mode}}"
   }
 }

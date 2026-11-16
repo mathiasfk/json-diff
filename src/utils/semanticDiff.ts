@@ -437,7 +437,50 @@ function createSemanticDiffer() {
 /**
  * Performs semantic diff between two JSON objects
  */
-export function semanticDiff(left: any, right: any): any {
+export type ArrayComparison = 'semantic' | 'position';
+export interface SemanticDiffOptions { arrayComparison?: ArrayComparison }
+
+// Preserve array order while cloning and sorting object keys, including __proto__.
+function normalizeByPosition(value: any): any {
+  if (Array.isArray(value)) return value.map(normalizeByPosition);
+  if (isPlainObject(value)) return Object.fromEntries(Object.keys(value).sort().map(key => [key, normalizeByPosition(value[key])]));
+  return deepClone(value);
+}
+
+// Produce jsondiffpatch-compatible deltas while pairing every array item by index.
+function positionDelta(left: any, right: any): any {
+  if (Array.isArray(left) && Array.isArray(right)) {
+    const delta: any = { _t: 'a' };
+    for (let i = 0; i < Math.max(left.length, right.length); i++) {
+      if (i >= left.length) delta[i] = [right[i]];
+      else if (i >= right.length) delta[`_${i}`] = [left[i], 0, 0];
+      else {
+        const child = positionDelta(left[i], right[i]);
+        if (child !== undefined) delta[i] = child;
+      }
+    }
+    return Object.keys(delta).length === 1 ? undefined : delta;
+  }
+  if (isPlainObject(left) && isPlainObject(right)) {
+    const delta: any = {};
+    for (const key of new Set([...Object.keys(left), ...Object.keys(right)])) {
+      let child;
+      if (!Object.prototype.hasOwnProperty.call(left, key)) child = [right[key]];
+      else if (!Object.prototype.hasOwnProperty.call(right, key)) child = [left[key], 0, 0];
+      else child = positionDelta(left[key], right[key]);
+      if (child !== undefined) Object.defineProperty(delta, key, { value: child, enumerable: true, configurable: true, writable: true });
+    }
+    return Object.keys(delta).length ? delta : undefined;
+  }
+  return left === right ? undefined : [left, right];
+}
+
+export function semanticDiff(left: any, right: any, options: SemanticDiffOptions = {}): any {
+  if (options.arrayComparison === 'position') {
+    const processedLeft = normalizeByPosition(left);
+    const processedRight = normalizeByPosition(right);
+    return { delta: positionDelta(processedLeft, processedRight), left: processedLeft, right: processedRight };
+  }
   // Pair-aware preprocessing (align arrays), then sort properties
   const [normLeft, normRight] = normalizeForDiff(left, right);
   const processedLeft = sortObjectProperties(normLeft);
@@ -459,9 +502,9 @@ export function semanticDiff(left: any, right: any): any {
 /**
  * Formats JSON for display with normalization
  */
-export function formatJSON(obj: any, normalize: boolean = false): string {
+export function formatJSON(obj: any, normalize: boolean = false, arrayComparison: ArrayComparison = 'semantic'): string {
   if (normalize) {
-    const normalized = normalizeForDisplay(obj);
+    const normalized = arrayComparison === 'position' ? normalizeByPosition(obj) : normalizeForDisplay(obj);
     return JSON.stringify(normalized, null, 2);
   }
   return JSON.stringify(obj, null, 2);

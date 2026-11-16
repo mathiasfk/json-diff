@@ -1,6 +1,7 @@
 import React from 'react';
 import { DiffEditor } from '@monaco-editor/react';
 import { useTranslation } from 'react-i18next';
+import type { ArrayComparison } from '../utils/semanticDiff';
 
 interface DiffViewerProps {
   oldValue: string;
@@ -8,6 +9,7 @@ interface DiffViewerProps {
   language?: string;
   onReset: () => void;
   hasDifferences: boolean;
+  arrayComparison: ArrayComparison;
 }
 
 export const DiffViewer: React.FC<DiffViewerProps> = ({
@@ -16,14 +18,20 @@ export const DiffViewer: React.FC<DiffViewerProps> = ({
   language = 'json',
   onReset,
   hasDifferences,
+  arrayComparison,
 }) => {
   const { t } = useTranslation();
   return (
     <div className="h-full flex flex-col" role="region" aria-label={t('diffViewer.resultsRegion')}>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold text-gray-100">
-          {t('diffViewer.title')}
-        </h2>
+        <div>
+          <h2 className="text-xl font-semibold text-gray-100">
+            {t('diffViewer.title')}
+          </h2>
+          <p className="text-sm text-gray-400">
+            {t('arrayComparison.resultMode', { mode: t(`arrayComparison.${arrayComparison}`) })}
+          </p>
+        </div>
         <button
           onClick={onReset}
           className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 rounded-lg transition-colors"
@@ -55,7 +63,7 @@ export const DiffViewer: React.FC<DiffViewerProps> = ({
               {t('diffViewer.equivalentTitle')}
             </h3>
             <p className="text-gray-400">
-              {t('diffViewer.equivalentBody')}
+              {t(arrayComparison === 'position' ? 'diffViewer.equivalentBodyPosition' : 'diffViewer.equivalentBody')}
             </p>
           </div>
         </div>

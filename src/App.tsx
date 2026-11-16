@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { JsonEditor } from './components/JsonEditor';
 const DiffViewer = lazy(() => import('./components/DiffViewer').then(m => ({ default: m.DiffViewer })));
 import { semanticDiff, formatJSON } from './utils/semanticDiff';
+import type { ArrayComparison } from './utils/semanticDiff';
 import { parse, serialize, formatSameFormatDiff, FormatError, DEFAULT_FORMAT } from './utils/formatSelector';
 import type { Format } from './utils/formatSelector';
 import { gtag } from './services/analytics';
@@ -21,6 +22,7 @@ function App() {
     rightFormat: 'jsonDiff.rightFormat',
     mode: 'jsonDiff.viewMode',
     diff: 'jsonDiff.diffResult',
+    arrayComparison: 'jsonDiff.arrayComparison',
   } as const;
 
   // Initialize with empty values to avoid blocking on first render
@@ -30,12 +32,14 @@ function App() {
   const [rightFormat, setRightFormat] = useState<Format>(DEFAULT_FORMAT);
   const [leftError, setLeftError] = useState<InputError | null>(null);
   const [rightError, setRightError] = useState<InputError | null>(null);
+  const [arrayComparison, setArrayComparison] = useState<ArrayComparison>('semantic');
   const [viewMode, setViewMode] = useState<ViewMode>('edit');
   const [diffResult, setDiffResult] = useState<{
     left: string;
     right: string;
     language: string;
     hasDifferences: boolean;
+    arrayComparison: ArrayComparison;
   } | null>(null);
 
   const [storageLoaded, setStorageLoaded] = useState(false);
@@ -68,6 +72,10 @@ function App() {
       const storedRightFormat = localStorage.getItem(LS_KEYS.rightFormat);
       const storedMode = localStorage.getItem(LS_KEYS.mode);
       const storedDiff = localStorage.getItem(LS_KEYS.diff);
+      const storedArrayComparison = localStorage.getItem(LS_KEYS.arrayComparison);
+      if (storedArrayComparison === 'position' || storedArrayComparison === 'semantic') {
+        setArrayComparison(storedArrayComparison);
+      }
 
       if (storedLeft !== null) setLeftJson(storedLeft);
       if (storedRight !== null) setRightJson(storedRight);
@@ -88,7 +96,15 @@ function App() {
               'language' in saved && typeof saved.language === 'string' &&
               ['json', 'jsonl', 'yaml'].includes(saved.language) &&
               'hasDifferences' in saved && typeof saved.hasDifferences === 'boolean') {
-            setDiffResult({ left: saved.left, right: saved.right, language: saved.language, hasDifferences: saved.hasDifferences });
+            setDiffResult({
+              left: saved.left,
+              right: saved.right,
+              language: saved.language,
+              hasDifferences: saved.hasDifferences,
+              arrayComparison: 'arrayComparison' in saved && saved.arrayComparison === 'position'
+                ? 'position'
+                : 'semantic',
+            });
             if (storedMode === 'compare') setViewMode('compare');
           }
         } catch {
@@ -151,6 +167,11 @@ function App() {
     } catch { void 0; }
   }, [diffResult, storageLoaded]);
 
+  useEffect(() => {
+    if (!storageLoaded) return;
+    try { localStorage.setItem('jsonDiff.arrayComparison', arrayComparison); } catch { void 0; }
+  }, [arrayComparison, storageLoaded]);
+
   const parseInput = (text: string, format: Format): { valid: boolean; parsed?: unknown; error?: InputError } => {
     if (!text.trim()) {
       return { valid: false, error: { key: 'errors.empty' } };
@@ -190,7 +211,7 @@ function App() {
       return;
     }
 
-    const result = semanticDiff(leftResult.parsed, rightResult.parsed);
+    const result = semanticDiff(leftResult.parsed, rightResult.parsed, { arrayComparison });
 
     // When both sides share the same format (json/jsonl/yaml), re-serialize the
     // normalized objects back into that dialect so the diff shows the original
@@ -218,6 +239,7 @@ function App() {
       right: formattedRight,
       language,
       hasDifferences,
+      arrayComparison,
     });
 
     setViewMode('compare');
@@ -238,10 +260,10 @@ function App() {
     const result = parseInput(text, format);
 
     if (result.valid) {
-      // Apply the same normalization used in comparison (sort arrays and
-      // properties) for JSON; for other formats re-serialize cleanly.
+      // Normalize object properties and apply the selected array ordering for JSON;
+      // for other formats re-serialize cleanly.
       const formatted = format === 'json'
-        ? formatJSON(result.parsed, true)
+        ? formatJSON(result.parsed, true, arrayComparison)
         : serialize(result.parsed, format);
       if (side === 'left') {
         setLeftJson(formatted);
@@ -286,8 +308,8 @@ function App() {
 
       <main className="max-w-screen-2xl mx-auto p-6" role="main">
         {viewMode === 'edit' ? (
-          <div className="flex flex-col h-[calc(100vh-180px)]">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1" role="region" aria-label={t('jsonEditor.inputEditors')}>
+          <div className="flex flex-col min-h-[calc(100vh-180px)] lg:min-h-0 lg:h-[max(36rem,calc(100dvh-180px))]">
+            <div className="grid grid-cols-1 grid-rows-2 lg:grid-rows-1 lg:grid-cols-2 gap-6 h-[80vh] lg:h-auto lg:flex-1 lg:min-h-0" role="region" aria-label={t('jsonEditor.inputEditors')}>
               <JsonEditor
                 value={leftJson}
                 onChange={handleLeftChange}
@@ -307,6 +329,34 @@ function App() {
                 side="right"
               />
             </div>
+
+            <fieldset className="mt-6 mx-auto max-w-3xl w-full border border-gray-700 rounded-lg px-4 pb-3 shrink-0">
+              <legend className="px-2 font-medium">{t('arrayComparison.legend')}</legend>
+              <div className="grid sm:grid-cols-2 gap-3">
+                {(['semantic', 'position'] as const).map(mode => (
+                  <label key={mode} className="flex items-start gap-2 cursor-pointer rounded p-2 hover:bg-gray-800">
+                    <input
+                      type="radio"
+                      name="arrayComparison"
+                      value={mode}
+                      checked={arrayComparison === mode}
+                      onChange={() => setArrayComparison(mode)}
+                      aria-labelledby={`array-${mode}-label`}
+                      aria-describedby={`array-${mode}-description`}
+                      className="mt-1 accent-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-400"
+                    />
+                    <span>
+                      <span id={`array-${mode}-label`} className="block font-medium">
+                        {t(`arrayComparison.${mode}`)}
+                      </span>
+                      <span id={`array-${mode}-description`} className="block text-sm text-gray-400">
+                        {t(`arrayComparison.${mode}Description`)}
+                      </span>
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
 
             <div className="grid grid-cols-2 lg:grid-cols-[repeat(5,auto)] items-center justify-center gap-x-2 lg:gap-x-4 gap-y-2 mt-6 shrink-0" role="toolbar" aria-label={t('jsonEditor.comparisonActions')}>
               <button
@@ -372,6 +422,7 @@ function App() {
                   language={diffResult.language}
                   onReset={handleReset}
                   hasDifferences={diffResult.hasDifferences}
+                  arrayComparison={diffResult.arrayComparison}
                 />
               )}
             </Suspense>
