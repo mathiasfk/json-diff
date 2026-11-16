@@ -190,11 +190,24 @@ function App() {
     }
   };
 
+  const handleArrayComparisonChange = (mode: ArrayComparison) => {
+    if (mode === arrayComparison) return;
+    gtag('event', 'array_comparison_change', {
+      array_comparison: mode,
+      previous_array_comparison: arrayComparison,
+    });
+    setArrayComparison(mode);
+  };
+
   const handleCompare = () => {
     setLeftError(null);
     setRightError(null);
 
-    gtag('event', 'compare_click', { left_chars: leftJson.length, right_chars: rightJson.length });
+    gtag('event', 'compare_click', {
+      left_chars: leftJson.length,
+      right_chars: rightJson.length,
+      array_comparison: arrayComparison,
+    });
 
     const leftResult = parseInput(leftJson, leftFormat);
     const rightResult = parseInput(rightJson, rightFormat);
@@ -232,6 +245,7 @@ function App() {
       right_chars: rightJson.length,
       left_format: leftFormat,
       right_format: rightFormat,
+      array_comparison: arrayComparison,
     });
 
     setDiffResult({
@@ -340,7 +354,7 @@ function App() {
                       name="arrayComparison"
                       value={mode}
                       checked={arrayComparison === mode}
-                      onChange={() => setArrayComparison(mode)}
+                      onChange={() => handleArrayComparisonChange(mode)}
                       aria-labelledby={`array-${mode}-label`}
                       aria-describedby={`array-${mode}-description`}
                       className="mt-1 accent-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-400"
