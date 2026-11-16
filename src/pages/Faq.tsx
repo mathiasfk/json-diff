@@ -4,7 +4,7 @@ import { SupportFooter } from '../components/SupportFooter';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { DEFAULT_LOCALE, isLocale } from '../i18n-config';
-import support from '../content/support.json';
+import support from '../content/support-nav.json';
 
 interface FaqItem {
   q: string;

@@ -1,11 +1,6 @@
 {
   "en": {
     "home": "Back to tool",
-    "nav": "Support",
-    "faq": "FAQ",
-    "how-it-works": "How it works",
-    "privacy": "Privacy",
-    "contact": "Contact",
     "languages": "Languages",
     "how": [
       [
@@ -59,18 +54,11 @@
           "left": "[1, 1, 2]",
           "right": "[1, 2]"
         }
-      ],
-      "leftLabel": "Left",
-      "rightLabel": "Right"
+      ]
     }
   },
   "pt": {
     "home": "Voltar à ferramenta",
-    "nav": "Ajuda",
-    "faq": "Perguntas frequentes",
-    "how-it-works": "Como funciona",
-    "privacy": "Privacidade",
-    "contact": "Contato",
     "languages": "Idiomas",
     "how": [
       [
@@ -124,18 +112,11 @@
           "left": "[1, 1, 2]",
           "right": "[1, 2]"
         }
-      ],
-      "leftLabel": "Esquerda",
-      "rightLabel": "Direita"
+      ]
     }
   },
   "es": {
     "home": "Volver a la herramienta",
-    "nav": "Ayuda",
-    "faq": "Preguntas frecuentes",
-    "how-it-works": "Cómo funciona",
-    "privacy": "Privacidad",
-    "contact": "Contacto",
     "languages": "Idiomas",
     "how": [
       [
@@ -189,18 +170,11 @@
           "left": "[1, 1, 2]",
           "right": "[1, 2]"
         }
-      ],
-      "leftLabel": "Izquierda",
-      "rightLabel": "Derecha"
+      ]
     }
   },
   "zh": {
     "home": "返回工具",
-    "nav": "帮助",
-    "faq": "常见问题",
-    "how-it-works": "使用说明",
-    "privacy": "隐私",
-    "contact": "联系",
     "languages": "语言",
     "how": [
       [
@@ -254,9 +228,7 @@
           "left": "[1, 1, 2]",
           "right": "[1, 2]"
         }
-      ],
-      "leftLabel": "左侧",
-      "rightLabel": "右侧"
+      ]
     }
   }
 }

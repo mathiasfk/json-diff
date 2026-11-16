@@ -1,0 +1,46 @@
+{
+  "en": {
+    "nav": "Support",
+    "faq": "FAQ",
+    "how-it-works": "How it works",
+    "privacy": "Privacy",
+    "contact": "Contact",
+    "examples": {
+      "leftLabel": "Left",
+      "rightLabel": "Right"
+    }
+  },
+  "pt": {
+    "nav": "Ajuda",
+    "faq": "Perguntas frequentes",
+    "how-it-works": "Como funciona",
+    "privacy": "Privacidade",
+    "contact": "Contato",
+    "examples": {
+      "leftLabel": "Esquerda",
+      "rightLabel": "Direita"
+    }
+  },
+  "es": {
+    "nav": "Ayuda",
+    "faq": "Preguntas frecuentes",
+    "how-it-works": "Cómo funciona",
+    "privacy": "Privacidad",
+    "contact": "Contacto",
+    "examples": {
+      "leftLabel": "Izquierda",
+      "rightLabel": "Derecha"
+    }
+  },
+  "zh": {
+    "nav": "帮助",
+    "faq": "常见问题",
+    "how-it-works": "使用说明",
+    "privacy": "隐私",
+    "contact": "联系",
+    "examples": {
+      "leftLabel": "左侧",
+      "rightLabel": "右侧"
+    }
+  }
+}

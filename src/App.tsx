@@ -271,13 +271,13 @@ function App() {
   const handleLeftChange = (newValue: string) => {
     setLeftJson(newValue);
     // Clear error if the input becomes parseable
-    if (!newValue.trim() || parseInput(newValue, leftFormat).valid) setLeftError(null);
+    if (leftError && (!newValue.trim() || parseInput(newValue, leftFormat).valid)) setLeftError(null);
   };
 
   const handleRightChange = (newValue: string) => {
     setRightJson(newValue);
     // Clear error if the input becomes parseable
-    if (!newValue.trim() || parseInput(newValue, rightFormat).valid) setRightError(null);
+    if (rightError && (!newValue.trim() || parseInput(newValue, rightFormat).valid)) setRightError(null);
   };
 
   return (
