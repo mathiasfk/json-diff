@@ -31,10 +31,10 @@
 }
 
 .site-header { background: var(--surface-raised); border-bottom: 1px solid var(--surface-border); padding: .75rem 1rem; }
-.site-header-inner { max-width: 1536px; margin: auto; display: flex; flex-direction: column; gap: 1rem; }
+.site-header-inner { max-width: 1536px; margin: auto; display: flex; flex-direction: column; gap: .75rem; }
 .site-title { margin: 0; color: var(--text-primary); font-size: 1.125rem; line-height: 1.75rem; font-weight: 600; letter-spacing: -.025em; text-decoration: none; }
 .site-subtitle { margin: .125rem 0 0; color: var(--text-muted); font-size: .75rem; line-height: 1rem; }
-.site-header-actions { display: flex; flex-direction: column; align-items: center; gap: .5rem; }
+.site-header-actions { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; gap: .5rem; }
 .site-home { color: var(--text-muted); font-size: .875rem; text-decoration: none; }
 .site-home:hover { color: var(--text-strong); }
 .theme-toggle { display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
