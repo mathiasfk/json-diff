@@ -2,7 +2,7 @@
 <html lang="zh"><head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="google-adsense-account" content="ca-pub-6364476119143776">
-  <title>常见问题 — Smart JSON Diff</title><meta name="description" content="Smart JSON Diff 不只是进行简单的文本 Diff，而是执行语义比较。它会通过按字母顺序排列对象属性来规范化两个输入，并智能地对齐数组元素。当两个数组都包含唯一键时，元素会根据该键进行对齐；否则，会根据规范化后的内容进行匹配，以尽量减少无关差异，并突出显示最相关的变化。整个比较过程都在您的浏览器中完成，并使用 jsondiffpatch 进行底层 Diff 处理。">
+  <title>常见问题 — Smart JSON Diff</title><meta name="description" content="工具比较解析后的值并排序对象属性。自动对齐匹配相似的数组元素；按位置比较会递归比较相同索引处的元素。比较在浏览器中进行。">
   <link rel="canonical" href="https://smartjsondiff.com/zh/faq/">
   <link rel="alternate" hreflang="en"
       href="https://smartjsondiff.com/en/faq/"><link rel="alternate" hreflang="pt"
@@ -61,21 +61,21 @@
       lang="es" >Español</option><option value="/zh/faq/"
       lang="zh" selected>中文</option></select></label>
     </div></div></header>
-  <main><h1>常见问题</h1><section><h2>比较是如何进行的？</h2><p>Smart JSON Diff 不只是进行简单的文本 Diff，而是执行语义比较。它会通过按字母顺序排列对象属性来规范化两个输入，并智能地对齐数组元素。当两个数组都包含唯一键时，元素会根据该键进行对齐；否则，会根据规范化后的内容进行匹配，以尽量减少无关差异，并突出显示最相关的变化。整个比较过程都在您的浏览器中完成，并使用 jsondiffpatch 进行底层 Diff 处理。</p>
-      </section><section><h2>Smart JSON Diff 与其他 JSON Diff 工具有何不同？</h2><p>许多传统的 JSON Diff 工具会将数组视为有序序列，因此元素的顺序会影响比较结果。Smart JSON Diff 将数组元素视为多重集合，这意味着元素的顺序不会影响结果，但重复元素仍会被计入。</p>
+  <main><h1>常见问题</h1><section><h2>比较是如何进行的？</h2><p>工具比较解析后的值并排序对象属性。自动对齐匹配相似的数组元素；按位置比较会递归比较相同索引处的元素。比较在浏览器中进行。</p>
+      </section><section><h2>Smart JSON Diff 与其他 JSON Diff 工具有何不同？</h2><p>自动对齐忽略数组顺序，但仍计入重复元素。顺序重要时也可按位置比较。</p>
       <div class="faq-example">
         <div class="examples">
     <div><span>左侧</span><pre><code>[1, 2, 3]</code></pre></div>
     <div><span>右侧</span><pre><code>[3, 2, 1]</code></pre></div>
   </div>
-        <p>等价：顺序不同，但值相同。</p></div></section><section><h2>差异中的颜色是什么意思？</h2><p>绿色表示新增，红色表示删除。整行发生变化时会被突出显示，而具体发生变化的部分会使用更明显的颜色进一步突出。</p>
+        <p>自动对齐时等价：值及其出现次数没有变化。</p></div></section><section><h2>差异中的颜色是什么意思？</h2><p>绿色表示新增，红色表示删除。整行发生变化时会被突出显示，而具体发生变化的部分会使用更明显的颜色进一步突出。</p>
       </section><section><h2>属性顺序会影响结果吗？</h2><p>不会。比较前会按字母顺序对属性进行排序，因此内容相同但属性顺序不同的对象会被视为等价。</p>
       <div class="faq-example">
         <div class="examples">
     <div><span>左侧</span><pre><code>{&quot;a&quot;: 1, &quot;b&quot;: 2}</code></pre></div>
     <div><span>右侧</span><pre><code>{&quot;b&quot;: 2, &quot;a&quot;: 1}</code></pre></div>
   </div>
-        <p>等价：属性顺序不影响比较。</p></div></section><section><h2>数组顺序会影响结果吗？</h2><p>不会。Smart JSON Diff 会自动找到最佳方式来对齐数组元素，因此包含相同元素但顺序不同的数组会被视为等价。</p>
+        <p>等价：属性顺序不影响比较。</p></div></section><section><h2>数组顺序会影响结果吗？</h2><p>自动对齐（默认）下，仅改变顺序不影响结果。按位置比较会将顺序变化视为差异。</p>
       <div class="faq-example">
         <div class="examples">
     <div><span>左侧</span><pre><code>[
@@ -99,7 +99,7 @@
   }
 ]</code></pre></div>
   </div>
-        <p>等价：数组顺序不同，但每个对象的值保持不变。</p></div></section><section><h2>数组差异是如何处理的？</h2><p>Smart JSON Diff 会寻找能够最大化两个版本相似度的对齐方式。当两个数组都包含唯一键时，元素会根据该键进行对齐；否则，会根据规范化后的内容进行对齐。这样可以尽量减少无关差异，并突出显示最相关的变化。重新排列相同的元素不会产生差异，而新增、删除或修改的元素仍然会被检测出来。</p>
+        <p>自动对齐时等价：值及其出现次数没有变化。</p></div></section><section><h2>数组差异是如何处理的？</h2><p>自动对齐通过标识字段或内容匹配相似元素。按位置比较会比较相同索引处的元素，包括嵌套数组。</p>
       </section><section><h2>重复项和修改的值如何处理？</h2><p>重复元素仍会计数，即使结构相同，不同的值也会被检测出来。</p>
       <div class="faq-example">
         <div class="examples">
