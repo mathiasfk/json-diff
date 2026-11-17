@@ -31,10 +31,9 @@ User Actions → Event Handlers → State Updates → Re-render → UI Updates
      - Switches view mode to 'compare'
 
 3. **Processing Phase** (inside `semanticDiff()`)
-   - Input objects are normalized via `normalizeForDiff()`
-   - Object properties are sorted
-   - Custom jsondiffpatch differ is created
-   - Diff operation is performed
+   - The selected array mode is passed to `semanticDiff()`
+   - Object properties are sorted in both modes
+   - Automatic alignment normalizes arrays and uses a custom jsondiffpatch differ; positional comparison preserves array order and compares indices recursively
    - Raw diff result and normalized objects are returned
 
 4. **Display Phase**
@@ -58,14 +57,16 @@ User Actions → Event Handlers → State Updates → Re-render → UI Updates
 **Data Contract**:
 ```typescript
 // From App to semanticDiff
-semanticDiff(leftParsed: any, rightParsed: any): {
+semanticDiff(leftParsed: any, rightParsed: any, options?: {
+  arrayComparison?: 'semantic' | 'position'; // default: 'semantic'
+}): {
   delta: any;          // jsondiffpatch delta object
   left: any;           // normalized left object
   right: any;          // normalized right object
 }
 
 // From semanticDiff to App (via formatJSON)
-formatJSON(obj: any, normalize: boolean = false): string
+formatJSON(obj: any, normalize?: boolean, arrayComparison?: 'semantic' | 'position'): string
 ```
 
 ### 2. App ↔ Components Integration
@@ -98,6 +99,8 @@ formatJSON(obj: any, normalize: boolean = false): string
   newValue={string}        // Formatted right JSON
   onReset={() => void}     // Return to edit mode
   hasDifferences={boolean} // Show differences or equivalency message
+  language={string}        // Monaco language for the result
+  arrayComparison={mode}   // 'semantic' or 'position' used for this result
 />
 ```
 
@@ -145,6 +148,7 @@ formatJSON(obj: any, normalize: boolean = false): string
   - jsonDiff.right: Right JSON input
   - jsonDiff.viewMode: Current view (edit/compare)
   - jsonDiff.diffResult: Last comparison result
+  - jsonDiff.arrayComparison: Selected array comparison mode
 - Loaded on initial render via useEffect hook
 - Saved on state changes via useEffect hooks
 

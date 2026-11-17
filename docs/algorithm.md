@@ -2,11 +2,11 @@
 
 ## Overview
 
-The smart JSON diff algorithm is built upon the [jsondiffpatch](https://github.com/benjamine/jsondiffpatch) library, which implements the Myers diff algorithm, with custom preprocessing enhancements for semantic-aware comparison of JSON objects.
+The comparator offers two array modes. Automatic alignment uses custom preprocessing and [jsondiffpatch](https://github.com/benjamine/jsondiffpatch); positional comparison recursively pairs items by index and produces a jsondiffpatch-compatible delta. Both ignore object property order.
 
 ## Core Algorithm: Myers Diff
 
-The underlying diff algorithm used by jsondiffpatch is the **Myers diff algorithm**, which:
+In automatic alignment, jsondiffpatch uses the **Myers diff algorithm** for sequences, which:
 - Finds the shortest middle snake (edit script) between two sequences
 - Has O(ND) time complexity where N is the sum of sequence lengths and D is the number of differences
 - Space complexity of O(N) for the linear space refinement
@@ -20,7 +20,7 @@ Beyond the standard Myers diff, our implementation adds several semantic-aware e
 Before diffing, object properties are sorted lexicographically to ensure that reordering of properties doesn't appear as differences.
 
 ### 2. Smart Array Matching
-Arrays are processed with special alignment strategies:
+In automatic alignment, arrays are processed with special alignment strategies:
 - **ID-based matching**: When array elements have a uniquely identifying field (like `id`) present in all elements, arrays are aligned by that field
 - **Content-based matching**: When no suitable ID field exists, arrays are sorted by serialized content for deterministic comparison
 - **Primitive arrays**: Sorted by their string/number values
@@ -33,17 +33,12 @@ The jsondiffpatch library uses object hashing to identify matching elements. We'
 - Use `{field}:{value}` format for ID-based matching
 
 ### 4. Recursive Normalization
-The normalization process is applied recursively to handle nested objects and arrays, ensuring deep semantic equivalence checking.
+Both modes process nested objects and arrays recursively. Positional comparison preserves array order and compares each index; an insertion can therefore also change comparisons at subsequent indices. JSONL records are parsed into an array and follow the selected mode.
 
 ## Key Functions
 
-### `semanticDiff(left, right)`
-Main entry point that:
-1. Normalizes both input objects using `normalizeForDiff`
-2. Sorts object properties
-3. Creates a custom jsondiffpatch differ
-4. Performs the diff operation
-5. Returns `{ delta, left, right }` where:
+### `semanticDiff(left, right, options)`
+The optional `options.arrayComparison` selects `semantic` (automatic alignment, the default) or `position`. The semantic path aligns arrays, sorts object properties and runs a custom jsondiffpatch differ. The positional path sorts object properties, preserves arrays and calculates the delta recursively by index. Both return `{ delta, left, right }` where:
    - `delta`: The diff patch (undefined if no differences)
    - `left`: Normalized left object
    - `right`: Normalized right object
@@ -81,15 +76,11 @@ Configures jsondiffpatch with:
 - Array sorting: O(M log M) per array where M is array length
 - Recursive processing: Applied to all nested structures
 
-Overall complexity remains dominated by the Myers diff algorithm for typical JSON structures.
+These costs describe automatic alignment; similarity matching can add further overhead. Positional comparison walks the structures by index and also sorts object properties.
 
 ## Configuration Options
 
-The algorithm currently doesn't expose configurable parameters as it's wrapped in a simple API. However, the underlying jsondiffpatch library supports:
-- `objectHash`: Customized for semantic matching
-- `arrays`: Configured with `detectMove: true` and `includeValueOnMove: false`
-
-These could be exposed through a factory function if configurability becomes needed.
+Pass `{ arrayComparison: 'position' }` to compare by index, or omit the option (or pass `'semantic'`) for automatic alignment. The UI persists the selected mode and records it with each result. The semantic differ configures custom `objectHash` and array move detection internally.
 
 ## Edge Cases Handled
 
