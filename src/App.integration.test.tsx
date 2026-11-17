@@ -5,6 +5,7 @@ import { gtag } from './services/analytics';
 
 vi.mock('./services/analytics', () => ({ gtag: vi.fn() }));
 
+vi.mock('./components/SupportFooter', () => ({ SupportFooter: () => null }));
 vi.mock('./components/Header', () => ({ Header: () => null }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 vi.mock('./components/JsonEditor', () => ({

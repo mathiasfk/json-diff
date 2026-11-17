@@ -1,3 +1,5 @@
+import { redirectToSupport } from '../bootstrap-url';
+
 // Initialize Google Analytics
 const GA_MEASUREMENT_ID = 'G-1WMV847FRL';
 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -25,7 +27,7 @@ export const gtag = (...args) => {
 };
 
 // Initialize analytics only in production
-if (!isLocalhost) {
+if (!isLocalhost && !redirectToSupport) {
   // Load GA script
   const script = document.createElement('script');
   script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;

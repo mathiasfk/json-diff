@@ -8,6 +8,11 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: gh-pages-writes
+  cancel-in-progress: false
+  queue: max
+
 jobs:
   cleanup:
     if: |

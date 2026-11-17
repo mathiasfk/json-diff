@@ -1,8 +1,7 @@
 import fs from 'node:fs';
 
-const locales = ['en', 'pt', 'zh', 'es'];
-const pages = ['faq', 'how-it-works', 'privacy', 'contact'];
-const languageNames = { en: 'English', pt: 'Português', es: 'Español', zh: '中文' };
+const site = JSON.parse(fs.readFileSync(new URL('../src/content/site.json', import.meta.url)));
+const { locales, pages, names: languageNames, origin } = site;
 const escapeHtml = value => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;')
   .replaceAll('>', '&gt;').replaceAll('"', '&quot;');
 const basePath = base => {
@@ -85,7 +84,7 @@ export function supportPages(base = '/') {
     const languageOptions = locales.map(language => `<option value="${href(language, page)}"
       lang="${language}" ${language === locale ? 'selected' : ''}>${languageNames[language]}</option>`).join('');
     const alternatives = locales.map(language => `<link rel="alternate" hreflang="${language}"
-      href="https://smartjsondiff.com/${language}/${page}/">`).join('');
+      href="${origin}/${language}/${page}/">`).join('');
     const description = page === 'faq' ? faq[locale][0].a : page === 'how-it-works' ? c.how[0][1]
       : page === 'privacy' ? c.privacyText[0] : c.contactText;
     const title = escapeHtml(c[page]);
@@ -94,8 +93,10 @@ export function supportPages(base = '/') {
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="google-adsense-account" content="ca-pub-6364476119143776">
   <title>${title} — Smart JSON Diff</title><meta name="description" content="${escapeHtml(description)}">
-  <link rel="canonical" href="https://smartjsondiff.com/${locale}/${page}/">
-  ${prefix !== '/' ? '<meta name="robots" content="noindex, nofollow">' : ''}${alternatives}
+  <link rel="canonical" href="${origin}/${locale}/${page}/">
+  ${prefix !== '/' ? '<meta name="robots" content="noindex, nofollow">' : ''}${alternatives}<link rel="alternate" hreflang="x-default" href="${origin}/en/${page}/">
+  <meta property="og:type" content="website"><meta property="og:locale" content="${site.ogLocales[locale]}"><meta property="og:title" content="${title} — Smart JSON Diff"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${origin}/${locale}/${page}/"><meta property="og:image" content="${origin}/og-image-1200x630.png">
+  <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${title} — Smart JSON Diff"><meta name="twitter:description" content="${escapeHtml(description)}"><meta name="twitter:url" content="${origin}/${locale}/${page}/"><meta name="twitter:image" content="${origin}/og-image-1200x630.png">
   <meta name="theme-color" content="#181818"><style>${sharedStyles}${styles}</style>
   <script>
     (function () {
@@ -110,10 +111,10 @@ export function supportPages(base = '/') {
   </script>
 </head><body>
   <header class="site-header"><div class="site-header-inner">
-    <div><a class="site-title" href="${prefix}#/${locale}">Smart JSON Diff</a>
+    <div><a class="site-title" href="${prefix}${locale === 'en' ? '' : `${locale}/`}">Smart JSON Diff</a>
       <p class="site-subtitle">${escapeHtml(translations[locale].header.subtitle)}</p></div>
     <nav class="site-header-actions" aria-label="${escapeHtml(translations[locale].header.primaryNav)}">
-      <a class="site-home" href="${prefix}#/${locale}" aria-label="${escapeHtml(translations[locale].header.homeAria)}">← ${escapeHtml(translations[locale].header.home)}</a>
+      <a class="site-home" href="${prefix}${locale === 'en' ? '' : `${locale}/`}" aria-label="${escapeHtml(translations[locale].header.homeAria)}">← ${escapeHtml(translations[locale].header.home)}</a>
       <button type="button" id="theme-toggle" class="theme-toggle" hidden
         data-light="${escapeHtml(translations[locale].theme.light)}" data-dark="${escapeHtml(translations[locale].theme.dark)}"
         data-switch-light="${escapeHtml(translations[locale].theme.switchLight)}" data-switch-dark="${escapeHtml(translations[locale].theme.switchDark)}"><span aria-hidden="true"></span><span></span></button>
@@ -122,7 +123,7 @@ export function supportPages(base = '/') {
     </nav></div></header>
   <main><h1>${title}</h1>${pageBody(page, c, faq[locale])}</main>
   <footer><nav aria-label="${escapeHtml(c.nav)}">${navigation}</nav>
-    <noscript><nav aria-label="${escapeHtml(c.languages)}">${languages}</nav></noscript></footer>
+    <nav aria-label="${escapeHtml(c.languages)}">${languages}</nav></footer>
   <script>
     var themeButton = document.getElementById('theme-toggle');
     function updateThemeButton() {
@@ -168,10 +169,6 @@ export function supportPagesPlugin() {
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
         res.end(supportPages(base)[file]);
       });
-    },
-    transformIndexHtml(html) {
-      return basePath(base) === '/' ? html : html.replace('<meta name="robots" content="index, follow" />',
-        '<meta name="robots" content="noindex, nofollow" />');
     },
     generateBundle() {
       for (const [fileName, source] of Object.entries(supportPages(base))) {

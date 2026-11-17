@@ -1,0 +1,7 @@
+# Publicação e rollback
+
+O build gera as páginas canônicas e valida o artefato. Execute `pnpm lint`, `pnpm test` e `pnpm build`, além de um build com `PREVIEW_BASE=preview/pr-123/`, antes de publicar. O workflow de produção preserva `preview/`, usa o `CNAME` da distribuição atual e guarda os arquivos de produção anteriores como artifact por 90 dias. Escritas de produção, preview e limpeza compartilham um grupo de concorrência. A fila compartilhada aceita até 100 execuções pendentes; confirme o resultado de cada publicação e reexecute qualquer workflow que exceda esse limite.
+
+Para reverter, obtenha o artifact `previous-production` da execução de deploy correspondente e publique seu conteúdo como produção, preservando a árvore `preview/`. Se a versão anterior não tiver as novas URLs localizadas, mantenha cópias úteis dos documentos localizados e seus assets da versão atual no artefato de rollback. Teste primeiro em um preview e confira links, assets e canonical. Não apague previews durante a reversão.
+
+Depois da publicação, confirme os códigos HTTP das 20 páginas, 404 para caminhos inexistentes, acesso com e sem barra, sitemap, robots, recursos e redirects legados no domínio real. Inspecione amostras no Search Console e monitore descoberta, canonical, impressões, cliques, CTR, erros e conversões por idioma em aproximadamente 2, 4 e 8 semanas. Verifique a configuração de page views do GA4 antes de acrescentar eventos manuais.
