@@ -1,4 +1,12 @@
-# Array comparison analytics
+# Analytics
+
+## Interface language
+
+Every custom event sent through `src/services/analytics.js` automatically includes `language`: the active interface locale (`en`, `pt`, `es` or `zh`), read at send time. This applies to comparison, validation, formatting, clearing, examples, uploads, drag-and-drop and paste events, including events without other parameters. It describes the interface language, not the input format or browser preference.
+
+An explicit event parameter takes precedence; `language_change` keeps the selected destination language. Initialization/configuration commands and automatic GA4 events outside this wrapper are not modified. The wrapper does not add event sources: static support pages still do not emit `language_change`.
+
+## Array comparison
 
 | Event | Trigger | Parameters added for array comparison |
 | --- | --- | --- |

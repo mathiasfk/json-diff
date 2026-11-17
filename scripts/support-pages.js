@@ -30,7 +30,6 @@ const styles = `
     border-radius: 4px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere }
   footer { max-width: 1536px; margin: auto; padding: 0 24px 20px; color: var(--text-muted); font-size: .875rem }
   footer nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 20px }
-  footer nav + nav { margin-top: 18px }
   footer a { color: var(--text-muted) }
   a[aria-current] { color: var(--text-primary); font-weight: 600 }
   @media (max-width: 480px) { main { padding: 28px 16px 40px } main h1 { font-size: 1.5rem } section { padding: 16px } }
@@ -79,8 +78,6 @@ export function supportPages(base = '/') {
     const href = (language, target) => `${prefix}${language}/${target}/`;
     const navigation = pages.map(target => `<a ${target === page ? 'aria-current="page"' : ''}
       href="${href(locale, target)}">${escapeHtml(c[target])}</a>`).join('');
-    const languages = locales.map(language => `<a href="${href(language, page)}" lang="${language}"
-      ${language === locale ? 'aria-current="true"' : ''}>${languageNames[language]}</a>`).join('');
     const languageOptions = locales.map(language => `<option value="${href(language, page)}"
       lang="${language}" ${language === locale ? 'selected' : ''}>${languageNames[language]}</option>`).join('');
     const alternatives = locales.map(language => `<link rel="alternate" hreflang="${language}"
@@ -122,8 +119,7 @@ export function supportPages(base = '/') {
         <select id="language-selector">${languageOptions}</select></label>
     </nav></div></header>
   <main><h1>${title}</h1>${pageBody(page, c, faq[locale])}</main>
-  <footer><nav aria-label="${escapeHtml(c.nav)}">${navigation}</nav>
-    <nav aria-label="${escapeHtml(c.languages)}">${languages}</nav></footer>
+  <footer><nav aria-label="${escapeHtml(c.nav)}">${navigation}</nav></footer>
   <script>
     var themeButton = document.getElementById('theme-toggle');
     function updateThemeButton() {

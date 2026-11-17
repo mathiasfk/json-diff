@@ -29,7 +29,7 @@ it('preserves in-memory inputs, formats and comparison across language navigatio
   await waitFor(() => expect(window.location.pathname).toBe('/pt/'));
   expect((screen.getByLabelText('left') as HTMLTextAreaElement).value).toBe('a: 1');
   expect((screen.getByLabelText('left-format') as HTMLSelectElement).value).toBe('yaml');
-  fireEvent.click(screen.getByRole('link', { name: 'English' }));
+  fireEvent.change(screen.getByLabelText(i18n.t('app.language')), { target: { value: 'en' } });
   await waitFor(() => expect(window.location.pathname).toBe('/'));
   expect((screen.getByLabelText('right') as HTMLTextAreaElement).value).toBe('a: 2');
   expect((screen.getByLabelText('right-format') as HTMLSelectElement).value).toBe('yaml');

@@ -8,8 +8,7 @@
     "examples": {
       "leftLabel": "Left",
       "rightLabel": "Right"
-    },
-    "languages": "Languages"
+    }
   },
   "pt": {
     "nav": "Ajuda",
@@ -20,8 +19,7 @@
     "examples": {
       "leftLabel": "Esquerda",
       "rightLabel": "Direita"
-    },
-    "languages": "Idiomas"
+    }
   },
   "es": {
     "nav": "Ayuda",
@@ -32,8 +30,7 @@
     "examples": {
       "leftLabel": "Izquierda",
       "rightLabel": "Derecha"
-    },
-    "languages": "Idiomas"
+    }
   },
   "zh": {
     "nav": "帮助",
@@ -44,7 +41,6 @@
     "examples": {
       "leftLabel": "左侧",
       "rightLabel": "右侧"
-    },
-    "languages": "语言"
+    }
   }
 }
