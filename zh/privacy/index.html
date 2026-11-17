@@ -8,7 +8,9 @@
       href="https://smartjsondiff.com/en/privacy/"><link rel="alternate" hreflang="pt"
       href="https://smartjsondiff.com/pt/privacy/"><link rel="alternate" hreflang="zh"
       href="https://smartjsondiff.com/zh/privacy/"><link rel="alternate" hreflang="es"
-      href="https://smartjsondiff.com/es/privacy/">
+      href="https://smartjsondiff.com/es/privacy/"><link rel="alternate" hreflang="x-default" href="https://smartjsondiff.com/en/privacy/">
+  <meta property="og:type" content="website"><meta property="og:locale" content="zh_CN"><meta property="og:title" content="隐私 — Smart JSON Diff"><meta property="og:description" content="比较在浏览器中进行。工具将输入文本、所选格式、视图状态和比较结果保存在 localStorage 中以便恢复；语言选择也保存在此。可在浏览器中清除网站数据以移除这些内容。所选数组比较模式也会被保存。"><meta property="og:url" content="https://smartjsondiff.com/zh/privacy/"><meta property="og:image" content="https://smartjsondiff.com/og-image-1200x630.png">
+  <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="隐私 — Smart JSON Diff"><meta name="twitter:description" content="比较在浏览器中进行。工具将输入文本、所选格式、视图状态和比较结果保存在 localStorage 中以便恢复；语言选择也保存在此。可在浏览器中清除网站数据以移除这些内容。所选数组比较模式也会被保存。"><meta name="twitter:url" content="https://smartjsondiff.com/zh/privacy/"><meta name="twitter:image" content="https://smartjsondiff.com/og-image-1200x630.png">
   <meta name="theme-color" content="#181818"><style>:root {
   --surface-base: #181818;
   --surface-raised: #242424;
@@ -83,7 +85,6 @@
     border-radius: 4px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere }
   footer { max-width: 1536px; margin: auto; padding: 0 24px 20px; color: var(--text-muted); font-size: .875rem }
   footer nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 20px }
-  footer nav + nav { margin-top: 18px }
   footer a { color: var(--text-muted) }
   a[aria-current] { color: var(--text-primary); font-weight: 600 }
   @media (max-width: 480px) { main { padding: 28px 16px 40px } main h1 { font-size: 1.5rem } section { padding: 16px } }
@@ -101,10 +102,10 @@
   </script>
 </head><body>
   <header class="site-header"><div class="site-header-inner">
-    <div><a class="site-title" href="/#/zh">Smart JSON Diff</a>
+    <div><a class="site-title" href="/zh/">Smart JSON Diff</a>
       <p class="site-subtitle">对 JSON、YAML 和 JSONL 进行语义比较，并自动对齐数组元素</p></div>
     <nav class="site-header-actions" aria-label="主导航">
-      <a class="site-home" href="/#/zh" aria-label="前往 Smart JSON Diff 首页">← 首页</a>
+      <a class="site-home" href="/zh/" aria-label="前往 Smart JSON Diff 首页">← 首页</a>
       <button type="button" id="theme-toggle" class="theme-toggle" hidden
         data-light="浅色" data-dark="深色"
         data-switch-light="切换到浅色主题" data-switch-dark="切换到深色主题"><span aria-hidden="true"></span><span></span></button>
@@ -120,12 +121,7 @@
       href="/zh/faq/">常见问题</a><a 
       href="/zh/how-it-works/">使用说明</a><a aria-current="page"
       href="/zh/privacy/">隐私</a><a 
-      href="/zh/contact/">联系</a></nav>
-    <noscript><nav aria-label="语言"><a href="/en/privacy/" lang="en"
-      >English</a><a href="/pt/privacy/" lang="pt"
-      >Português</a><a href="/zh/privacy/" lang="zh"
-      aria-current="true">中文</a><a href="/es/privacy/" lang="es"
-      >Español</a></nav></noscript></footer>
+      href="/zh/contact/">联系</a></nav></footer>
   <script>
     var themeButton = document.getElementById('theme-toggle');
     function updateThemeButton() {
