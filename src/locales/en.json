@@ -12,7 +12,10 @@
     "formatLeft": "Format Left",
     "compare": "Compare",
     "formatRight": "Format Right",
-    "clearRight": "Clear Right"
+    "clearRight": "Clear Right",
+    "replaceExampleTitle": "Load example?",
+    "cancel": "Cancel",
+    "confirmLoadExample": "Load example"
   },
   "header": {
     "back": "Back",

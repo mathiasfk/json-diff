@@ -156,17 +156,32 @@ describe('comparison state and formatting', () => {
     expect(screen.queryByRole('alert')).toBeNull();
   });
 
-  it.each(['left', 'right'])('preserves saved user content on the %s side', side => {
+  it.each(['left', 'right'])('preserves saved user content on the %s side until confirmed', side => {
     localStorage.setItem(`jsonDiff.${side}`, '{"user":true}');
     render(<App />);
-    expect(screen.getByRole('button', { name: 'app.loadExample' })).toBeTruthy();
-    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
-    fireEvent.click(screen.getByRole('button', { name: 'app.loadExample' }));
-    expect(confirm).toHaveBeenCalled();
+    const trigger = screen.getByRole('button', { name: 'app.loadExample' });
+    trigger.focus();
+    fireEvent.click(trigger);
+    expect(screen.getByRole('dialog', { name: 'app.replaceExampleTitle' })).toBeTruthy();
     expect((screen.getByLabelText(side) as HTMLTextAreaElement).value).toBe('{"user":true}');
-    confirm.mockReturnValue(true);
-    fireEvent.click(screen.getByRole('button', { name: 'app.loadExample' }));
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'app.cancel' }));
+    fireEvent.click(screen.getByRole('button', { name: 'app.cancel' }));
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(document.activeElement).toBe(trigger);
+    expect((screen.getByLabelText(side) as HTMLTextAreaElement).value).toBe('{"user":true}');
+    fireEvent.click(trigger);
+    fireEvent.click(screen.getByRole('button', { name: 'app.confirmLoadExample' }));
+    expect(screen.queryByRole('dialog')).toBeNull();
     expect(JSON.parse((screen.getByLabelText(side) as HTMLTextAreaElement).value)).toHaveProperty('members');
+  });
+
+  it('dismisses the example confirmation with Escape without changing the inputs', () => {
+    localStorage.setItem('jsonDiff.left', '{"user":true}');
+    render(<App />);
+    fireEvent.click(screen.getByRole('button', { name: 'app.loadExample' }));
+    fireEvent(screen.getByRole('dialog'), new Event('cancel', { bubbles: true, cancelable: true }));
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect((screen.getByLabelText('left') as HTMLTextAreaElement).value).toBe('{"user":true}');
   });
 
   it.each(['null', '{}', '{bad', '{"left":1}'])('recovers from invalid saved comparison %s', saved => {

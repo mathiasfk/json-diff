@@ -12,7 +12,10 @@
     "formatLeft": "Formatear izquierda",
     "compare": "Comparar",
     "formatRight": "Formatear derecha",
-    "clearRight": "Limpiar derecha"
+    "clearRight": "Limpiar derecha",
+    "replaceExampleTitle": "¿Cargar ejemplo?",
+    "cancel": "Cancelar",
+    "confirmLoadExample": "Cargar ejemplo"
   },
   "header": {
     "back": "Atrás",

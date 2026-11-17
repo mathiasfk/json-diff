@@ -12,7 +12,10 @@
     "formatLeft": "格式化左侧",
     "compare": "比较",
     "formatRight": "格式化右侧",
-    "clearRight": "清除右侧"
+    "clearRight": "清除右侧",
+    "replaceExampleTitle": "加载示例？",
+    "cancel": "取消",
+    "confirmLoadExample": "加载示例"
   },
   "header": {
     "back": "返回",

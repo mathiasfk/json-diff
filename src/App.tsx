@@ -1,4 +1,5 @@
 import { Suspense, lazy, useState, useEffect } from 'react';
+import { ConfirmDialog } from './components/ConfirmDialog';
 import { Header } from './components/Header';
 import { SupportFooter } from './components/SupportFooter';
 import { useTranslation } from 'react-i18next';
@@ -43,10 +44,19 @@ function App() {
   } | null>(null);
 
   const [storageLoaded, setStorageLoaded] = useState(false);
+  const [confirmExampleOpen, setConfirmExampleOpen] = useState(false);
 
   const handleLoadExample = () => {
     if (!storageLoaded) return;
-    if ((leftJson.trim() || rightJson.trim()) && !window.confirm(t('app.replaceWithExample'))) return;
+    if (leftJson.trim() || rightJson.trim()) {
+      setConfirmExampleOpen(true);
+      return;
+    }
+    loadExample();
+  };
+
+  const loadExample = () => {
+    setConfirmExampleOpen(false);
     setLeftFormat('json');
     setRightFormat('json');
     setLeftError(null);
@@ -319,6 +329,14 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 relative">
       <Header />
+      {confirmExampleOpen && <ConfirmDialog
+        title={t('app.replaceExampleTitle')}
+        description={t('app.replaceWithExample')}
+        cancelLabel={t('app.cancel')}
+        confirmLabel={t('app.confirmLoadExample')}
+        onCancel={() => setConfirmExampleOpen(false)}
+        onConfirm={loadExample}
+      />}
 
       <main className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-4" role="main">
         {viewMode === 'edit' ? (
