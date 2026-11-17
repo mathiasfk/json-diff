@@ -198,5 +198,11 @@
     "position": "按位置比较",
     "positionDescription": "比较相同位置的元素，并检测顺序变化。",
     "resultMode": "数组比较：{{mode}}"
+  },
+  "theme": {
+    "light": "浅色",
+    "dark": "深色",
+    "switchLight": "切换到浅色主题",
+    "switchDark": "切换到深色主题"
   }
 }

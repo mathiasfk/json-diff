@@ -320,10 +320,10 @@ function App() {
     <div className="min-h-screen bg-gray-900 text-gray-100 relative">
       <Header />
 
-      <main className="max-w-screen-2xl mx-auto p-6" role="main">
+      <main className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-4" role="main">
         {viewMode === 'edit' ? (
           <div className="flex flex-col min-h-[calc(100vh-180px)] lg:min-h-0 lg:h-[max(36rem,calc(100dvh-180px))]">
-            <div className="grid grid-cols-1 grid-rows-2 lg:grid-rows-1 lg:grid-cols-2 gap-6 h-[80vh] lg:h-auto lg:flex-1 lg:min-h-0" role="region" aria-label={t('jsonEditor.inputEditors')}>
+            <div className="grid grid-cols-1 grid-rows-2 lg:grid-rows-1 lg:grid-cols-2 gap-4 h-[80vh] lg:h-auto lg:flex-1 lg:min-h-0" role="region" aria-label={t('jsonEditor.inputEditors')}>
               <JsonEditor
                 value={leftJson}
                 onChange={handleLeftChange}
@@ -331,6 +331,8 @@ function App() {
                 format={leftFormat}
                 error={leftError ? t(leftError.key, { message: leftError.message }) : undefined}
                 label={t('jsonEditor.leftInput')}
+                onFormat={() => handleFormat('left')}
+                onClear={() => handleClear('left')}
                 side="left"
               />
               <JsonEditor
@@ -340,6 +342,8 @@ function App() {
                 format={rightFormat}
                 error={rightError ? t(rightError.key, { message: rightError.message }) : undefined}
                 label={t('jsonEditor.rightInput')}
+                onFormat={() => handleFormat('right')}
+                onClear={() => handleClear('right')}
                 side="right"
               />
             </div>
@@ -348,7 +352,7 @@ function App() {
               <legend className="mx-auto px-2 text-sm text-gray-400">{t('arrayComparison.legend')}</legend>
               <div className="mt-1 flex flex-wrap justify-center gap-x-6 gap-y-1">
                 {(['semantic', 'position'] as const).map(mode => (
-                  <label key={mode} className="flex items-center gap-2 cursor-pointer rounded px-1 py-1 text-sm text-gray-200 hover:text-white">
+                  <label key={mode} className="flex items-center gap-2 cursor-pointer rounded px-1 py-1 text-sm text-gray-200 hover:text-gray-100">
                     <input
                       type="radio"
                       name="arrayComparison"
@@ -381,76 +385,13 @@ function App() {
               </div>
             </fieldset>
 
-            <div className="grid grid-cols-2 lg:grid-cols-[repeat(5,auto)] items-center justify-center gap-x-2 lg:gap-x-4 gap-y-2 mt-4 shrink-0" role="toolbar" aria-label={t('jsonEditor.comparisonActions')}>
-              <div role="group" aria-label={t('jsonEditor.leftInput')} className="flex flex-col items-center gap-1 lg:contents">
-                <span className="text-xs text-gray-400 lg:hidden">{t('jsonEditor.leftInput')}</span>
-                <div className="flex items-center gap-1 lg:contents">
-                  <button
-                    onClick={() => handleClear('left')}
-                    className="inline-flex items-center justify-center min-h-11 min-w-11 px-2 min-[380px]:px-4 text-xs text-gray-300 bg-gray-800 hover:bg-gray-700 lg:text-sm lg:min-h-0 lg:min-w-0 lg:px-4 lg:py-2 lg:bg-gray-800 lg:hover:bg-gray-700 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={!leftJson.trim()}
-                    aria-label={t('jsonEditor.clearLeft')}
-                    title={t('jsonEditor.clearLeft')}
-                  >
-                    <span className="lg:hidden">{t('app.clear')}</span>
-                    <span className="hidden lg:inline">{t('app.clearLeft')}</span>
-                  </button>
-                  <button
-                    onClick={() => handleFormat('left')}
-                    className="inline-flex items-center justify-center min-h-11 min-w-11 px-2 min-[380px]:px-4 text-xs text-gray-300 bg-gray-700 hover:bg-gray-600 lg:text-sm lg:min-h-0 lg:min-w-0 lg:px-4 lg:py-2 lg:bg-gray-700 lg:hover:bg-gray-600 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={!leftJson.trim()}
-                    aria-label={t('jsonEditor.formatLeft')}
-                    title={t('jsonEditor.formatLeft')}
-                  >
-                    <span className="lg:hidden">{t('app.format')}</span>
-                    <span className="hidden lg:inline">{t('app.formatLeft')}</span>
-                  </button>
-                </div>
-              </div>
-              <button
-                onClick={handleCompare}
-                className="col-span-2 row-start-2 w-full lg:w-auto justify-self-center lg:col-span-1 lg:col-start-3 lg:row-start-1 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!leftJson.trim() || !rightJson.trim()}
-                aria-label={t('jsonEditor.compare')}
-              >
+            <div className="flex flex-wrap items-center justify-center gap-4 mt-3 shrink-0" role="toolbar" aria-label={t('jsonEditor.comparisonActions')}>
+              <button onClick={handleCompare} className="min-h-10 px-8 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed" disabled={!leftJson.trim() || !rightJson.trim()} aria-label={t('jsonEditor.compare')}>
                 {t('app.compare')}
               </button>
-              <div role="group" aria-label={t('jsonEditor.rightInput')} className="flex flex-col items-center gap-1 lg:contents">
-                <span className="text-xs text-gray-400 lg:hidden">{t('jsonEditor.rightInput')}</span>
-                <div className="flex items-center gap-1 lg:contents">
-                  <button
-                    onClick={() => handleFormat('right')}
-                    className="inline-flex items-center justify-center min-h-11 min-w-11 px-2 min-[380px]:px-4 text-xs text-gray-300 bg-gray-700 hover:bg-gray-600 lg:text-sm lg:min-h-0 lg:min-w-0 lg:px-4 lg:py-2 lg:bg-gray-700 lg:hover:bg-gray-600 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={!rightJson.trim()}
-                    aria-label={t('jsonEditor.formatRight')}
-                    title={t('jsonEditor.formatRight')}
-                  >
-                    <span className="lg:hidden">{t('app.format')}</span>
-                    <span className="hidden lg:inline">{t('app.formatRight')}</span>
-                  </button>
-                  <button
-                    onClick={() => handleClear('right')}
-                    className="inline-flex items-center justify-center min-h-11 min-w-11 px-2 min-[380px]:px-4 text-xs text-gray-300 bg-gray-800 hover:bg-gray-700 lg:text-sm lg:min-h-0 lg:min-w-0 lg:px-4 lg:py-2 lg:bg-gray-800 lg:hover:bg-gray-700 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={!rightJson.trim()}
-                    aria-label={t('jsonEditor.clearRight')}
-                    title={t('jsonEditor.clearRight')}
-                  >
-                    <span className="lg:hidden">{t('app.clear')}</span>
-                    <span className="hidden lg:inline">{t('app.clearRight')}</span>
-                  </button>
-                </div>
-              </div>
-              <div className="col-span-2 row-start-3 lg:col-span-1 lg:col-start-3 lg:row-start-2 justify-self-center flex items-baseline gap-1 text-sm text-gray-400">
-                <span>{t('app.or')}</span>
-                <button
-                  type="button"
-                  onClick={handleLoadExample}
-                  disabled={!storageLoaded}
-                  className="hover:text-gray-200 underline underline-offset-4 disabled:opacity-50"
-                >
-                  {t('app.loadExample')}
-                </button>
-              </div>
+              <button type="button" onClick={handleLoadExample} disabled={!storageLoaded} className="text-sm text-gray-400 hover:text-gray-100 underline underline-offset-4 disabled:opacity-50">
+                {t('app.loadExample')}
+              </button>
             </div>
           </div>
         ) : (

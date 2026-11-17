@@ -3,6 +3,7 @@ import Editor from '@monaco-editor/react';
 import type * as monaco from 'monaco-editor';
 import { gtag } from '../services/analytics';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '../theme';
 import { FormatSelector } from './FormatSelector';
 import type { Format } from '../utils/formatSelector';
 import { detectFormatFromFilename, detectInputFormat } from '../utils/formatSelector';
@@ -27,6 +28,8 @@ interface JsonEditorProps {
   error?: string;
   label: string;
   side?: 'left' | 'right';
+  onFormat?: () => void;
+  onClear?: () => void;
 }
 
 export const JsonEditor: React.FC<JsonEditorProps> = ({
@@ -38,8 +41,11 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
   error,
   label,
   side,
+  onFormat,
+  onClear,
 }) => {
   const { t } = useTranslation();
+  const { theme } = useTheme();
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const monacoRef = useRef<typeof monaco | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -214,18 +220,16 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
 
   return (
     <div className="flex flex-col h-full min-h-0">
-      <div className="flex items-center justify-between mb-2">
-        <label htmlFor={`${side}-editor`} className="text-sm font-medium text-gray-300">
-          {label}
-        </label>
-        <FormatSelector
-          value={format}
-          onChange={onFormatChange}
-          label={t('jsonEditor.formatLabel')}
-        />
+      <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 bg-gray-800 border border-gray-700 border-b-0 rounded-t-md">
+        <span className="text-sm font-medium text-gray-200">{label}</span>
+        <div className="flex flex-wrap items-center gap-2">
+          <FormatSelector value={format} onChange={onFormatChange} label={t('jsonEditor.formatLabel')} />
+          {onFormat && <button type="button" onClick={onFormat} disabled={!value.trim()} className="editor-action" aria-label={t(side === 'left' ? 'jsonEditor.formatLeft' : 'jsonEditor.formatRight')}>{t('app.format')}</button>}
+          {onClear && <button type="button" onClick={onClear} disabled={!value.trim()} className="editor-action" aria-label={t(side === 'left' ? 'jsonEditor.clearLeft' : 'jsonEditor.clearRight')}>{t('app.clear')}</button>}
+        </div>
       </div>
       <div
-        className={`flex-1 min-h-0 relative rounded-lg overflow-hidden border transition-colors ${
+        className={`flex-1 min-h-0 relative rounded-b-md overflow-hidden border transition-colors ${
           isDragging
             ? 'border-blue-500 border-2 bg-blue-500/10'
             : 'border-gray-700'
@@ -242,7 +246,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
         <Editor
           height="100%"
           language={MONACO_LANGUAGE[format]}
-          theme="vs-dark"
+          theme={theme === 'dark' ? 'vs-dark' : 'light'}
           value={value || ''}
           onChange={(newValue) => onChange(newValue || '')}
           onMount={handleEditorDidMount}
@@ -252,6 +256,7 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
             </div>
           }
           options={{
+            ariaLabel: label,
             minimap: { enabled: false },
             fontSize: 14,
             lineNumbers: 'on',

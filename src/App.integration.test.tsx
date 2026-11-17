@@ -8,8 +8,8 @@ vi.mock('./services/analytics', () => ({ gtag: vi.fn() }));
 vi.mock('./components/Header', () => ({ Header: () => null }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 vi.mock('./components/JsonEditor', () => ({
-  JsonEditor: ({ value, onChange, side, format, onFormatChange, error }: { value: string; onChange: (value: string) => void; side: string; format: string; onFormatChange: (value: string) => void; error?: string }) =>
-    <><textarea aria-label={side} value={value} onChange={e => onChange(e.target.value)} /><select aria-label={`${side} format`} value={format} onChange={e => onFormatChange(e.target.value)}><option>json</option><option>jsonl</option><option>yaml</option></select>{error && <div role="alert">{side}: {error}</div>}</>,
+  JsonEditor: ({ value, onChange, side, format, onFormatChange, error, onFormat, onClear }: { onFormat: () => void; onClear: () => void; value: string; onChange: (value: string) => void; side: string; format: string; onFormatChange: (value: string) => void; error?: string }) =>
+    <><button aria-label={`jsonEditor.format${side === "left" ? "Left" : "Right"}`} onClick={onFormat}>Format</button><button aria-label={`jsonEditor.clear${side === "left" ? "Left" : "Right"}`} onClick={onClear}>Clear</button><textarea aria-label={side} value={value} onChange={e => onChange(e.target.value)} /><select aria-label={`${side} format`} value={format} onChange={e => onFormatChange(e.target.value)}><option>json</option><option>jsonl</option><option>yaml</option></select>{error && <div role="alert">{side}: {error}</div>}</>,
 }));
 vi.mock('./components/DiffViewer', () => ({ DiffViewer: ({ arrayComparison, hasDifferences, onReset }: { arrayComparison: string; hasDifferences: boolean; onReset: () => void }) => <div>Saved comparison <span>{arrayComparison} {String(hasDifferences)}</span><button onClick={onReset}>Back</button></div> }));
 

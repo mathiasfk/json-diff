@@ -198,5 +198,11 @@
     "position": "Compare by position",
     "positionDescription": "Compares items at the same position and detects order changes.",
     "resultMode": "Array comparison: {{mode}}"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "switchLight": "Switch to light theme",
+    "switchDark": "Switch to dark theme"
   }
 }

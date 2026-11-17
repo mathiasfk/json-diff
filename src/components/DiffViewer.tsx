@@ -1,6 +1,7 @@
 import React from 'react';
 import { DiffEditor } from '@monaco-editor/react';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '../theme';
 import type { ArrayComparison } from '../utils/semanticDiff';
 
 interface DiffViewerProps {
@@ -21,6 +22,7 @@ export const DiffViewer: React.FC<DiffViewerProps> = ({
   arrayComparison,
 }) => {
   const { t } = useTranslation();
+  const { theme } = useTheme();
   return (
     <div className="h-full flex flex-col" role="region" aria-label={t('diffViewer.resultsRegion')}>
       <div className="flex items-center justify-between mb-4">
@@ -34,7 +36,7 @@ export const DiffViewer: React.FC<DiffViewerProps> = ({
         </div>
         <button
           onClick={onReset}
-          className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 rounded-lg transition-colors"
+          className="editor-action"
           aria-label={t('diffViewer.back')}
         >
           {t('diffViewer.back')}
@@ -72,7 +74,7 @@ export const DiffViewer: React.FC<DiffViewerProps> = ({
           <DiffEditor
             height="100%"
             language={language === 'jsonl' ? 'json' : language}
-            theme="vs-dark"
+            theme={theme === 'dark' ? 'vs-dark' : 'light'}
             original={oldValue}
             modified={newValue}
             options={{

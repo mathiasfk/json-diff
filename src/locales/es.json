@@ -198,5 +198,11 @@
     "position": "Comparar por posición",
     "positionDescription": "Compara los elementos en la misma posición y detecta cambios de orden.",
     "resultMode": "Comparación de arrays: {{mode}}"
+  },
+  "theme": {
+    "light": "Claro",
+    "dark": "Oscuro",
+    "switchLight": "Cambiar al tema claro",
+    "switchDark": "Cambiar al tema oscuro"
   }
 }
