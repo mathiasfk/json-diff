@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh"><head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-adsense-account" content="ca-pub-6364476119143776">
+  <title>使用说明 — Smart JSON Diff</title><meta name="description" content="在左右编辑器中粘贴要比较的两份数据，也可以将文件拖入各编辑器。检查两侧选择的格式，然后点击比较。若想先试用，可点击比较按钮下方的加载示例。格式化和清除仅作用于对应的编辑器。">
+  <link rel="canonical" href="https://smartjsondiff.com/zh/how-it-works/">
+  <meta name="robots" content="noindex, nofollow"><link rel="alternate" hreflang="en"
+      href="https://smartjsondiff.com/en/how-it-works/"><link rel="alternate" hreflang="pt"
+      href="https://smartjsondiff.com/pt/how-it-works/"><link rel="alternate" hreflang="zh"
+      href="https://smartjsondiff.com/zh/how-it-works/"><link rel="alternate" hreflang="es"
+      href="https://smartjsondiff.com/es/how-it-works/"><link rel="alternate" hreflang="x-default" href="https://smartjsondiff.com/en/how-it-works/">
+  <meta property="og:type" content="website"><meta property="og:locale" content="zh_CN"><meta property="og:title" content="使用说明 — Smart JSON Diff"><meta property="og:description" content="在左右编辑器中粘贴要比较的两份数据，也可以将文件拖入各编辑器。检查两侧选择的格式，然后点击比较。若想先试用，可点击比较按钮下方的加载示例。格式化和清除仅作用于对应的编辑器。"><meta property="og:url" content="https://smartjsondiff.com/zh/how-it-works/"><meta property="og:image" content="https://smartjsondiff.com/og-image-1200x630.png">
+  <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="使用说明 — Smart JSON Diff"><meta name="twitter:description" content="在左右编辑器中粘贴要比较的两份数据，也可以将文件拖入各编辑器。检查两侧选择的格式，然后点击比较。若想先试用，可点击比较按钮下方的加载示例。格式化和清除仅作用于对应的编辑器。"><meta name="twitter:url" content="https://smartjsondiff.com/zh/how-it-works/"><meta name="twitter:image" content="https://smartjsondiff.com/og-image-1200x630.png">
+  <meta name="theme-color" content="#181818"><style>:root {
+  --surface-base: #181818;
+  --surface-raised: #242424;
+  --surface-border: #404040;
+  --surface-hover: #505050;
+  --text-subtle: #929292;
+  --text-muted: #ababab;
+  --text-secondary: #c9c9c9;
+  --text-strong: #e3e3e3;
+  --text-primary: #f2f2f2;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.5;
+  color-scheme: dark;
+  color: var(--text-primary);
+  background: var(--surface-base);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+:root[data-theme="light"] {
+  --surface-base: #f4f4f4;
+  --surface-raised: #ffffff;
+  --surface-border: #d1d1d1;
+  --surface-hover: #bdbdbd;
+  --text-subtle: #666666;
+  --text-muted: #595959;
+  --text-secondary: #414141;
+  --text-strong: #292929;
+  --text-primary: #1c1c1c;
+  color-scheme: light;
+}
+
+.site-header { background: var(--surface-raised); border-bottom: 1px solid var(--surface-border); padding: .75rem 1rem; }
+.site-header-inner { max-width: 1536px; margin: auto; display: flex; flex-direction: column; gap: .75rem; }
+.site-title { margin: 0; color: var(--text-primary); font-size: 1.125rem; line-height: 1.75rem; font-weight: 600; letter-spacing: -.025em; text-decoration: none; }
+.site-subtitle { margin: .125rem 0 0; color: var(--text-muted); font-size: .75rem; line-height: 1rem; }
+.site-header-actions { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.site-home { color: var(--text-muted); font-size: .875rem; text-decoration: none; }
+.site-home:hover { color: var(--text-strong); }
+.theme-toggle { display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
+  min-height: 2rem; padding: .3rem .65rem; border: 1px solid var(--surface-border);
+  border-radius: .35rem; color: var(--text-secondary); background: var(--surface-raised);
+  font: inherit; font-size: .75rem; cursor: pointer; }
+.theme-toggle[hidden] { display: none; }
+.theme-toggle:hover { border-color: var(--text-muted); color: var(--text-primary); }
+.theme-toggle:focus-visible, .site-home:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; }
+.site-language { display: flex; align-items: center; gap: .5rem; color: var(--text-muted); font-size: .75rem; line-height: 1rem; }
+.site-language select { background: var(--surface-base); border: 1px solid var(--surface-border); color: var(--text-strong);
+  border-radius: .25rem; padding: .25rem .5rem; font: inherit; }
+.site-language select:focus-visible { outline: 1px solid #3b82f6; outline-offset: 1px; }
+@media (min-width: 640px) { .site-header { padding-left: 1.5rem; padding-right: 1.5rem; } .site-subtitle { font-size: .875rem; line-height: 1.25rem; } }
+@media (min-width: 768px) { .site-header-inner { flex-direction: row; align-items: center; justify-content: space-between; } .site-header-actions { flex-direction: row; gap: 1rem; } }
+
+  * { box-sizing: border-box }
+  body { margin: 0; min-width: 320px; min-height: 100vh; background: var(--surface-base); color: var(--text-primary) }
+  a { color: var(--text-secondary); text-underline-offset: 4px }
+  a:hover { color: var(--text-primary) }
+  a:focus-visible { outline: 2px solid #60a5fa; outline-offset: 4px }
+  main { max-width: 920px; margin: auto; padding: 40px 24px 48px; min-height: 60vh }
+  main h1 { font-size: 1.75rem; line-height: 1.25; font-weight: 600; letter-spacing: -.025em; margin: 0 0 24px }
+  main h2 { font-size: 1.125rem; line-height: 1.4; font-weight: 600; margin: 0 0 8px }
+  main h3 { font-size: 1rem; line-height: 1.4; font-weight: 600; margin: 24px 0 6px }
+  section { margin: 0 0 16px; padding: 20px; background: var(--surface-raised); border: 1px solid var(--surface-border); border-radius: 6px }
+  main > p { color: var(--text-secondary) }
+  p { margin: 0 0 16px; overflow-wrap: anywhere }
+  section > p:last-child { margin-bottom: 0; color: var(--text-secondary) }
+  .examples { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 12px }
+  .examples span { font-size: .875rem; color: var(--text-secondary) }
+  .faq-example { margin-top: 20px }
+  .faq-example p { margin-top: 10px; color: var(--text-secondary) }
+  pre { margin: 4px 0 0; padding: 12px; background: var(--surface-base); border: 1px solid var(--surface-border);
+    border-radius: 4px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere }
+  footer { max-width: 1536px; margin: auto; padding: 0 24px 20px; color: var(--text-muted); font-size: .875rem }
+  footer nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 20px }
+  footer a { color: var(--text-muted) }
+  a[aria-current] { color: var(--text-primary); font-weight: 600 }
+  @media (max-width: 480px) { main { padding: 28px 16px 40px } main h1 { font-size: 1.5rem } section { padding: 16px } }
+</style>
+  <script>
+    (function () {
+      var theme;
+      try { theme = localStorage.getItem('jsonDiff.theme'); } catch (e) { /* Storage may be unavailable. */ }
+      if (theme !== 'light' && theme !== 'dark') {
+        theme = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      }
+      document.documentElement.dataset.theme = theme;
+      document.documentElement.style.colorScheme = theme;
+    }());
+  </script>
+</head><body>
+  <header class="site-header"><div class="site-header-inner">
+    <div><a class="site-title" href="/preview/pr-71/zh/">Smart JSON Diff</a>
+      <p class="site-subtitle">对 JSON、YAML 和 JSONL 进行语义比较，并自动对齐数组元素</p></div>
+    <nav class="site-header-actions" aria-label="主导航">
+      <a class="site-home" href="/preview/pr-71/zh/" aria-label="前往 Smart JSON Diff 首页">← 首页</a>
+      <button type="button" id="theme-toggle" class="theme-toggle" hidden
+        data-light="浅色" data-dark="深色"
+        data-switch-light="切换到浅色主题" data-switch-dark="切换到深色主题"><span aria-hidden="true"></span><span></span></button>
+      <label class="site-language" for="language-selector"><span>语言</span>
+        <select id="language-selector"><option value="/preview/pr-71/en/how-it-works/"
+      lang="en" >English</option><option value="/preview/pr-71/pt/how-it-works/"
+      lang="pt" >Português</option><option value="/preview/pr-71/zh/how-it-works/"
+      lang="zh" selected>中文</option><option value="/preview/pr-71/es/how-it-works/"
+      lang="es" >Español</option></select></label>
+    </nav></div></header>
+  <main><h1>使用说明</h1><section><h2>开始比较</h2><p>在左右编辑器中粘贴要比较的两份数据，也可以将文件拖入各编辑器。检查两侧选择的格式，然后点击比较。若想先试用，可点击比较按钮下方的加载示例。格式化和清除仅作用于对应的编辑器。</p></section><section><h2>工具比较什么</h2><p>工具比较解析后的值，忽略格式和对象属性顺序。自动对齐（默认）会对齐相似元素并忽略数组顺序，包括嵌套数组。按位置比较会比较相同索引处的元素。重复元素仍会计数。</p></section><section><h2>阅读结果</h2><p>差异视图以左侧输入为基准：红色表示得到右侧输入时需要删除的内容，绿色表示需要新增的内容。不同的值显示为删除和新增，并突出显示不同的部分。这只是显示方向的约定，两份输入不必代表先后版本。结果展示规范化后的数据，因此顺序和格式可能与输入不同。结果等价表示按照这些规则未发现差异，并不代表原始文本完全相同。点击返回可继续编辑输入。</p></section><section><h2>选择输入格式</h2><p>每个编辑器支持 JSON、JSONL 或有限的 YAML 子集。JSONL 的每个非空行须包含一个完整的 JSON 值；空行会被跳过。JSONL 记录作为数组，使用所选的数组比较模式进行比较。两侧格式相同时，结果以该格式显示；格式不同时，比较解析后的值，并以 JSON 显示结果。注释和原始格式不会保留。</p></section><section><h2>何时需要考虑顺序</h2><p>对于顺序重要的序列、排名或历史记录，请选择按位置比较。自动对齐适合无序集合。</p></section><section><h2>其他限制</h2><p>YAML 支持常见映射、序列和简单流式集合，并未实现完整的 YAML 规范。对于复杂 YAML，请先用完整的 YAML 解析器将文档转换为 JSON，再进行比较。数字受 JavaScript 精度限制：很大的整数可能丢失数字，需精确保留的标识符应使用字符串。较大的输入可能使浏览器变慢或超出可用内存。</p></section><section><h2>示例</h2>
+    <h3>内容相同</h3><p>使用自动对齐时，这些输入等价：属性和数组元素的顺序不同，但值及其出现次数相同。</p>
+    <div class="examples">
+    <div><span>左侧</span><pre><code>{&quot;a&quot;: 1, &quot;b&quot;: [1, 2]}</code></pre></div>
+    <div><span>右侧</span><pre><code>{&quot;b&quot;: [2, 1], &quot;a&quot;: 1}</code></pre></div>
+  </div>
+    <h3>值不同</h3><p>同一字段在左侧的值为 10，右侧为 20。即使结构相同，比较仍会突出显示值的差异。</p>
+    <div class="examples">
+    <div><span>左侧</span><pre><code>{&quot;value&quot;: 10}</code></pre></div>
+    <div><span>右侧</span><pre><code>{&quot;value&quot;: 20}</code></pre></div>
+  </div>
+    <h3>出现次数不同</h3><p>数字 1 在左侧出现两次，在右侧出现一次。忽略数组顺序并不意味着忽略每个值的出现次数。</p>
+    <div class="examples">
+    <div><span>左侧</span><pre><code>[1, 1, 2]</code></pre></div>
+    <div><span>右侧</span><pre><code>[1, 2]</code></pre></div>
+  </div></section></main>
+  <footer><nav aria-label="帮助"><a 
+      href="/preview/pr-71/zh/faq/">常见问题</a><a aria-current="page"
+      href="/preview/pr-71/zh/how-it-works/">使用说明</a><a 
+      href="/preview/pr-71/zh/privacy/">隐私</a><a 
+      href="/preview/pr-71/zh/contact/">联系</a></nav></footer>
+  <script>
+    var themeButton = document.getElementById('theme-toggle');
+    function updateThemeButton() {
+      var dark = document.documentElement.dataset.theme === 'dark';
+      var label = dark ? themeButton.dataset.switchLight : themeButton.dataset.switchDark;
+      themeButton.setAttribute('aria-label', label);
+      themeButton.setAttribute('title', label);
+      themeButton.children[0].textContent = dark ? '☀' : '☾';
+      themeButton.children[1].textContent = dark ? themeButton.dataset.light : themeButton.dataset.dark;
+    }
+    updateThemeButton();
+    themeButton.hidden = false;
+    themeButton.addEventListener('click', function () {
+      var theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = theme;
+      document.documentElement.style.colorScheme = theme;
+      try { localStorage.setItem('jsonDiff.theme', theme); } catch (e) { /* Storage may be unavailable. */ }
+      updateThemeButton();
+    });
+    document.getElementById('language-selector').addEventListener('change', function () {
+      window.location.assign(this.value);
+    });
+  </script>
+</body></html>
