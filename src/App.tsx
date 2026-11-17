@@ -361,7 +361,7 @@ function App() {
                       onChange={() => handleArrayComparisonChange(mode)}
                       aria-labelledby={`array-${mode}-label`}
                       aria-describedby={arrayComparison === mode ? 'array-comparison-description' : undefined}
-                      className="accent-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-400"
+                      className="accent-[#3268b3] focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-400"
                     />
                     <span id={`array-${mode}-label`}>
                       {t(`arrayComparison.${mode}`)}
@@ -386,7 +386,7 @@ function App() {
             </fieldset>
 
             <div className="flex flex-wrap items-center justify-center gap-4 mt-3 shrink-0" role="toolbar" aria-label={t('jsonEditor.comparisonActions')}>
-              <button onClick={handleCompare} className="min-h-10 px-8 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed" disabled={!leftJson.trim() || !rightJson.trim()} aria-label={t('jsonEditor.compare')}>
+              <button onClick={handleCompare} className="min-h-10 px-8 py-2 bg-[#3268b3] hover:bg-[#285693] text-white font-medium rounded-md transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed" disabled={!leftJson.trim() || !rightJson.trim()} aria-label={t('jsonEditor.compare')}>
                 {t('app.compare')}
               </button>
               <button type="button" onClick={handleLoadExample} disabled={!storageLoaded} className="text-sm text-gray-400 hover:text-gray-100 underline underline-offset-4 disabled:opacity-50">
