@@ -5,6 +5,8 @@
     "loadExample": "cargar ejemplo",
     "title": "Smart JSON Diff",
     "subtitle": "Compara JSON, YAML y JSONL semánticamente con alineación automática de arrays",
+    "clear": "Limpiar",
+    "format": "Formatear",
     "clearLeft": "Limpiar izquierda",
     "language": "Idioma",
     "formatLeft": "Formatear izquierda",
@@ -62,17 +64,17 @@
     "home": "Inicio",
     "breadcrumbCurrent": "Preguntas frecuentes",
     "q1": "¿Cómo funciona la comparación?",
-    "a1": "En lugar de realizar una comparación de texto simple, Smart JSON Diff realiza una comparación semántica. Normaliza ambas entradas ordenando alfabéticamente las propiedades de los objetos y alineando inteligentemente los elementos de los arrays. Cuando ambos arrays contienen una clave única, los elementos se alinean mediante esa clave; de lo contrario, se comparan mediante su contenido normalizado para minimizar el ruido y mostrar solo las diferencias más relevantes. La comparación se ejecuta completamente en su navegador y utiliza jsondiffpatch internamente.",
+    "a1": "La herramienta compara valores interpretados y ordena las propiedades. La alineación automática empareja elementos similares; Comparar por posición compara los mismos índices recursivamente. La comparación ocurre en el navegador.",
     "q2": "¿En qué se diferencia Smart JSON Diff de otras herramientas de comparación JSON?",
-    "a2": "Muchas herramientas tradicionales de comparación JSON tratan los arrays como secuencias, por lo que el orden de los elementos afecta al resultado. Smart JSON Diff trata los elementos de los arrays como un multiconjunto, lo que significa que el orden de los elementos no importa, pero los elementos duplicados siguen contando. Por ejemplo, los arrays [1, 2, 3] y [3, 2, 1] se consideran equivalentes.",
+    "a2": "La alineación automática ignora el orden de los arrays, pero cuenta duplicados. También puede comparar por posición cuando importe el orden.",
     "q3": "¿Qué significan los colores en la comparación?",
     "a3": "El verde indica adiciones y el rojo indica eliminaciones. Se resalta toda la línea modificada, mientras que el segmento exacto que cambió se destaca con mayor intensidad.",
     "q4": "¿El orden de las propiedades afecta al resultado?",
     "a4": "No. Las propiedades se ordenan alfabéticamente antes de la comparación, por lo que los objetos con el mismo contenido pero con un orden de propiedades diferente se consideran equivalentes. Por ejemplo, los objetos { \"a\": 1, \"b\": 2 } y { \"b\": 2, \"a\": 1 } se consideran equivalentes.",
     "q5": "¿El orden de los arrays afecta al resultado?",
-    "a5": "No. Smart JSON Diff encuentra automáticamente la mejor forma de alinear los elementos de los arrays, por lo que los arrays que contienen los mismos elementos en un orden diferente se consideran equivalentes. Por ejemplo, los arrays [{ \"id\": 1, \"name\": \"John\" }, { \"id\": 2, \"name\": \"Jane\" }] y [{ \"id\": 2, \"name\": \"Jane\" }, { \"id\": 1, \"name\": \"John\" }] se consideran equivalentes.",
+    "a5": "Con alineación automática (predeterminada), solo cambiar el orden no afecta al resultado. Comparar por posición considera diferencias los cambios de orden.",
     "q6": "¿Cómo se gestionan las diferencias entre arrays?",
-    "a6": "Smart JSON Diff encuentra una alineación que maximiza la similitud entre las dos versiones. Cuando ambos arrays contienen una clave única, los elementos se alinean mediante esa clave; de lo contrario, se alinean mediante su contenido normalizado. Esto ayuda a minimizar el ruido y a destacar los cambios más relevantes. Reordenar los mismos elementos no produce ninguna diferencia, mientras que los elementos añadidos, eliminados o modificados siguen detectándose.",
+    "a6": "La alineación automática empareja elementos similares por identificadores o contenido. Comparar por posición compara los elementos del mismo índice, incluso en arrays anidados.",
     "q7": "¿Es seguro pegar datos confidenciales?",
     "a7": "Sí. Tus datos JSON, YAML y JSONL se procesan completamente en tu navegador y no se envían a nuestros servidores.",
     "q8": "¿Cómo puedo reportar errores?",
@@ -80,16 +82,16 @@
     "items": [
       {
         "q": "¿Cómo funciona la comparación?",
-        "a": "En lugar de realizar una comparación de texto simple, Smart JSON Diff realiza una comparación semántica. Normaliza ambas entradas ordenando alfabéticamente las propiedades de los objetos y alineando inteligentemente los elementos de los arrays. Cuando ambos arrays contienen una clave única, los elementos se alinean mediante esa clave; de lo contrario, se comparan mediante su contenido normalizado para minimizar el ruido y mostrar solo las diferencias más relevantes. La comparación se ejecuta completamente en su navegador y utiliza jsondiffpatch internamente."
+        "a": "La herramienta compara valores interpretados y ordena las propiedades. La alineación automática empareja elementos similares; Comparar por posición compara los mismos índices recursivamente. La comparación ocurre en el navegador."
       },
       {
         "q": "¿En qué se diferencia Smart JSON Diff de otras herramientas de comparación JSON?",
-        "a": "Muchas herramientas tradicionales de comparación JSON tratan los arrays como secuencias, por lo que el orden de los elementos afecta al resultado. Smart JSON Diff trata los elementos de los arrays como un multiconjunto, lo que significa que el orden de los elementos no importa, pero los elementos duplicados siguen contando.",
+        "a": "La alineación automática ignora el orden de los arrays, pero cuenta duplicados. También puede comparar por posición cuando importe el orden.",
         "examples": [
           {
             "left": "[1, 2, 3]",
             "right": "[3, 2, 1]",
-            "explanation": "Equivalentes: los valores son los mismos, aunque el orden sea distinto."
+            "explanation": "Equivalente con alineación automática: los valores y sus cantidades no cambiaron."
           }
         ]
       },
@@ -110,18 +112,18 @@
       },
       {
         "q": "¿El orden de los arrays afecta al resultado?",
-        "a": "No. Smart JSON Diff encuentra automáticamente la mejor forma de alinear los elementos de los arrays, por lo que los arrays que contienen los mismos elementos en un orden diferente se consideran equivalentes.",
+        "a": "Con alineación automática (predeterminada), solo cambiar el orden no afecta al resultado. Comparar por posición considera diferencias los cambios de orden.",
         "examples": [
           {
             "left": "[\n  {\n    \"id\": 1,\n    \"name\": \"Ana\"\n  },\n  {\n    \"id\": 2,\n    \"name\": \"Sam\"\n  }\n]",
             "right": "[\n  {\n    \"id\": 2,\n    \"name\": \"Sam\"\n  },\n  {\n    \"id\": 1,\n    \"name\": \"Ana\"\n  }\n]",
-            "explanation": "Equivalentes: cada objeto conserva sus valores, aunque cambie su orden en el array."
+            "explanation": "Equivalente con alineación automática: los valores y sus cantidades no cambiaron."
           }
         ]
       },
       {
         "q": "¿Cómo se gestionan las diferencias entre arrays?",
-        "a": "Smart JSON Diff encuentra una alineación que maximiza la similitud entre las dos versiones. Cuando ambos arrays contienen una clave única, los elementos se alinean mediante esa clave; de lo contrario, se alinean mediante su contenido normalizado. Esto ayuda a minimizar el ruido y a destacar los cambios más relevantes. Reordenar los mismos elementos no produce ninguna diferencia, mientras que los elementos añadidos, eliminados o modificados siguen detectándose."
+        "a": "La alineación automática empareja elementos similares por identificadores o contenido. Comparar por posición compara los elementos del mismo índice, incluso en arrays anidados."
       },
       {
         "q": "¿Qué ocurre con duplicados y valores modificados?",
@@ -181,11 +183,20 @@
     "resultsRegion": "Resultados de la comparación",
     "differencesView": "Vista de diferencias",
     "equivalentTitle": "¡Las entradas son equivalentes!",
-    "equivalentBody": "No se encontraron diferencias después de la normalización semántica."
+    "equivalentBody": "No se encontraron diferencias después de la normalización semántica.",
+    "equivalentBodyPosition": "No se encontraron diferencias al comparar los elementos por posición."
   },
   "errors": {
     "empty": "La entrada no puede estar vacía",
     "invalid": "Entrada no válida",
     "invalidDetail": "Entrada no válida: {{message}}"
+  },
+  "arrayComparison": {
+    "legend": "Comparación de arrays",
+    "semantic": "Alineación automática",
+    "semanticDescription": "Alinea elementos similares e ignora los cambios solo de orden.",
+    "position": "Comparar por posición",
+    "positionDescription": "Compara los elementos en la misma posición y detecta cambios de orden.",
+    "resultMode": "Comparación de arrays: {{mode}}"
   }
 }

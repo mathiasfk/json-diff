@@ -1,6 +1,9 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
+import { gtag } from './services/analytics';
+
+vi.mock('./services/analytics', () => ({ gtag: vi.fn() }));
 
 vi.mock('./components/Header', () => ({ Header: () => null }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
@@ -8,12 +11,134 @@ vi.mock('./components/JsonEditor', () => ({
   JsonEditor: ({ value, onChange, side, format, onFormatChange, error }: { value: string; onChange: (value: string) => void; side: string; format: string; onFormatChange: (value: string) => void; error?: string }) =>
     <><textarea aria-label={side} value={value} onChange={e => onChange(e.target.value)} /><select aria-label={`${side} format`} value={format} onChange={e => onFormatChange(e.target.value)}><option>json</option><option>jsonl</option><option>yaml</option></select>{error && <div role="alert">{side}: {error}</div>}</>,
 }));
-vi.mock('./components/DiffViewer', () => ({ DiffViewer: () => <div>Saved comparison</div> }));
+vi.mock('./components/DiffViewer', () => ({ DiffViewer: ({ arrayComparison, hasDifferences, onReset }: { arrayComparison: string; hasDifferences: boolean; onReset: () => void }) => <div>Saved comparison <span>{arrayComparison} {String(hasDifferences)}</span><button onClick={onReset}>Back</button></div> }));
 
-beforeEach(() => localStorage.clear());
+beforeEach(() => { localStorage.clear(); vi.clearAllMocks(); });
 afterEach(() => { cleanup(); vi.restoreAllMocks(); });
 
 describe('comparison state and formatting', () => {
+  it('tracks genuine mode changes with the previous and selected modes', () => {
+    render(<App />);
+    expect(gtag).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('radio', { name: 'arrayComparison.position' }));
+    expect(gtag).toHaveBeenLastCalledWith('event', 'array_comparison_change', {
+      array_comparison: 'position', previous_array_comparison: 'semantic',
+    });
+    fireEvent.click(screen.getByRole('radio', { name: 'arrayComparison.position' }));
+    expect(gtag).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByRole('radio', { name: 'arrayComparison.semantic' }));
+    expect(gtag).toHaveBeenLastCalledWith('event', 'array_comparison_change', {
+      array_comparison: 'semantic', previous_array_comparison: 'position',
+    });
+    expect(gtag).toHaveBeenCalledTimes(2);
+  });
+
+  it.each(['semantic', 'position'])('tracks the %s mode on compare, including restored preferences', async mode => {
+    localStorage.setItem('jsonDiff.arrayComparison', mode);
+    render(<App />);
+    expect(gtag).not.toHaveBeenCalled();
+    fireEvent.change(screen.getByLabelText('left'), { target: { value: '[1,2]' } });
+    fireEvent.change(screen.getByLabelText('right'), { target: { value: '[2,1]' } });
+    fireEvent.click(screen.getByLabelText('jsonEditor.compare'));
+    await waitFor(() => expect(screen.getByText('Saved comparison')).toBeTruthy());
+    expect(gtag).toHaveBeenCalledWith('event', 'compare_click', {
+      left_chars: 5, right_chars: 5, array_comparison: mode,
+    });
+    expect(gtag).toHaveBeenCalledWith('event', 'compare_completed', {
+      left_chars: 5, right_chars: 5, left_format: 'json', right_format: 'json',
+      has_differences: mode === 'position' ? 1 : 0, array_comparison: mode,
+    });
+  });
+
+  it('tracks the selected mode on an invalid comparison without recording completion', () => {
+    localStorage.setItem('jsonDiff.arrayComparison', 'position');
+    render(<App />);
+    fireEvent.change(screen.getByLabelText('left'), { target: { value: '{bad' } });
+    fireEvent.change(screen.getByLabelText('right'), { target: { value: '{}' } });
+    fireEvent.click(screen.getByLabelText('jsonEditor.compare'));
+    expect(gtag).toHaveBeenCalledWith('event', 'compare_click', {
+      left_chars: 4, right_chars: 2, array_comparison: 'position',
+    });
+    expect(vi.mocked(gtag).mock.calls.some(call => call[1] === 'compare_completed')).toBe(false);
+  });
+
+  it('compares the same reorder in both modes', async () => {
+    render(<App />);
+    fireEvent.change(screen.getByLabelText('left'), { target: { value: '[1,2]' } });
+    fireEvent.change(screen.getByLabelText('right'), { target: { value: '[2,1]' } });
+    fireEvent.click(screen.getByLabelText('jsonEditor.compare'));
+    await waitFor(() => expect(screen.getByText('semantic false')).toBeTruthy());
+    fireEvent.click(screen.getByText('Back'));
+    fireEvent.click(screen.getByRole('radio', { name: 'arrayComparison.position' }));
+    fireEvent.click(screen.getByLabelText('jsonEditor.compare'));
+    await waitFor(() => expect(screen.getByText('position true')).toBeTruthy());
+  });
+
+  it.each(['semantic', 'position'])('preserves nested array order when formatting JSON in %s mode', mode => {
+    render(<App />);
+    fireEvent.click(screen.getByRole('radio', { name: `arrayComparison.${mode}` }));
+    const input = screen.getByLabelText('left') as HTMLTextAreaElement;
+    fireEvent.change(input, { target: { value: '{"z":[3,1,{"a":[2,1]}],"a":1}' } });
+    fireEvent.click(screen.getByLabelText('jsonEditor.formatLeft'));
+    expect(JSON.parse(input.value)).toEqual({ a: 1, z: [3, 1, { a: [2, 1] }] });
+    expect(input.value.indexOf('"a"')).toBeLessThan(input.value.indexOf('"z"'));
+  });
+
+  it('preserves both inputs for a positional comparison after formatting in semantic mode', async () => {
+    render(<App />);
+    const left = screen.getByLabelText('left') as HTMLTextAreaElement;
+    const right = screen.getByLabelText('right') as HTMLTextAreaElement;
+    fireEvent.change(left, { target: { value: '{"items":[3,1,2]}' } });
+    fireEvent.change(right, { target: { value: '{"items":[1,2,3]}' } });
+    fireEvent.click(screen.getByLabelText('jsonEditor.formatLeft'));
+    fireEvent.click(screen.getByLabelText('jsonEditor.formatRight'));
+    expect(JSON.parse(left.value).items).toEqual([3, 1, 2]);
+    expect(JSON.parse(right.value).items).toEqual([1, 2, 3]);
+    fireEvent.click(screen.getByRole('radio', { name: 'arrayComparison.position' }));
+    fireEvent.click(screen.getByLabelText('jsonEditor.compare'));
+    await waitFor(() => expect(screen.getByText('position true')).toBeTruthy());
+  });
+
+  it.each([
+    ['semantic', { arrayComparison: 'position' }, 'position false'],
+    ['position', {}, 'semantic false'],
+  ])('restores the saved result mode independently of preference %s', async (preference, savedMode, expected) => {
+    localStorage.setItem('jsonDiff.arrayComparison', preference);
+    localStorage.setItem('jsonDiff.viewMode', 'compare');
+    localStorage.setItem('jsonDiff.diffResult', JSON.stringify({ left: '[]', right: '[]', language: 'json', hasDifferences: false, ...savedMode }));
+    render(<App />);
+    await waitFor(() => expect(screen.getByText(expected)).toBeTruthy());
+    fireEvent.click(screen.getByText('Back'));
+    expect((screen.getByRole('radio', { name: `arrayComparison.${preference}` }) as HTMLInputElement).checked).toBe(true);
+  });
+
+  it('persists the selected mode and associates it with a JSONL result', async () => {
+    render(<App />);
+    expect((screen.getByRole('radio', { name: /arrayComparison.semantic/ }) as HTMLInputElement).checked).toBe(true);
+    fireEvent.click(screen.getByRole('radio', { name: /arrayComparison.position/ }));
+    expect(localStorage.getItem('jsonDiff.arrayComparison')).toBe('position');
+    for (const side of ['left', 'right']) fireEvent.change(screen.getByLabelText(`${side} format`), { target: { value: 'jsonl' } });
+    fireEvent.change(screen.getByLabelText('left'), { target: { value: '1\n2' } });
+    fireEvent.change(screen.getByLabelText('right'), { target: { value: '2\n1' } });
+    fireEvent.click(screen.getByLabelText('jsonEditor.compare'));
+    await waitFor(() => expect(screen.getByText('position true')).toBeTruthy());
+    fireEvent.click(screen.getByText('Back'));
+    expect((screen.getByRole('radio', { name: /arrayComparison.position/ }) as HTMLInputElement).checked).toBe(true);
+    cleanup();
+    render(<App />);
+    expect((screen.getByRole('radio', { name: /arrayComparison.position/ }) as HTMLInputElement).checked).toBe(true);
+  });
+
+  it('restores old results as automatic alignment and rejects invalid preferences', async () => {
+    localStorage.setItem('jsonDiff.arrayComparison', 'invalid');
+    localStorage.setItem('jsonDiff.viewMode', 'compare');
+    localStorage.setItem('jsonDiff.diffResult', JSON.stringify({ left: '[]', right: '[]', language: 'json', hasDifferences: false }));
+    render(<App />);
+    await waitFor(() => expect(screen.getByText('semantic false')).toBeTruthy());
+    fireEvent.click(screen.getByText('Back'));
+    expect((screen.getByRole('radio', { name: /arrayComparison.semantic/ }) as HTMLInputElement).checked).toBe(true);
+  });
+
   it('loads a comparable example and resets previously selected formats', async () => {
     localStorage.setItem('jsonDiff.leftFormat', 'yaml');
     localStorage.setItem('jsonDiff.rightFormat', 'jsonl');

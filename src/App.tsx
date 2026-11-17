@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { JsonEditor } from './components/JsonEditor';
 const DiffViewer = lazy(() => import('./components/DiffViewer').then(m => ({ default: m.DiffViewer })));
 import { semanticDiff, formatJSON } from './utils/semanticDiff';
+import type { ArrayComparison } from './utils/semanticDiff';
 import { parse, serialize, formatSameFormatDiff, FormatError, DEFAULT_FORMAT } from './utils/formatSelector';
 import type { Format } from './utils/formatSelector';
 import { gtag } from './services/analytics';
@@ -21,6 +22,7 @@ function App() {
     rightFormat: 'jsonDiff.rightFormat',
     mode: 'jsonDiff.viewMode',
     diff: 'jsonDiff.diffResult',
+    arrayComparison: 'jsonDiff.arrayComparison',
   } as const;
 
   // Initialize with empty values to avoid blocking on first render
@@ -30,12 +32,14 @@ function App() {
   const [rightFormat, setRightFormat] = useState<Format>(DEFAULT_FORMAT);
   const [leftError, setLeftError] = useState<InputError | null>(null);
   const [rightError, setRightError] = useState<InputError | null>(null);
+  const [arrayComparison, setArrayComparison] = useState<ArrayComparison>('semantic');
   const [viewMode, setViewMode] = useState<ViewMode>('edit');
   const [diffResult, setDiffResult] = useState<{
     left: string;
     right: string;
     language: string;
     hasDifferences: boolean;
+    arrayComparison: ArrayComparison;
   } | null>(null);
 
   const [storageLoaded, setStorageLoaded] = useState(false);
@@ -68,6 +72,10 @@ function App() {
       const storedRightFormat = localStorage.getItem(LS_KEYS.rightFormat);
       const storedMode = localStorage.getItem(LS_KEYS.mode);
       const storedDiff = localStorage.getItem(LS_KEYS.diff);
+      const storedArrayComparison = localStorage.getItem(LS_KEYS.arrayComparison);
+      if (storedArrayComparison === 'position' || storedArrayComparison === 'semantic') {
+        setArrayComparison(storedArrayComparison);
+      }
 
       if (storedLeft !== null) setLeftJson(storedLeft);
       if (storedRight !== null) setRightJson(storedRight);
@@ -88,7 +96,15 @@ function App() {
               'language' in saved && typeof saved.language === 'string' &&
               ['json', 'jsonl', 'yaml'].includes(saved.language) &&
               'hasDifferences' in saved && typeof saved.hasDifferences === 'boolean') {
-            setDiffResult({ left: saved.left, right: saved.right, language: saved.language, hasDifferences: saved.hasDifferences });
+            setDiffResult({
+              left: saved.left,
+              right: saved.right,
+              language: saved.language,
+              hasDifferences: saved.hasDifferences,
+              arrayComparison: 'arrayComparison' in saved && saved.arrayComparison === 'position'
+                ? 'position'
+                : 'semantic',
+            });
             if (storedMode === 'compare') setViewMode('compare');
           }
         } catch {
@@ -151,6 +167,11 @@ function App() {
     } catch { void 0; }
   }, [diffResult, storageLoaded]);
 
+  useEffect(() => {
+    if (!storageLoaded) return;
+    try { localStorage.setItem('jsonDiff.arrayComparison', arrayComparison); } catch { void 0; }
+  }, [arrayComparison, storageLoaded]);
+
   const parseInput = (text: string, format: Format): { valid: boolean; parsed?: unknown; error?: InputError } => {
     if (!text.trim()) {
       return { valid: false, error: { key: 'errors.empty' } };
@@ -169,11 +190,24 @@ function App() {
     }
   };
 
+  const handleArrayComparisonChange = (mode: ArrayComparison) => {
+    if (mode === arrayComparison) return;
+    gtag('event', 'array_comparison_change', {
+      array_comparison: mode,
+      previous_array_comparison: arrayComparison,
+    });
+    setArrayComparison(mode);
+  };
+
   const handleCompare = () => {
     setLeftError(null);
     setRightError(null);
 
-    gtag('event', 'compare_click', { left_chars: leftJson.length, right_chars: rightJson.length });
+    gtag('event', 'compare_click', {
+      left_chars: leftJson.length,
+      right_chars: rightJson.length,
+      array_comparison: arrayComparison,
+    });
 
     const leftResult = parseInput(leftJson, leftFormat);
     const rightResult = parseInput(rightJson, rightFormat);
@@ -190,7 +224,7 @@ function App() {
       return;
     }
 
-    const result = semanticDiff(leftResult.parsed, rightResult.parsed);
+    const result = semanticDiff(leftResult.parsed, rightResult.parsed, { arrayComparison });
 
     // When both sides share the same format (json/jsonl/yaml), re-serialize the
     // normalized objects back into that dialect so the diff shows the original
@@ -211,6 +245,7 @@ function App() {
       right_chars: rightJson.length,
       left_format: leftFormat,
       right_format: rightFormat,
+      array_comparison: arrayComparison,
     });
 
     setDiffResult({
@@ -218,6 +253,7 @@ function App() {
       right: formattedRight,
       language,
       hasDifferences,
+      arrayComparison,
     });
 
     setViewMode('compare');
@@ -238,10 +274,10 @@ function App() {
     const result = parseInput(text, format);
 
     if (result.valid) {
-      // Apply the same normalization used in comparison (sort arrays and
-      // properties) for JSON; for other formats re-serialize cleanly.
+      // Sort JSON object properties while preserving the original array order;
+      // for other formats re-serialize cleanly.
       const formatted = format === 'json'
-        ? formatJSON(result.parsed, true)
+        ? formatJSON(result.parsed, true, 'position')
         : serialize(result.parsed, format);
       if (side === 'left') {
         setLeftJson(formatted);
@@ -286,8 +322,8 @@ function App() {
 
       <main className="max-w-screen-2xl mx-auto p-6" role="main">
         {viewMode === 'edit' ? (
-          <div className="flex flex-col h-[calc(100vh-180px)]">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1" role="region" aria-label={t('jsonEditor.inputEditors')}>
+          <div className="flex flex-col min-h-[calc(100vh-180px)] lg:min-h-0 lg:h-[max(36rem,calc(100dvh-180px))]">
+            <div className="grid grid-cols-1 grid-rows-2 lg:grid-rows-1 lg:grid-cols-2 gap-6 h-[80vh] lg:h-auto lg:flex-1 lg:min-h-0" role="region" aria-label={t('jsonEditor.inputEditors')}>
               <JsonEditor
                 value={leftJson}
                 onChange={handleLeftChange}
@@ -308,48 +344,103 @@ function App() {
               />
             </div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-[repeat(5,auto)] items-center justify-center gap-x-2 lg:gap-x-4 gap-y-2 mt-6 shrink-0" role="toolbar" aria-label={t('jsonEditor.comparisonActions')}>
-              <button
-                onClick={() => handleClear('left')}
-                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!leftJson.trim()}
-                aria-label={t('jsonEditor.clearLeft')}
-              >
-                {t('app.clearLeft')}
-              </button>
-              <button
-                onClick={() => handleFormat('left')}
-                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!leftJson.trim()}
-                aria-label={t('jsonEditor.formatLeft')}
-              >
-                {t('app.formatLeft')}
-              </button>
+            <fieldset className="mt-4 mx-auto max-w-3xl w-full sm:w-fit border border-gray-700 rounded-lg px-4 pb-2 text-center shrink-0">
+              <legend className="mx-auto px-2 text-sm text-gray-400">{t('arrayComparison.legend')}</legend>
+              <div className="mt-1 flex flex-wrap justify-center gap-x-6 gap-y-1">
+                {(['semantic', 'position'] as const).map(mode => (
+                  <label key={mode} className="flex items-center gap-2 cursor-pointer rounded px-1 py-1 text-sm text-gray-200 hover:text-white">
+                    <input
+                      type="radio"
+                      name="arrayComparison"
+                      value={mode}
+                      checked={arrayComparison === mode}
+                      onChange={() => handleArrayComparisonChange(mode)}
+                      aria-labelledby={`array-${mode}-label`}
+                      aria-describedby={arrayComparison === mode ? 'array-comparison-description' : undefined}
+                      className="accent-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-400"
+                    />
+                    <span id={`array-${mode}-label`}>
+                      {t(`arrayComparison.${mode}`)}
+                    </span>
+                  </label>
+                ))}
+              </div>
+              {/* Both descriptions size the same grid cell, so switching modes
+                  preserves its width and height at every viewport and locale. */}
+              <div aria-live="polite" aria-atomic="true" className="mt-1 grid text-sm text-gray-400">
+                {(['semantic', 'position'] as const).map(mode => (
+                  <p
+                    key={mode}
+                    id={arrayComparison === mode ? 'array-comparison-description' : undefined}
+                    aria-hidden={arrayComparison !== mode}
+                    className={`col-start-1 row-start-1 ${arrayComparison !== mode ? 'invisible' : ''}`}
+                  >
+                    {t(`arrayComparison.${mode}Description`)}
+                  </p>
+                ))}
+              </div>
+            </fieldset>
+
+            <div className="grid grid-cols-2 lg:grid-cols-[repeat(5,auto)] items-center justify-center gap-x-2 lg:gap-x-4 gap-y-2 mt-4 shrink-0" role="toolbar" aria-label={t('jsonEditor.comparisonActions')}>
+              <div role="group" aria-label={t('jsonEditor.leftInput')} className="flex flex-col items-center gap-1 lg:contents">
+                <span className="text-xs text-gray-400 lg:hidden">{t('jsonEditor.leftInput')}</span>
+                <div className="flex items-center gap-1 lg:contents">
+                  <button
+                    onClick={() => handleClear('left')}
+                    className="inline-flex items-center justify-center min-h-11 min-w-11 px-2 min-[380px]:px-4 text-xs text-gray-300 bg-gray-800 hover:bg-gray-700 lg:text-sm lg:min-h-0 lg:min-w-0 lg:px-4 lg:py-2 lg:bg-gray-800 lg:hover:bg-gray-700 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={!leftJson.trim()}
+                    aria-label={t('jsonEditor.clearLeft')}
+                    title={t('jsonEditor.clearLeft')}
+                  >
+                    <span className="lg:hidden">{t('app.clear')}</span>
+                    <span className="hidden lg:inline">{t('app.clearLeft')}</span>
+                  </button>
+                  <button
+                    onClick={() => handleFormat('left')}
+                    className="inline-flex items-center justify-center min-h-11 min-w-11 px-2 min-[380px]:px-4 text-xs text-gray-300 bg-gray-700 hover:bg-gray-600 lg:text-sm lg:min-h-0 lg:min-w-0 lg:px-4 lg:py-2 lg:bg-gray-700 lg:hover:bg-gray-600 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={!leftJson.trim()}
+                    aria-label={t('jsonEditor.formatLeft')}
+                    title={t('jsonEditor.formatLeft')}
+                  >
+                    <span className="lg:hidden">{t('app.format')}</span>
+                    <span className="hidden lg:inline">{t('app.formatLeft')}</span>
+                  </button>
+                </div>
+              </div>
               <button
                 onClick={handleCompare}
-                className="col-span-2 row-start-3 justify-self-center lg:col-span-1 lg:col-start-3 lg:row-start-1 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="col-span-2 row-start-2 w-full lg:w-auto justify-self-center lg:col-span-1 lg:col-start-3 lg:row-start-1 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={!leftJson.trim() || !rightJson.trim()}
                 aria-label={t('jsonEditor.compare')}
               >
                 {t('app.compare')}
               </button>
-              <button
-                onClick={() => handleFormat('right')}
-                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!rightJson.trim()}
-                aria-label={t('jsonEditor.formatRight')}
-              >
-                {t('app.formatRight')}
-              </button>
-              <button
-                onClick={() => handleClear('right')}
-                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!rightJson.trim()}
-                aria-label={t('jsonEditor.clearRight')}
-              >
-                {t('app.clearRight')}
-              </button>
-              <div className="col-span-2 row-start-4 lg:col-span-1 lg:col-start-3 lg:row-start-2 justify-self-center flex items-baseline gap-1 text-sm text-gray-400">
+              <div role="group" aria-label={t('jsonEditor.rightInput')} className="flex flex-col items-center gap-1 lg:contents">
+                <span className="text-xs text-gray-400 lg:hidden">{t('jsonEditor.rightInput')}</span>
+                <div className="flex items-center gap-1 lg:contents">
+                  <button
+                    onClick={() => handleFormat('right')}
+                    className="inline-flex items-center justify-center min-h-11 min-w-11 px-2 min-[380px]:px-4 text-xs text-gray-300 bg-gray-700 hover:bg-gray-600 lg:text-sm lg:min-h-0 lg:min-w-0 lg:px-4 lg:py-2 lg:bg-gray-700 lg:hover:bg-gray-600 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={!rightJson.trim()}
+                    aria-label={t('jsonEditor.formatRight')}
+                    title={t('jsonEditor.formatRight')}
+                  >
+                    <span className="lg:hidden">{t('app.format')}</span>
+                    <span className="hidden lg:inline">{t('app.formatRight')}</span>
+                  </button>
+                  <button
+                    onClick={() => handleClear('right')}
+                    className="inline-flex items-center justify-center min-h-11 min-w-11 px-2 min-[380px]:px-4 text-xs text-gray-300 bg-gray-800 hover:bg-gray-700 lg:text-sm lg:min-h-0 lg:min-w-0 lg:px-4 lg:py-2 lg:bg-gray-800 lg:hover:bg-gray-700 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={!rightJson.trim()}
+                    aria-label={t('jsonEditor.clearRight')}
+                    title={t('jsonEditor.clearRight')}
+                  >
+                    <span className="lg:hidden">{t('app.clear')}</span>
+                    <span className="hidden lg:inline">{t('app.clearRight')}</span>
+                  </button>
+                </div>
+              </div>
+              <div className="col-span-2 row-start-3 lg:col-span-1 lg:col-start-3 lg:row-start-2 justify-self-center flex items-baseline gap-1 text-sm text-gray-400">
                 <span>{t('app.or')}</span>
                 <button
                   type="button"
@@ -372,6 +463,7 @@ function App() {
                   language={diffResult.language}
                   onReset={handleReset}
                   hasDifferences={diffResult.hasDifferences}
+                  arrayComparison={diffResult.arrayComparison}
                 />
               )}
             </Suspense>
