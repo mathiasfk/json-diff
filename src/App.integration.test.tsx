@@ -74,14 +74,29 @@ describe('comparison state and formatting', () => {
     await waitFor(() => expect(screen.getByText('position true')).toBeTruthy());
   });
 
-  it('preserves nested array order when formatting JSON by position', () => {
+  it.each(['semantic', 'position'])('preserves nested array order when formatting JSON in %s mode', mode => {
     render(<App />);
-    fireEvent.click(screen.getByRole('radio', { name: 'arrayComparison.position' }));
+    fireEvent.click(screen.getByRole('radio', { name: `arrayComparison.${mode}` }));
     const input = screen.getByLabelText('left') as HTMLTextAreaElement;
     fireEvent.change(input, { target: { value: '{"z":[3,1,{"a":[2,1]}],"a":1}' } });
     fireEvent.click(screen.getByLabelText('jsonEditor.formatLeft'));
     expect(JSON.parse(input.value)).toEqual({ a: 1, z: [3, 1, { a: [2, 1] }] });
     expect(input.value.indexOf('"a"')).toBeLessThan(input.value.indexOf('"z"'));
+  });
+
+  it('preserves both inputs for a positional comparison after formatting in semantic mode', async () => {
+    render(<App />);
+    const left = screen.getByLabelText('left') as HTMLTextAreaElement;
+    const right = screen.getByLabelText('right') as HTMLTextAreaElement;
+    fireEvent.change(left, { target: { value: '{"items":[3,1,2]}' } });
+    fireEvent.change(right, { target: { value: '{"items":[1,2,3]}' } });
+    fireEvent.click(screen.getByLabelText('jsonEditor.formatLeft'));
+    fireEvent.click(screen.getByLabelText('jsonEditor.formatRight'));
+    expect(JSON.parse(left.value).items).toEqual([3, 1, 2]);
+    expect(JSON.parse(right.value).items).toEqual([1, 2, 3]);
+    fireEvent.click(screen.getByRole('radio', { name: 'arrayComparison.position' }));
+    fireEvent.click(screen.getByLabelText('jsonEditor.compare'));
+    await waitFor(() => expect(screen.getByText('position true')).toBeTruthy());
   });
 
   it.each([

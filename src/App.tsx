@@ -274,10 +274,10 @@ function App() {
     const result = parseInput(text, format);
 
     if (result.valid) {
-      // Normalize object properties and apply the selected array ordering for JSON;
+      // Sort JSON object properties while preserving the original array order;
       // for other formats re-serialize cleanly.
       const formatted = format === 'json'
-        ? formatJSON(result.parsed, true, arrayComparison)
+        ? formatJSON(result.parsed, true, 'position')
         : serialize(result.parsed, format);
       if (side === 'left') {
         setLeftJson(formatted);
