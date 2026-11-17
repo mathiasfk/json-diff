@@ -7,8 +7,8 @@ import { LocaleLayout } from './LocaleLayout';
 import App from './App';
 
 vi.mock('./components/JsonEditor', () => ({
-  JsonEditor: ({ value, onChange, side, error }: { value: string; onChange: (value: string) => void; side: string; error?: string }) =>
-    <><textarea aria-label={side} value={value} onChange={e => onChange(e.target.value)} />{error && <div role="alert">{error}</div>}</>,
+  JsonEditor: ({ value, onChange, side, error, onFormat }: { onFormat: () => void; value: string; onChange: (value: string) => void; side: string; error?: string }) =>
+    <><button aria-label={i18n.t(side === "left" ? "jsonEditor.formatLeft" : "jsonEditor.formatRight")} onClick={onFormat}>Format</button><textarea aria-label={side} value={value} onChange={e => onChange(e.target.value)} />{error && <div role="alert">{error}</div>}</>,
 }));
 afterEach(() => { cleanup(); localStorage.clear(); });
 

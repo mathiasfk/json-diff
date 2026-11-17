@@ -107,6 +107,8 @@ type ViewMode = 'edit' | 'compare';
   left: string;           // Formatted left JSON
   right: string;          // Formatted right JSON
   hasDifferences: boolean;// Whether differences were found
+  language: string;       // Monaco language for the result
+  arrayComparison: 'semantic' | 'position'; // Mode used for the result
 }
 ```
 
@@ -117,6 +119,8 @@ interface DiffViewerProps {
   newValue: string;       // Modified JSON string
   onReset: () => void;    // Callback to return to edit mode
   hasDifferences: boolean;// Whether to show differences or "equivalent" message
+  language: string;       // Monaco language for the result
+  arrayComparison: 'semantic' | 'position'; // Mode used for the result
 }
 ```
 
@@ -125,8 +129,8 @@ interface DiffViewerProps {
 #### Normalized Objects
 After processing through `semanticDiff()`:
 - Objects with sorted properties
-- Arrays sorted by content or ID-based criteria
-- Annotated with `__match_strategy` and `__match_field` properties for tracking
+- Arrays aligned by content, key or similarity in semantic mode; array order preserved in positional mode
+- In semantic mode, arrays may carry `__match_strategy` and `__match_field` annotations for matching
 
 #### Diff Result (from jsondiffpatch)
 The delta object follows jsondiffpatch format:
@@ -206,21 +210,18 @@ As documented in `.github/workflows/`:
 ### How the Diff Algorithm Integrates with the System
 
 #### Data Flow
-1. **User Input**: JSON strings entered in left/right editors (App.tsx)
-2. **Validation**: `validateAndParse()` checks JSON validity
-3. **Processing**: Valid JSON passed to `semanticDiff()` (utils/semanticDiff.ts)
-4. **Normalization**: 
-   - `normalizeForDiff()` prepares objects for comparison
-   - Property sorting and smart array alignment
-5. **Diff Calculation**: jsondiffpatch computes differences
-6. **Formatting**: Results formatted for display with `formatJSON()`
-7. **State Update**: Comparison results stored in React state
-8. **Display**: `DiffViewer` component renders side-by-side comparison
+1. **User Input**: JSON, JSONL or YAML entered in left/right editors (App.tsx)
+2. **Validation**: Inputs are parsed according to their selected formats
+3. **Processing**: Parsed values and the selected array mode are passed to `semanticDiff()`
+4. **Normalization and diff**: Both modes sort object properties; semantic mode aligns arrays and uses jsondiffpatch, while positional mode compares indices recursively
+5. **Formatting**: Results use the shared input format when supported, or JSON for mixed formats
+6. **State Update**: Comparison results stored in React state
+7. **Display**: `DiffViewer` component renders side-by-side comparison
 
 #### Key Integration Points
 
 **App.tsx ↔ semanticDiff.ts**
-- App calls `semanticDiff(leftParsed, rightParsed)`
+- App calls `semanticDiff(leftParsed, rightParsed, { arrayComparison })`
 - Receives `{ delta, left, right }` result
 - Formats `left` and `right` for display
 - Determines `hasDifferences` from `delta !== undefined`
@@ -239,6 +240,7 @@ As documented in `.github/workflows/`:
 - React state stores original inputs (`leftJson`, `rightJson`)
 - Comparison results stored separately (`diffResult`)
 - LocalStorage persistence for user convenience
+- The selected array mode is persisted separately and saved with each result
 - View mode toggling between edit and compare
 
 #### UI Integration

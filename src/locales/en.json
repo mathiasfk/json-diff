@@ -12,7 +12,10 @@
     "formatLeft": "Format Left",
     "compare": "Compare",
     "formatRight": "Format Right",
-    "clearRight": "Clear Right"
+    "clearRight": "Clear Right",
+    "replaceExampleTitle": "Load example?",
+    "cancel": "Cancel",
+    "confirmLoadExample": "Load example"
   },
   "header": {
     "back": "Back",
@@ -175,7 +178,13 @@
     "inputEditors": "Diff input editors",
     "comparisonActions": "Comparison actions",
     "comparisonResults": "Comparison results",
-    "loadingDiff": "Loading comparison..."
+    "loadingDiff": "Loading comparison...",
+    "load": "Load file",
+    "loadLeft": "Load file into left input",
+    "loadRight": "Load file into right input",
+    "replaceWithFile": "Replace the current input with the selected file?",
+    "fileInvalid": "Unsupported file type. Choose a JSON, JSONL, YAML, or text file.",
+    "fileReadError": "Could not read the file. Please try again."
   },
   "diffViewer": {
     "title": "Comparison results",
@@ -198,5 +207,11 @@
     "position": "Compare by position",
     "positionDescription": "Compares items at the same position and detects order changes.",
     "resultMode": "Array comparison: {{mode}}"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "switchLight": "Switch to light theme",
+    "switchDark": "Switch to dark theme"
   }
 }

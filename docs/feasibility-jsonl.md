@@ -1,5 +1,7 @@
 # Feasibility: JSONL (JSON Lines) comparison
 
+> Historical feasibility study: JSONL and both array comparison modes are now implemented. JSONL records use the selected mode, including comparison by position. See [algorithm.md](algorithm.md) for current behavior.
+
 Status: **GO — low effort, high reuse.** JSONL is the cheapest format to add
 because it is just an array of JSON values written one-per-line. The existing
 diff engine already treats "top-level array of JSON values" as its primary

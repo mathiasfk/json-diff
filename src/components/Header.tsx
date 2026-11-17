@@ -3,6 +3,7 @@ import { gtag } from '../services/analytics';
 import { useTranslation } from 'react-i18next';
 import i18n from '../i18n';
 import { DEFAULT_LOCALE, isLocale, type Locale } from '../i18n-config';
+import { useTheme } from '../theme';
 import { LanguageSelector } from './LanguageSelector';
 
 interface HeaderProps {
@@ -14,6 +15,7 @@ interface HeaderProps {
 
 export function Header({ showNav = true, homeLink = false }: HeaderProps) {
   const { t } = useTranslation();
+  const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
   const isFaq = location.pathname.endsWith('/faq');
@@ -32,43 +34,46 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
   };
 
   return (
-    <header className="bg-gray-800 border-b border-gray-700 px-6 py-4" role="banner">
-      <div className="max-w-screen-2xl mx-auto flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <header className="site-header" role="banner">
+      <div className="site-header-inner">
         <div>
-          <h1 className="text-2xl font-bold">{t('app.title')}</h1>
-          <p className="text-sm text-gray-400 mt-1">
+          <h1 className="site-title">{t('app.title')}</h1>
+          <p className="site-subtitle">
             {t('header.subtitle')}
           </p>
         </div>
         {showNav ? (
-          <nav aria-label={t('header.primaryNav')} className="flex flex-col items-center gap-2 md:flex-row md:items-center md:gap-4">
+          <nav aria-label={t('header.primaryNav')} className="site-header-actions">
             {isFaq && (
               <button
                 onClick={() => {
                   gtag('event', 'faq_back_click');
                   navigate(-1);
                 }}
-                className="text-sm text-gray-400 hover:text-gray-200"
+                className="site-home"
                 aria-label={t('header.backAria')}
               >
                 ← {t('header.back')}
               </button>
             )}
-            {/* Language selector */}
+            <button type="button" onClick={toggleTheme} className="theme-toggle" aria-label={t(theme === 'dark' ? 'theme.switchLight' : 'theme.switchDark')} title={t(theme === 'dark' ? 'theme.switchLight' : 'theme.switchDark')}>
+              <span aria-hidden="true">{theme === 'dark' ? '☀' : '☾'}</span><span>{t(theme === 'dark' ? 'theme.light' : 'theme.dark')}</span>
+            </button>
             <LanguageSelector
               currentLocale={currentLanguage}
               onSelect={changeLanguage}
             />
           </nav>
         ) : homeLink ? (
-          <nav aria-label={t('header.primaryNav')} className="flex items-center justify-center gap-4 flex-wrap">
+          <nav aria-label={t('header.primaryNav')} className="site-header-actions">
             <Link
               to={getLocalePath(currentLanguage, '')}
-              className="text-sm text-gray-400 hover:text-gray-200"
+              className="site-home"
               aria-label={t('header.homeAria')}
             >
               ← {t('header.home')}
             </Link>
+            <button type="button" onClick={toggleTheme} className="theme-toggle" aria-label={t(theme === 'dark' ? 'theme.switchLight' : 'theme.switchDark')} title={t(theme === 'dark' ? 'theme.switchLight' : 'theme.switchDark')}><span aria-hidden="true">{theme === 'dark' ? '☀' : '☾'}</span><span>{t(theme === 'dark' ? 'theme.light' : 'theme.dark')}</span></button>
             <LanguageSelector currentLocale={currentLanguage} onSelect={changeLanguage} />
           </nav>
         ) : null}

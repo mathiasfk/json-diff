@@ -12,7 +12,10 @@
     "formatLeft": "格式化左侧",
     "compare": "比较",
     "formatRight": "格式化右侧",
-    "clearRight": "清除右侧"
+    "clearRight": "清除右侧",
+    "replaceExampleTitle": "加载示例？",
+    "cancel": "取消",
+    "confirmLoadExample": "加载示例"
   },
   "header": {
     "back": "返回",
@@ -175,7 +178,13 @@
     "inputEditors": "Diff 输入编辑器",
     "comparisonActions": "比较操作",
     "comparisonResults": "比较结果",
-    "loadingDiff": "正在加载比较结果..."
+    "loadingDiff": "正在加载比较结果...",
+    "load": "加载文件",
+    "loadLeft": "将文件加载到左侧输入",
+    "loadRight": "将文件加载到右侧输入",
+    "replaceWithFile": "用所选文件替换当前内容？",
+    "fileInvalid": "不支持此文件类型。请选择 JSON、JSONL、YAML 或文本文件。",
+    "fileReadError": "无法读取文件，请重试。"
   },
   "diffViewer": {
     "title": "比较结果",
@@ -198,5 +207,11 @@
     "position": "按位置比较",
     "positionDescription": "比较相同位置的元素，并检测顺序变化。",
     "resultMode": "数组比较：{{mode}}"
+  },
+  "theme": {
+    "light": "浅色",
+    "dark": "深色",
+    "switchLight": "切换到浅色主题",
+    "switchDark": "切换到深色主题"
   }
 }

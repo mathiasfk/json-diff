@@ -102,7 +102,7 @@ The comparator will recognize that:
 - The properties are just in different order (no diff)
 - With automatic alignment, the hobbies array has the same items, just reordered based on the `id` field (no diff). Comparing by position reports the changes.
 
-Result: **No differences** (semantically identical)
+Result: **No differences** with automatic alignment; **differences found** when comparing by position.
 
 ## Test Scenarios (JSON fixtures)
 

@@ -8,8 +8,8 @@ vi.mock('./services/analytics', () => ({ gtag: vi.fn() }));
 vi.mock('./components/Header', () => ({ Header: () => null }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 vi.mock('./components/JsonEditor', () => ({
-  JsonEditor: ({ value, onChange, side, format, onFormatChange, error }: { value: string; onChange: (value: string) => void; side: string; format: string; onFormatChange: (value: string) => void; error?: string }) =>
-    <><textarea aria-label={side} value={value} onChange={e => onChange(e.target.value)} /><select aria-label={`${side} format`} value={format} onChange={e => onFormatChange(e.target.value)}><option>json</option><option>jsonl</option><option>yaml</option></select>{error && <div role="alert">{side}: {error}</div>}</>,
+  JsonEditor: ({ value, onChange, side, format, onFormatChange, error, onFormat, onClear }: { onFormat: () => void; onClear: () => void; value: string; onChange: (value: string) => void; side: string; format: string; onFormatChange: (value: string) => void; error?: string }) =>
+    <><button aria-label={`jsonEditor.format${side === "left" ? "Left" : "Right"}`} onClick={onFormat}>Format</button><button aria-label={`jsonEditor.clear${side === "left" ? "Left" : "Right"}`} onClick={onClear}>Clear</button><textarea aria-label={side} value={value} onChange={e => onChange(e.target.value)} /><select aria-label={`${side} format`} value={format} onChange={e => onFormatChange(e.target.value)}><option>json</option><option>jsonl</option><option>yaml</option></select>{error && <div role="alert">{side}: {error}</div>}</>,
 }));
 vi.mock('./components/DiffViewer', () => ({ DiffViewer: ({ arrayComparison, hasDifferences, onReset }: { arrayComparison: string; hasDifferences: boolean; onReset: () => void }) => <div>Saved comparison <span>{arrayComparison} {String(hasDifferences)}</span><button onClick={onReset}>Back</button></div> }));
 
@@ -17,6 +17,26 @@ beforeEach(() => { localStorage.clear(); vi.clearAllMocks(); });
 afterEach(() => { cleanup(); vi.restoreAllMocks(); });
 
 describe('comparison state and formatting', () => {
+  it('navigates between comparison and preserved editors with browser history', async () => {
+    window.history.replaceState({ idx: 0 }, '');
+    render(<App />);
+    fireEvent.change(screen.getByLabelText('left'), { target: { value: '{"a":1}' } });
+    fireEvent.change(screen.getByLabelText('right'), { target: { value: '{"a":2}' } });
+    fireEvent.click(screen.getByLabelText('jsonEditor.compare'));
+    await screen.findByText('Saved comparison');
+
+    window.history.back();
+    await waitFor(() => expect(screen.getByLabelText('left')).toBeTruthy());
+    expect((screen.getByLabelText('left') as HTMLTextAreaElement).value).toBe('{"a":1}');
+    expect((screen.getByLabelText('right') as HTMLTextAreaElement).value).toBe('{"a":2}');
+
+    window.history.forward();
+    await screen.findByText('Saved comparison');
+    fireEvent.click(screen.getByText('Back'));
+    await waitFor(() => expect(screen.getByLabelText('left')).toBeTruthy());
+    await waitFor(() => expect(window.history.state?.jsonDiffComparison).toBeUndefined());
+  });
+
   it('tracks genuine mode changes with the previous and selected modes', () => {
     render(<App />);
     expect(gtag).not.toHaveBeenCalled();
@@ -156,17 +176,32 @@ describe('comparison state and formatting', () => {
     expect(screen.queryByRole('alert')).toBeNull();
   });
 
-  it.each(['left', 'right'])('preserves saved user content on the %s side', side => {
+  it.each(['left', 'right'])('preserves saved user content on the %s side until confirmed', side => {
     localStorage.setItem(`jsonDiff.${side}`, '{"user":true}');
     render(<App />);
-    expect(screen.getByRole('button', { name: 'app.loadExample' })).toBeTruthy();
-    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
-    fireEvent.click(screen.getByRole('button', { name: 'app.loadExample' }));
-    expect(confirm).toHaveBeenCalled();
+    const trigger = screen.getByRole('button', { name: 'app.loadExample' });
+    trigger.focus();
+    fireEvent.click(trigger);
+    expect(screen.getByRole('dialog', { name: 'app.replaceExampleTitle' })).toBeTruthy();
     expect((screen.getByLabelText(side) as HTMLTextAreaElement).value).toBe('{"user":true}');
-    confirm.mockReturnValue(true);
-    fireEvent.click(screen.getByRole('button', { name: 'app.loadExample' }));
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'app.cancel' }));
+    fireEvent.click(screen.getByRole('button', { name: 'app.cancel' }));
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(document.activeElement).toBe(trigger);
+    expect((screen.getByLabelText(side) as HTMLTextAreaElement).value).toBe('{"user":true}');
+    fireEvent.click(trigger);
+    fireEvent.click(screen.getByRole('button', { name: 'app.confirmLoadExample' }));
+    expect(screen.queryByRole('dialog')).toBeNull();
     expect(JSON.parse((screen.getByLabelText(side) as HTMLTextAreaElement).value)).toHaveProperty('members');
+  });
+
+  it('dismisses the example confirmation with Escape without changing the inputs', () => {
+    localStorage.setItem('jsonDiff.left', '{"user":true}');
+    render(<App />);
+    fireEvent.click(screen.getByRole('button', { name: 'app.loadExample' }));
+    fireEvent(screen.getByRole('dialog'), new Event('cancel', { bubbles: true, cancelable: true }));
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect((screen.getByLabelText('left') as HTMLTextAreaElement).value).toBe('{"user":true}');
   });
 
   it.each(['null', '{}', '{bad', '{"left":1}'])('recovers from invalid saved comparison %s', saved => {

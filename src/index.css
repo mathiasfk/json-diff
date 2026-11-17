@@ -1,31 +1,47 @@
 @import "tailwindcss";
+@import "./shared.css";
 @config "../tailwind.config.js";
 
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Neutral surfaces are shared by the application chrome and Monaco themes. */
+@theme inline {
+  --color-gray-900: var(--surface-base);
+  --color-gray-800: var(--surface-raised);
+  --color-gray-700: var(--surface-border);
+  --color-gray-600: var(--surface-hover);
+  --color-gray-500: var(--text-subtle);
+  --color-gray-400: var(--text-muted);
+  --color-gray-300: var(--text-secondary);
+  --color-gray-200: var(--text-strong);
+  --color-gray-100: var(--text-primary);
 }
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+body { margin: 0; min-width: 320px; min-height: 100vh; }
+#root { width: 100%; min-height: 100vh; }
+.editor-action {
+  display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
+  min-height: 2rem; padding: .3rem .65rem; border: 1px solid var(--surface-border);
+  border-radius: .35rem; color: var(--text-secondary); background: var(--surface-raised);
+  font-size: .75rem; cursor: pointer;
 }
-
-#root {
-  width: 100%;
-  min-height: 100vh;
+.editor-action:hover:not(:disabled) { border-color: var(--text-muted); color: var(--text-primary); }
+.editor-action:disabled { opacity: .45; cursor: not-allowed; }
+.editor-action:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; }
+.confirm-dialog {
+  width: min(28rem, calc(100% - 2rem)); max-width: none; margin: auto;
+  padding: 1.5rem; border: 1px solid var(--surface-border); border-radius: .65rem;
+  color: var(--text-primary); background: var(--surface-raised);
+  box-shadow: 0 20px 55px rgb(0 0 0 / .35);
 }
-
+.confirm-dialog::backdrop { background: rgb(0 0 0 / .6); }
+.confirm-dialog-title { margin: 0; font-size: 1.125rem; line-height: 1.5; font-weight: 600; }
+.confirm-dialog-description { margin: .5rem 0 0; color: var(--text-secondary); font-size: .875rem; line-height: 1.5; }
+.confirm-dialog-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: .5rem; margin-top: 1.5rem; }
+.confirm-dialog-actions button { min-height: 2.5rem; padding: .5rem 1rem; border: 1px solid var(--surface-border); border-radius: .375rem; font-size: .875rem; font-weight: 500; cursor: pointer; }
+.confirm-dialog-cancel { background: transparent; color: var(--text-primary); }
+.confirm-dialog-cancel:hover { background: var(--surface-base); }
+.confirm-dialog-confirm { background: #3268b3; color: white; border-color: transparent !important; }
+.confirm-dialog-confirm:hover { background: #285693; }
+.confirm-dialog-actions button:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; }
+@media (max-width: 380px) {
+  .confirm-dialog-actions { flex-direction: column-reverse; }
+  .confirm-dialog-actions button { width: 100%; }
+}

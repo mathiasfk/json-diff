@@ -51,14 +51,13 @@ export function LanguageSelector({
 
   return (
     <label
-      className={`flex items-center gap-2 text-xs text-gray-400${className ? ` ${className}` : ''}`}
+      className={`site-language${className ? ` ${className}` : ''}`}
     >
       <span>{label ?? t('app.language')}</span>
       <select
         id={id}
         value={activeLocale}
         onChange={handleChange}
-        className="bg-gray-900 border border-gray-700 text-gray-200 text-xs rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
         aria-label={label ?? t('app.language')}
       >
         {SUPPORTED_LOCALES.map((lng) => (

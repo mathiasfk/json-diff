@@ -5,6 +5,7 @@ import App from './App'
 import Faq from './pages/Faq'
 import { LocaleLayout } from './LocaleLayout'
 import { DEFAULT_LOCALE, detectInitialLocale } from './i18n-config'
+import { ThemeProvider } from './theme'
 import './index.css'
 import './i18n'
 
@@ -16,7 +17,7 @@ const AppWrapper = ({ children }: { children: React.ReactNode }) =>
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <AppWrapper>
-    <HashRouter>
+    <ThemeProvider><HashRouter>
       <Routes>
         {/* Redirect the bare root to the detected/initial locale route. */}
         <Route
@@ -36,6 +37,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         {/* Fallback: unknown paths go to the default-locale home. */}
         <Route path="*" element={<Navigate to={`/${DEFAULT_LOCALE}`} replace />} />
       </Routes>
-    </HashRouter>
+    </HashRouter></ThemeProvider>
   </AppWrapper>
 )
