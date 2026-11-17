@@ -13,6 +13,7 @@ import { gtag } from './services/analytics';
 
 type ViewMode = 'edit' | 'compare';
 type InputError = { key: 'errors.empty' | 'errors.invalid' | 'errors.invalidDetail'; message?: string };
+const COMPARISON_HISTORY_KEY = 'jsonDiffComparison';
 
 function App() {
   const { t } = useTranslation();
@@ -45,6 +46,20 @@ function App() {
 
   const [storageLoaded, setStorageLoaded] = useState(false);
   const [confirmExampleOpen, setConfirmExampleOpen] = useState(false);
+
+  useEffect(() => {
+    const onPopState = (event: PopStateEvent) => {
+      if (event.state?.[COMPARISON_HISTORY_KEY] && diffResult) {
+        setViewMode('compare');
+      } else {
+        setViewMode('edit');
+        setLeftError(null);
+        setRightError(null);
+      }
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, [diffResult]);
 
   const handleLoadExample = () => {
     if (!storageLoaded) return;
@@ -266,13 +281,20 @@ function App() {
       arrayComparison,
     });
 
+    // Preserve the router's history state, including its navigation index.
+    const historyState = window.history.state || {};
+    window.history.pushState({
+      ...historyState,
+      idx: typeof historyState.idx === 'number' ? historyState.idx + 1 : historyState.idx,
+      [COMPARISON_HISTORY_KEY]: true,
+    }, '');
     setViewMode('compare');
   };
 
   const handleReset = () => {
     gtag('event', 'back_to_edit');
     setViewMode('edit');
-    setDiffResult(null);
+    if (window.history.state?.[COMPARISON_HISTORY_KEY]) window.history.back();
     setLeftError(null);
     setRightError(null);
   };

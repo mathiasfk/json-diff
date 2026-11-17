@@ -17,6 +17,26 @@ beforeEach(() => { localStorage.clear(); vi.clearAllMocks(); });
 afterEach(() => { cleanup(); vi.restoreAllMocks(); });
 
 describe('comparison state and formatting', () => {
+  it('navigates between comparison and preserved editors with browser history', async () => {
+    window.history.replaceState({ idx: 0 }, '');
+    render(<App />);
+    fireEvent.change(screen.getByLabelText('left'), { target: { value: '{"a":1}' } });
+    fireEvent.change(screen.getByLabelText('right'), { target: { value: '{"a":2}' } });
+    fireEvent.click(screen.getByLabelText('jsonEditor.compare'));
+    await screen.findByText('Saved comparison');
+
+    window.history.back();
+    await waitFor(() => expect(screen.getByLabelText('left')).toBeTruthy());
+    expect((screen.getByLabelText('left') as HTMLTextAreaElement).value).toBe('{"a":1}');
+    expect((screen.getByLabelText('right') as HTMLTextAreaElement).value).toBe('{"a":2}');
+
+    window.history.forward();
+    await screen.findByText('Saved comparison');
+    fireEvent.click(screen.getByText('Back'));
+    await waitFor(() => expect(screen.getByLabelText('left')).toBeTruthy());
+    await waitFor(() => expect(window.history.state?.jsonDiffComparison).toBeUndefined());
+  });
+
   it('tracks genuine mode changes with the previous and selected modes', () => {
     render(<App />);
     expect(gtag).not.toHaveBeenCalled();
