@@ -3,6 +3,7 @@ import { gtag } from '../services/analytics';
 import { useTranslation } from 'react-i18next';
 import i18n from '../i18n';
 import { DEFAULT_LOCALE, isLocale, type Locale } from '../i18n-config';
+import { homePath } from '../site';
 import { useTheme } from '../theme';
 import { LanguageSelector } from './LanguageSelector';
 
@@ -22,7 +23,7 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
   const currentLanguage: Locale = isLocale(i18n.resolvedLanguage) ? i18n.resolvedLanguage : DEFAULT_LOCALE;
 
   const getLocalePath = (lng: Locale, target: '' | 'faq') =>
-    target === 'faq' ? `/${lng}/faq` : `/${lng}`;
+    target === 'faq' ? `/${lng}/faq/` : homePath(lng);
 
   const changeLanguage = (lng: Locale) => {
     i18n.changeLanguage(lng);
@@ -30,7 +31,7 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
     try { localStorage.setItem('i18nextLng', lng); } catch { /* Storage may be unavailable. */ }
     gtag('event', 'language_change', { language: lng });
     // Keep the URL in sync with the chosen locale while preserving the route.
-    navigate(getLocalePath(lng, isFaq ? 'faq' : ''));
+    navigate(getLocalePath(lng, isFaq ? 'faq' : ''), { state: { jsonDiffComparison: Boolean(window.history.state?.jsonDiffComparison || window.history.state?.usr?.jsonDiffComparison) } });
   };
 
   return (

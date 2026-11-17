@@ -1,6 +1,8 @@
 import { Suspense, lazy, useState, useEffect } from 'react';
 import { ConfirmDialog } from './components/ConfirmDialog';
 import { Header } from './components/Header';
+import { homeContent } from './site';
+import { isLocale } from './i18n-config';
 import { SupportFooter } from './components/SupportFooter';
 import { useTranslation } from 'react-i18next';
 import { JsonEditor } from './components/JsonEditor';
@@ -16,7 +18,7 @@ type InputError = { key: 'errors.empty' | 'errors.invalid' | 'errors.invalidDeta
 const COMPARISON_HISTORY_KEY = 'jsonDiffComparison';
 
 function App() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const LS_KEYS = {
     left: 'jsonDiff.left',
     right: 'jsonDiff.right',
@@ -49,7 +51,7 @@ function App() {
 
   useEffect(() => {
     const onPopState = (event: PopStateEvent) => {
-      if (event.state?.[COMPARISON_HISTORY_KEY] && diffResult) {
+      if ((event.state?.[COMPARISON_HISTORY_KEY] || event.state?.usr?.[COMPARISON_HISTORY_KEY]) && diffResult) {
         setViewMode('compare');
       } else {
         setViewMode('edit');
@@ -295,6 +297,10 @@ function App() {
     gtag('event', 'back_to_edit');
     setViewMode('edit');
     if (window.history.state?.[COMPARISON_HISTORY_KEY]) window.history.back();
+    else if (window.history.state?.usr?.[COMPARISON_HISTORY_KEY]) {
+      const state = window.history.state;
+      window.history.replaceState({ ...state, usr: { ...state.usr, [COMPARISON_HISTORY_KEY]: false } }, '');
+    }
     setLeftError(null);
     setRightError(null);
   };
@@ -351,6 +357,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 relative">
       <Header />
+      <p className="max-w-screen-2xl mx-auto px-6 py-3 text-sm">{homeContent[isLocale(i18n?.resolvedLanguage) ? i18n.resolvedLanguage : 'en'].intro}</p>
       {confirmExampleOpen && <ConfirmDialog
         title={t('app.replaceExampleTitle')}
         description={t('app.replaceWithExample')}

@@ -14,9 +14,9 @@ permissions:
   id-token: write
 
 concurrency:
-  # Separate group from pages.yaml so the two deploy workflows don't cancel each other
-  group: deploy-pages
-  cancel-in-progress: true
+  group: gh-pages-writes
+  cancel-in-progress: false
+  queue: max
 
 jobs:
   deploy:
@@ -43,6 +43,26 @@ jobs:
       - name: Build
         run: pnpm run build
 
+      - name: Check out current published site
+        uses: actions/checkout@v5
+        with:
+          ref: gh-pages
+          path: published-site
+
+      - name: Preserve previews and prepare rollback artifact
+        run: |
+          mkdir -p previous-production
+          rsync -a --exclude .git --exclude preview/ published-site/ previous-production/
+          if [ -d published-site/preview ]; then cp -a published-site/preview dist/preview; fi
+
+      - name: Retain previous production artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: previous-production-${{ github.run_id }}
+          path: previous-production/
+          include-hidden-files: true
+          retention-days: 90
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
@@ -50,4 +70,4 @@ jobs:
           publish_dir: ./dist
           publish_branch: gh-pages
           destination_dir: '.'
-          keep_files: true
+          keep_files: false

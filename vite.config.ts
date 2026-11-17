@@ -7,7 +7,7 @@ const monacoEditorPlugin: any = (monacoEditorPluginModule as any)?.default || (m
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: process.env.PREVIEW_BASE || '/',
+  base: `/${(process.env.PREVIEW_BASE || '/').split('/').filter(Boolean).join('/')}${process.env.PREVIEW_BASE?.split('/').filter(Boolean).length ? '/' : ''}`,
   plugins: [
     react(),
     supportPagesPlugin(),

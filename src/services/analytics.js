@@ -1,3 +1,7 @@
+import { redirectToSupport } from '../bootstrap-url';
+import i18n from 'i18next';
+import { DEFAULT_LOCALE, isLocale } from '../i18n-config';
+
 // Initialize Google Analytics
 const GA_MEASUREMENT_ID = 'G-1WMV847FRL';
 const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -11,6 +15,15 @@ window.dataLayer = window.dataLayer || [];
 
 // Analytics wrapper function
 export const gtag = (...args) => {
+  if (args[0] === 'event') {
+    const language = isLocale(i18n.resolvedLanguage)
+      ? i18n.resolvedLanguage
+      : isLocale(i18n.language) ? i18n.language : DEFAULT_LOCALE;
+    // Read the current language for every event; explicit values (such as the
+    // destination of language_change) take precedence without mutating callers.
+    args[2] = { language, ...args[2] };
+  }
+
   if (isLocalhost) {
     console.log('📊 Analytics (debug):', ...args);
     return;
@@ -20,12 +33,12 @@ export const gtag = (...args) => {
     window.gtag(...args);
   } else {
     console.warn('Google Analytics not loaded yet');
-    window.dataLayer.push(...args);
+    window.dataLayer.push(args);
   }
 };
 
 // Initialize analytics only in production
-if (!isLocalhost) {
+if (!isLocalhost && !redirectToSupport) {
   // Load GA script
   const script = document.createElement('script');
   script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;

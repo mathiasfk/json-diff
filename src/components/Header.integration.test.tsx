@@ -27,12 +27,6 @@ describe('localized navigation', () => {
     expect(screen.queryByRole('link', { name: i18n.t('header.faq') })).toBeNull();
   });
 
-  it('localizes the FAQ home link and initial route', async () => {
-    renderRoute('/es/faq');
-    await waitFor(() => expect(document.documentElement.lang).toBe('es'));
-    expect(screen.getByRole('link', { name: i18n.t('header.homeAria') }).getAttribute('href')).toBe('/es');
-  });
-
   it.each(['en', 'pt', 'es', 'zh'])('sets the initial document language for %s and provides translated keys', async locale => {
     renderRoute(`/${locale}`);
     await waitFor(() => expect(document.documentElement.lang).toBe(locale));

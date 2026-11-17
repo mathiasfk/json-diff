@@ -12,10 +12,10 @@ describe('static support pages', () => {
         const html = pages[`${locale}/${page}/index.html`];
         expect(html).toContain(`<html lang="${locale}">`);
         expect(html).toContain(`<link rel="canonical" href="https://smartjsondiff.com/${locale}/${page}/">`);
-        expect(html).toContain(`href="/#/${locale}"`);
+        expect(html).toContain(`href="/${locale === 'en' ? '' : `${locale}/`}"`);
         expect(html).toContain('<select id="language-selector">');
         expect(html).toContain(`value="/${locale}/${page}/"\n      lang="${locale}" selected`);
-        expect(html).toContain('<noscript><nav');
+        expect(html).toContain('hreflang="x-default"');
       }
     }
     expect(pages['en/faq/index.html']).toContain(en.faq.items[0].q);
@@ -24,7 +24,7 @@ describe('static support pages', () => {
   it('keeps links under the preview base and prevents preview indexing', () => {
     const html = supportPages('/preview/')['pt/privacy/index.html'];
     expect(html).toContain('href="/preview/pt/faq/"');
-    expect(html).toContain('href="/preview/#/pt"');
+    expect(html).toContain('href="/preview/pt/"');
     expect(html).toContain('noindex, nofollow');
   });
   it('shares the saved theme and localized header across support pages', () => {

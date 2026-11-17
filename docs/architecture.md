@@ -37,9 +37,9 @@ Reusable UI elements that encapsulate specific functionality:
 - `JsonEditor.tsx`: Custom JSON editor component with syntax highlighting and validation
 
 ### 2. Pages (`src/pages/`)
-Route-specific components (currently using simple routing):
+Legacy page components:
 
-- `Faq.tsx`: Frequently asked questions page
+- `Faq.tsx`: Previous React FAQ view; public FAQ URLs now serve static HTML.
 
 ### 3. Services (`src/services/`)
 External integrations and API communications:
@@ -73,7 +73,8 @@ Pure functions and helpers used throughout the application:
   - Monaco Editor (`vite-plugin-monaco-editor`)
 - `tsconfig.json`: TypeScript configuration with strict mode enabled
 - `postcss.config.js` & `tailwind.config.js`: Styling configuration
-- `scripts/update-sitemap.js`: Node script for sitemap generation
+- `scripts/support-pages.js`: Static support pages and development middleware
+- `scripts/build-pages.js`: Localized homepages, sitemap, compatibility alias, 404 and artifact validation
 
 ## Entry Points and CLI Interfaces
 
@@ -86,13 +87,12 @@ The application is accessed through a web browser via `index.html` which:
 ### Development Scripts (package.json)
 Available npm/pnpm scripts:
 - `dev`: Start development server with hot module replacement
-- `build`: TypeScript compile + Vite production build
+- `build`: TypeScript check + one Vite production build + localized HTML generation and validation
 - `preview`: Preview production build locally
 - `lint`: Run ESLint on TypeScript/TSX files
 - `test`: Run Vitest unit tests
 - `test:ui`: Run Vitest with UI interface
 - `test:coverage`: Run tests with coverage reporting
-- `prebuild`: Update sitemap before building
 
 ## Core Data Structures and Types
 
@@ -179,12 +179,12 @@ App.tsx
 4. Vitest watches test files during development
 
 ### Build Process
-1. `pnpm prebuild`: Runs `scripts/update-sitemap.js`
-2. `pnpm build`: 
+1. `pnpm build`:
    - TypeScript compilation (`tsc`)
    - Vite production build with minification
+   - Generates and validates localized HTML and the production sitemap using `scripts/build-pages.js`
    - Outputs to `dist/` directory
-3. `pnpm preview`: Serves built application locally for testing
+2. `pnpm preview`: Serves built application locally for testing
 
 ### Testing Pipeline
 - Unit tests with Vitest (`pnpm test`)
@@ -197,7 +197,7 @@ As documented in `.github/workflows/`:
 1. CI triggers on push to main and pull requests
 2. Builds application with `pnpm build`
 3. Deploys to GitHub Pages branch (`gh-pages`)
-4. Provides live preview at https://mathiasfk.github.io/json-diff/
+4. Builds isolated previews with `PREVIEW_BASE`; see [publication and rollback](deploy-multilingue.md).
 
 ### Code Quality Checks
 - ESLint with React hooks and refresh rules
@@ -286,4 +286,18 @@ User Input → Validation → Semantic Diff Processing → Result Formatting →
 ```
 ### Support pages
 
-The Vite support-pages plugin (`scripts/support-pages.js`) emits localized, static HTML at `/<locale>/<page>/` for FAQ, how-it-works, privacy and contact. It serves the same pages in development and respects `PREVIEW_BASE` for internal links. FAQ answers come from the locale JSON used by the legacy hash FAQ view; other support copy is in `src/content/support.json`, with shared navigation and example labels in `src/content/support-nav.json`. The existing `#/<locale>/faq` routes remain available. Update the sitemap when adding pages.
+The Vite support-pages plugin (`scripts/support-pages.js`) emits localized, static HTML at `/<locale>/<page>/` for FAQ, how-it-works, privacy and contact. It serves the same pages in development and respects `PREVIEW_BASE` for internal links. FAQ answers come from the locale JSON; other support copy is in `src/content/support.json`, with shared navigation and example labels in `src/content/support-nav.json`. These documents load neither React nor Monaco. Legacy `#/<locale>/faq` links redirect to the static FAQ document.
+
+### Multilingual routing and SEO
+
+`src/content/site.json` defines the production origin, locales, native language names, Open Graph locale codes, support page names and public homepage copy. English uses `/`; the other tool versions use `/pt/`, `/es/` and `/zh/`. Support URLs retain the locale prefix, including English: `/en/faq/`, for example. The four homepages and sixteen support pages form the canonical URL set.
+
+Vite compiles one shared set of JS, CSS and worker assets. `scripts/build-pages.js` reuses the compiled homepage template to generate localized HTML with visible introductory copy, navigation, a self-referencing canonical, reciprocal hreflang links, social metadata and structured data. React uses `createRoot` to replace the initial content; the same introductory copy remains visible after mounting. This is static generation of public content, not hydration of the editors.
+
+`src/bootstrap-url.ts` is the first dependency of the application entry. It normalizes recognized legacy hash routes and `?lang=` URLs before i18next and analytics initialize. A valid localized pathname takes precedence over stored or browser preferences; `/` always uses English. `/en/` is a compatibility alias, not a canonical homepage. Migration preserves unrelated query parameters and ordinary anchors. Static hosting provides client-side redirects here, rather than HTTP 301 responses.
+
+The tool uses `BrowserRouter` with the deployment base. `LocaleLayout` synchronizes pathname, language and document metadata without remounting `App`, so language navigation preserves editor inputs and comparison results even when storage is unavailable. Support pages remain separate static documents. Unknown paths rely on the host's actual 404 response rather than a catch-all SPA fallback.
+
+The build validates generated documents, canonical and alternate URLs, local references and shared assets. Production gets a sitemap containing only canonical URLs, without synthetic modification dates. Preview documents use `noindex` and prefixed local links; previews do not publish a sitemap.
+
+Keep the four small translation dictionaries in the shared bundle and the existing DiffViewer import lazy. When changing this pipeline, compare initial compressed JS/CSS and browser loading against the previous version, including external Monaco requests. Language changes within the tool should not reload Monaco. The publication workflow, preview preservation and rollback procedure are documented in [deploy-multilingue.md](deploy-multilingue.md).

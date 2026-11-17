@@ -1,42 +1,18 @@
+import { redirectToSupport } from './bootstrap-url'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
-import App from './App'
-import Faq from './pages/Faq'
-import { LocaleLayout } from './LocaleLayout'
-import { DEFAULT_LOCALE, detectInitialLocale } from './i18n-config'
+import { BrowserRouter } from 'react-router-dom'
 import { ThemeProvider } from './theme'
-import './index.css'
+import App from './App'
+import { LocaleLayout } from './LocaleLayout'
 import './i18n'
+import './index.css'
 
-// Disable StrictMode in production to reduce TBT
-const isProduction = import.meta.env.PROD
-// eslint-disable-next-line react-refresh/only-export-components
-const AppWrapper = ({ children }: { children: React.ReactNode }) =>
-  isProduction ? <>{children}</> : <React.StrictMode>{children}</React.StrictMode>
-
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <AppWrapper>
-    <ThemeProvider><HashRouter>
-      <Routes>
-        {/* Redirect the bare root to the detected/initial locale route. */}
-        <Route
-          path="/"
-          element={<Navigate to={`/${detectInitialLocale()}`} replace />}
-        />
-        {/* Locale-prefixed routes. LocaleLayout validates the locale segment. */}
-        <Route path="/:locale" element={<LocaleLayout><App /></LocaleLayout>} />
-        <Route
-          path="/:locale/faq"
-          element={
-            <LocaleLayout>
-              <Faq />
-            </LocaleLayout>
-          }
-        />
-        {/* Fallback: unknown paths go to the default-locale home. */}
-        <Route path="*" element={<Navigate to={`/${DEFAULT_LOCALE}`} replace />} />
-      </Routes>
-    </HashRouter></ThemeProvider>
-  </AppWrapper>
-)
+if (!redirectToSupport) {
+  const content = <ThemeProvider><BrowserRouter basename={import.meta.env.BASE_URL}>
+    <LocaleLayout><App /></LocaleLayout>
+  </BrowserRouter></ThemeProvider>
+  ReactDOM.createRoot(document.getElementById('root')!).render(
+    import.meta.env.PROD ? content : <React.StrictMode>{content}</React.StrictMode>
+  )
+}

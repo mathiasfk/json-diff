@@ -6,7 +6,7 @@
   "packageManager": "pnpm@9.14.2",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && node scripts/build-pages.js",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest run --config vitest.config.ts",
