@@ -34,23 +34,23 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
   };
 
   return (
-    <header className="bg-gray-800 border-b border-gray-700 px-4 sm:px-6 py-3" role="banner">
-      <div className="max-w-screen-2xl mx-auto flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <header className="site-header" role="banner">
+      <div className="site-header-inner">
         <div>
-          <h1 className="text-lg font-semibold tracking-tight">{t('app.title')}</h1>
-          <p className="text-xs sm:text-sm text-gray-400 mt-0.5">
+          <h1 className="site-title">{t('app.title')}</h1>
+          <p className="site-subtitle">
             {t('header.subtitle')}
           </p>
         </div>
         {showNav ? (
-          <nav aria-label={t('header.primaryNav')} className="flex flex-col items-center gap-2 md:flex-row md:items-center md:gap-4">
+          <nav aria-label={t('header.primaryNav')} className="site-header-actions">
             {isFaq && (
               <button
                 onClick={() => {
                   gtag('event', 'faq_back_click');
                   navigate(-1);
                 }}
-                className="text-sm text-gray-400 hover:text-gray-200"
+                className="site-home"
                 aria-label={t('header.backAria')}
               >
                 ← {t('header.back')}
@@ -65,10 +65,10 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
             />
           </nav>
         ) : homeLink ? (
-          <nav aria-label={t('header.primaryNav')} className="flex items-center justify-center gap-4 flex-wrap">
+          <nav aria-label={t('header.primaryNav')} className="site-header-actions">
             <Link
               to={getLocalePath(currentLanguage, '')}
-              className="text-sm text-gray-400 hover:text-gray-200"
+              className="site-home"
               aria-label={t('header.homeAria')}
             >
               ← {t('header.home')}

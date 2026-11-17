@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./shared.css";
 @config "../tailwind.config.js";
 
 /* Neutral surfaces are shared by the application chrome and Monaco themes. */
@@ -13,45 +14,14 @@
   --color-gray-200: var(--text-strong);
   --color-gray-100: var(--text-primary);
 }
-:root {
-  --surface-base: #181818;
-  --surface-raised: #242424;
-  --surface-border: #404040;
-  --surface-hover: #505050;
-  --text-subtle: #929292;
-  --text-muted: #ababab;
-  --text-secondary: #c9c9c9;
-  --text-strong: #e3e3e3;
-  --text-primary: #f2f2f2;
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  line-height: 1.5;
-  color-scheme: dark;
-  color: var(--text-primary);
-  background: var(--surface-base);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-}
-:root[data-theme="light"] {
-  --surface-base: #f4f4f4;
-  --surface-raised: #ffffff;
-  --surface-border: #d1d1d1;
-  --surface-hover: #bdbdbd;
-  --text-subtle: #666666;
-  --text-muted: #595959;
-  --text-secondary: #414141;
-  --text-strong: #292929;
-  --text-primary: #1c1c1c;
-  color-scheme: light;
-}
 body { margin: 0; min-width: 320px; min-height: 100vh; }
 #root { width: 100%; min-height: 100vh; }
-.theme-toggle, .editor-action {
+.editor-action {
   display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
   min-height: 2rem; padding: .3rem .65rem; border: 1px solid var(--surface-border);
   border-radius: .35rem; color: var(--text-secondary); background: var(--surface-raised);
   font-size: .75rem; cursor: pointer;
 }
-.theme-toggle:hover, .editor-action:hover:not(:disabled) { border-color: var(--text-muted); color: var(--text-primary); }
+.editor-action:hover:not(:disabled) { border-color: var(--text-muted); color: var(--text-primary); }
 .editor-action:disabled { opacity: .45; cursor: not-allowed; }
-.theme-toggle:focus-visible, .editor-action:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; }
+.editor-action:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; }
