@@ -175,7 +175,13 @@
     "inputEditors": "Diff 输入编辑器",
     "comparisonActions": "比较操作",
     "comparisonResults": "比较结果",
-    "loadingDiff": "正在加载比较结果..."
+    "loadingDiff": "正在加载比较结果...",
+    "load": "加载文件",
+    "loadLeft": "将文件加载到左侧输入",
+    "loadRight": "将文件加载到右侧输入",
+    "replaceWithFile": "用所选文件替换当前内容？",
+    "fileInvalid": "不支持此文件类型。请选择 JSON、JSONL、YAML 或文本文件。",
+    "fileReadError": "无法读取文件，请重试。"
   },
   "diffViewer": {
     "title": "比较结果",

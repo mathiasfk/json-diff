@@ -175,7 +175,13 @@
     "inputEditors": "Editores de entrada do diff",
     "comparisonActions": "Ações de comparação",
     "comparisonResults": "Resultados da comparação",
-    "loadingDiff": "Carregando comparação..."
+    "loadingDiff": "Carregando comparação...",
+    "load": "Carregar arquivo",
+    "loadLeft": "Carregar arquivo na entrada esquerda",
+    "loadRight": "Carregar arquivo na entrada direita",
+    "replaceWithFile": "Substituir o conteúdo atual pelo arquivo selecionado?",
+    "fileInvalid": "Tipo de arquivo não suportado. Escolha um arquivo JSON, JSONL, YAML ou texto.",
+    "fileReadError": "Não foi possível ler o arquivo. Tente novamente."
   },
   "diffViewer": {
     "title": "Resultado da comparação",

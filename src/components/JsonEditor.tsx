@@ -46,6 +46,8 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
 }) => {
   const { t } = useTranslation();
   const { theme } = useTheme();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const monacoRef = useRef<typeof monaco | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -120,50 +122,49 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
     }
   };
 
-  const handleDrop = async (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-
-    const files = Array.from(e.dataTransfer.files);
-    if (files.length === 0) return;
-
-    const file = files[0];
-
-    // Detect the format from the dropped file's extension so the editor and
-    // parser stay in sync with what the user actually dropped.
+  const loadFile = async (file: File, source: 'drop' | 'picker') => {
+    setFileError(null);
     const detected = detectFormatFromFilename(file.name);
     const accepted = detected !== 'json' || file.type === 'application/json' ||
-      file.type === 'text/plain' || file.name.toLowerCase().endsWith('.json') ||
-      file.name.toLowerCase().endsWith('.jsonl') || file.name.toLowerCase().endsWith('.ndjson') ||
-      file.name.toLowerCase().endsWith('.yml') || file.name.toLowerCase().endsWith('.yaml');
+      file.type === 'text/plain' || /\.(json|jsonl|ndjson|yml|yaml)$/i.test(file.name);
 
     if (!accepted) {
-      gtag('event', 'drag_drop_invalid_file', {
-        side: side || 'unknown',
-        file_type: file.type,
-        file_name: file.name,
-      });
-      return; // Silently ignore unsupported files
+      setFileError(t('jsonEditor.fileInvalid'));
+      if (source === 'drop') {
+        gtag('event', 'drag_drop_invalid_file', {
+          side: side || 'unknown', file_type: file.type, file_name: file.name,
+        });
+      }
+      return;
     }
+
+    if (source === 'picker' && value.trim() && !window.confirm(t('jsonEditor.replaceWithFile'))) return;
 
     try {
       const text = await file.text();
-
-      // Set the raw text exactly as it was in the file, without formatting,
-      // and switch the selector to the detected format.
       onChange(text);
       onFormatChange(detected);
-      gtag('event', 'drag_drop_success', {
-        side: side || 'unknown',
-        file_size: file.size,
-        detected_format: detected,
-        formatted: false,
+      gtag('event', source === 'drop' ? 'drag_drop_success' : 'file_load_success', {
+        side: side || 'unknown', file_size: file.size, detected_format: detected, formatted: false,
       });
-    } catch (readError) {
-      // Silently ignore read errors
-      console.error('Error reading file:', readError);
+    } catch {
+      setFileError(t('jsonEditor.fileReadError'));
     }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) void loadFile(file, 'drop');
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    // Clearing the input allows selecting the same file again, including after cancellation.
+    e.target.value = '';
+    if (file) void loadFile(file, 'picker');
   };
 
   useEffect(() => {
@@ -221,9 +222,13 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
   return (
     <div className="flex flex-col h-full min-h-0">
       <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 bg-gray-800 border border-gray-700 border-b-0 rounded-t-md">
-        <span className="text-sm font-medium text-gray-200">{label}</span>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-1 min-w-[14rem] items-center justify-between gap-3">
+          <span className="text-sm font-medium text-gray-200">{label}</span>
           <FormatSelector value={format} onChange={onFormatChange} label={t('jsonEditor.formatLabel')} />
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <input ref={fileInputRef} type="file" accept=".json,.jsonl,.ndjson,.yaml,.yml,application/json,text/plain" onChange={handleFileChange} className="hidden" tabIndex={-1} aria-hidden="true" />
+          <button type="button" onClick={() => fileInputRef.current?.click()} className="editor-action" aria-label={t(side === 'left' ? 'jsonEditor.loadLeft' : 'jsonEditor.loadRight')}>{t('jsonEditor.load')}</button>
           {onFormat && <button type="button" onClick={onFormat} disabled={!value.trim()} className="editor-action" aria-label={t(side === 'left' ? 'jsonEditor.formatLeft' : 'jsonEditor.formatRight')}>{t('app.format')}</button>}
           {onClear && <button type="button" onClick={onClear} disabled={!value.trim()} className="editor-action" aria-label={t(side === 'left' ? 'jsonEditor.clearLeft' : 'jsonEditor.clearRight')}>{t('app.clear')}</button>}
         </div>
@@ -276,9 +281,9 @@ export const JsonEditor: React.FC<JsonEditorProps> = ({
             renderValidationDecorations: 'on',
           }}
         />
-        {error && (
+        {(error || fileError) && (
           <div role="alert" className="absolute bottom-2 left-2 right-2 bg-red-900/90 text-red-200 text-xs p-2 rounded z-10 pointer-events-none">
-            {error}
+            {fileError || error}
           </div>
         )}
       </div>

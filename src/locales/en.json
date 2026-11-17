@@ -175,7 +175,13 @@
     "inputEditors": "Diff input editors",
     "comparisonActions": "Comparison actions",
     "comparisonResults": "Comparison results",
-    "loadingDiff": "Loading comparison..."
+    "loadingDiff": "Loading comparison...",
+    "load": "Load file",
+    "loadLeft": "Load file into left input",
+    "loadRight": "Load file into right input",
+    "replaceWithFile": "Replace the current input with the selected file?",
+    "fileInvalid": "Unsupported file type. Choose a JSON, JSONL, YAML, or text file.",
+    "fileReadError": "Could not read the file. Please try again."
   },
   "diffViewer": {
     "title": "Comparison results",

@@ -1,4 +1,4 @@
-import { act, cleanup, render } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { JsonEditor } from './JsonEditor';
 import type { Format } from '../utils/formatSelector';
@@ -8,7 +8,7 @@ vi.mock('@monaco-editor/react', () => ({ default: ({ onMount }: { onMount: (edit
 vi.mock('./jsonlLanguage', () => ({ registerJsonlLanguage: vi.fn() }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string, options?: { line: number }) => `${key}:${options?.line ?? ''}` }) }));
 
-afterEach(() => { cleanup(); mocks.mounts.length = 0; });
+afterEach(() => { cleanup(); mocks.mounts.length = 0; vi.restoreAllMocks(); });
 
 function setupModel() {
   const model = { getLineMaxColumn: () => 10, getLineCount: () => 1, isDisposed: () => false };
@@ -71,4 +71,59 @@ describe('Monaco validation', () => {
     expect(disposeModel).toHaveBeenCalled();
   });
 
+});
+
+
+describe('file loading', () => {
+  function file(name: string, content: string, type = '') {
+    const result = new File([content], name, { type });
+    Object.defineProperty(result, 'text', { value: vi.fn().mockResolvedValue(content) });
+    return result;
+  }
+
+  it.each([['data.json', 'json'], ['data.ndjson', 'jsonl'], ['data.yaml', 'yaml']] as const)(
+    'loads %s into the chosen editor and detects its format', async (name, format) => {
+      const onChange = vi.fn(); const onFormatChange = vi.fn();
+      const { container } = render(<JsonEditor label="Right" side="right" format="json" value="" onChange={onChange} onFormatChange={onFormatChange} />);
+      const input = container.querySelector('input[type="file"]')!;
+      fireEvent.change(input, { target: { files: [file(name, 'content')] } });
+      await waitFor(() => expect(onChange).toHaveBeenCalledWith('content'));
+      expect(onFormatChange).toHaveBeenCalledWith(format);
+      expect(screen.getByRole('button', { name: 'jsonEditor.loadRight:' })).toBeTruthy();
+    },
+  );
+
+  it('asks before replacing content and leaves it untouched when declined', async () => {
+    const onChange = vi.fn(); const onFormatChange = vi.fn();
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const { container } = render(<JsonEditor label="Left" side="left" format="json" value="existing" onChange={onChange} onFormatChange={onFormatChange} />);
+    const input = container.querySelector('input[type="file"]')!;
+    const selected = file('data.yaml', 'new content');
+    fireEvent.change(input, { target: { files: [selected] } });
+    expect(confirm).toHaveBeenCalledWith('jsonEditor.replaceWithFile:');
+    expect(onChange).not.toHaveBeenCalled();
+    expect(onFormatChange).not.toHaveBeenCalled();
+    confirm.mockReturnValue(true);
+    fireEvent.change(input, { target: { files: [selected] } });
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith('new content'));
+    expect(onFormatChange).toHaveBeenCalledWith('yaml');
+  });
+
+  it('reports an unsupported file without replacing content', () => {
+    const onChange = vi.fn();
+    const { container } = render(<JsonEditor label="Left" side="left" format="json" value="" onChange={onChange} onFormatChange={() => {}} />);
+    fireEvent.change(container.querySelector('input[type="file"]')!, { target: { files: [file('image.png', '', 'image/png')] } });
+    expect(screen.getByRole('alert').textContent).toBe('jsonEditor.fileInvalid:');
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('still loads dropped files with the detected format', async () => {
+    const onChange = vi.fn(); const onFormatChange = vi.fn();
+    const { container } = render(<JsonEditor label="Left" side="left" format="json" value="" onChange={onChange} onFormatChange={onFormatChange} />);
+    const input = container.querySelector('input[type="file"]')!;
+    const dropZone = input.closest('.flex-col')!.querySelector('[class*="overflow-hidden"]')!;
+    fireEvent.drop(dropZone, { dataTransfer: { files: [file('data.jsonl', '{"a":1}')] } });
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith('{"a":1}'));
+    expect(onFormatChange).toHaveBeenCalledWith('jsonl');
+  });
 });
