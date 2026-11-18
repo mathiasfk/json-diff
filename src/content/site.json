@@ -5,9 +5,9 @@
   "ogLocales": {"en":"en_US", "pt":"pt_BR", "zh":"zh_CN", "es":"es_ES"},
   "pages": ["faq", "how-it-works", "privacy", "contact"],
   "home": {
-    "en": {"title":"Smart JSON Diff — Compare JSON, YAML, and JSONL", "description":"Compare JSON, YAML and JSONL semantically with intelligent array matching. Free and private in your browser.", "intro":"Compare JSON, YAML and JSONL semantically with intelligent array matching. Format inputs and see the differences in your browser."},
-    "pt": {"title":"Smart JSON Diff — Compare JSON, YAML e JSONL", "description":"Compare JSON, YAML e JSONL semanticamente com correspondência inteligente de arrays. Grátis e privado no navegador.", "intro":"Compare JSON, YAML e JSONL semanticamente com correspondência inteligente de arrays. Formate as entradas e veja as diferenças no navegador."},
-    "es": {"title":"Smart JSON Diff — Compara JSON, YAML y JSONL", "description":"Compara JSON, YAML y JSONL semánticamente con coincidencia inteligente de arrays. Gratis y privado en tu navegador.", "intro":"Compara JSON, YAML y JSONL semánticamente con coincidencia inteligente de arrays. Formatea las entradas y consulta las diferencias en tu navegador."},
-    "zh": {"title":"Smart JSON Diff — 比较 JSON、YAML 和 JSONL", "description":"通过智能数组匹配语义比较 JSON、YAML 和 JSONL。免费且在浏览器中保护隐私。", "intro":"通过智能数组匹配语义比较 JSON、YAML 和 JSONL。在浏览器中格式化输入并查看差异。"}
+    "en": {"title":"Compare JSON Online | Smart JSON Diff", "description":"Compare and format JSON, YAML, and JSONL for free in your browser. See differences side by side with automatic array alignment."},
+    "pt": {"title":"Compare JSON online | Smart JSON Diff", "description":"Compare e formate JSON, YAML e JSONL grátis no navegador. Veja as diferenças lado a lado com alinhamento automático de arrays."},
+    "es": {"title":"Compara JSON en línea | Smart JSON Diff", "description":"Compara y formatea JSON, YAML y JSONL gratis en tu navegador. Ve las diferencias lado a lado con alineación automática de arrays."},
+    "zh": {"title":"在线比较 JSON | Smart JSON Diff", "description":"在浏览器中免费比较和格式化 JSON、YAML 和 JSONL。自动对齐数组，并排查看差异。"}
   }
 }

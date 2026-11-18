@@ -1,8 +1,6 @@
 import { Suspense, lazy, useState, useEffect } from 'react';
 import { ConfirmDialog } from './components/ConfirmDialog';
 import { Header } from './components/Header';
-import { homeContent } from './site';
-import { isLocale } from './i18n-config';
 import { SupportFooter } from './components/SupportFooter';
 import { useTranslation } from 'react-i18next';
 import { JsonEditor } from './components/JsonEditor';
@@ -18,7 +16,7 @@ type InputError = { key: 'errors.empty' | 'errors.invalid' | 'errors.invalidDeta
 const COMPARISON_HISTORY_KEY = 'jsonDiffComparison';
 
 function App() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const LS_KEYS = {
     left: 'jsonDiff.left',
     right: 'jsonDiff.right',
@@ -357,7 +355,6 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 relative">
       <Header />
-      <p className="max-w-screen-2xl mx-auto px-6 py-3 text-sm">{homeContent[isLocale(i18n?.resolvedLanguage) ? i18n.resolvedLanguage : 'en'].intro}</p>
       {confirmExampleOpen && <ConfirmDialog
         title={t('app.replaceExampleTitle')}
         description={t('app.replaceWithExample')}
