@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <script>self["MonacoEnvironment"] = (function (paths) {
+          return {
+            globalAPI: false,
+            getWorkerUrl : function (moduleId, label) {
+              var result =  paths[label];
+              if (/^((http:)|(https:)|(file:)|(\/\/))/.test(result)) {
+                var currentUrl = String(window.location);
+                var currentOrigin = currentUrl.substr(0, currentUrl.length - window.location.hash.length - window.location.search.length - window.location.pathname.length);
+                if (result.substring(0, currentOrigin.length) !== currentOrigin) {
+                  var js = '/*' + label + '*/importScripts("' + result + '");';
+                  var blob = new Blob([js], { type: 'application/javascript' });
+                  return URL.createObjectURL(blob);
+                }
+              }
+              return result;
+            }
+          };
+        })({
+  "json": "/preview/branch-codex-localized-home-metadata/monacoeditorwork/json.worker.bundle.js"
+});</script>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google-adsense-account" content="ca-pub-6364476119143776" />
+    <!-- SEO:START -->
+<title>Compara JSON en línea | Smart JSON Diff</title><meta name="title" content="Compara JSON en línea | Smart JSON Diff"><meta name="description" content="Compara y formatea JSON, YAML y JSONL gratis en tu navegador. Ve las diferencias lado a lado con alineación automática de arrays."><meta name="robots" content="noindex, nofollow"><meta name="inLanguage" content="es"><link rel="canonical" href="https://smartjsondiff.com/es/"><link rel="alternate" hreflang="en" href="https://smartjsondiff.com/"><link rel="alternate" hreflang="pt" href="https://smartjsondiff.com/pt/"><link rel="alternate" hreflang="zh" href="https://smartjsondiff.com/zh/"><link rel="alternate" hreflang="es" href="https://smartjsondiff.com/es/"><link rel="alternate" hreflang="x-default" href="https://smartjsondiff.com/">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Smart JSON Diff"><meta property="og:title" content="Compara JSON en línea | Smart JSON Diff"><meta property="og:description" content="Compara y formatea JSON, YAML y JSONL gratis en tu navegador. Ve las diferencias lado a lado con alineación automática de arrays."><meta property="og:url" content="https://smartjsondiff.com/es/"><meta property="og:locale" content="es_ES"><meta property="og:image" content="https://smartjsondiff.com/og-image-1200x630.png">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Compara JSON en línea | Smart JSON Diff"><meta name="twitter:description" content="Compara y formatea JSON, YAML y JSONL gratis en tu navegador. Ve las diferencias lado a lado con alineación automática de arrays."><meta name="twitter:url" content="https://smartjsondiff.com/es/"><meta name="twitter:image" content="https://smartjsondiff.com/og-image-1200x630.png">
+<script id="application-schema" type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Smart JSON Diff","description":"Compara y formatea JSON, YAML y JSONL gratis en tu navegador. Ve las diferencias lado a lado con alineación automática de arrays.","url":"https://smartjsondiff.com/es/","applicationCategory":"DeveloperApplication","operatingSystem":"Any","inLanguage":"es","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Smart JSON Diff","url":"https://smartjsondiff.com/","logo":"https://smartjsondiff.com/android-chrome-512x512.png"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Smart JSON Diff","url":"https://smartjsondiff.com/"}</script>
+<!-- SEO:END -->
+    <link rel="icon" href="/preview/branch-codex-localized-home-metadata/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/preview/branch-codex-localized-home-metadata/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/preview/branch-codex-localized-home-metadata/favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="/preview/branch-codex-localized-home-metadata/apple-touch-icon.png" />
+    <link rel="manifest" href="/preview/branch-codex-localized-home-metadata/site.webmanifest" />
+    <meta name="theme-color" content="#181818" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <script type="module" crossorigin src="/preview/branch-codex-localized-home-metadata/assets/index-CtGo4SC1.js"></script>
+    <link rel="modulepreload" crossorigin href="/preview/branch-codex-localized-home-metadata/assets/rolldown-runtime-BXW00l8F.js">
+    <link rel="modulepreload" crossorigin href="/preview/branch-codex-localized-home-metadata/assets/react-vendor-zUg4jODr.js">
+    <link rel="modulepreload" crossorigin href="/preview/branch-codex-localized-home-metadata/assets/vendor-6sTmiOiy.js">
+    <link rel="stylesheet" crossorigin href="/preview/branch-codex-localized-home-metadata/assets/index-DQWwkCfW.css">
+  </head>
+  <body>
+    <div id="root"><!-- SHELL:START --><header class="site-header"><div class="site-header-inner"><div><h1 class="site-title">Smart JSON Diff</h1><p class="site-subtitle">Compara JSON, YAML y JSONL semánticamente con coincidencia inteligente de arrays. Formatea las entradas y consulta las diferencias en tu navegador.</p></div></div></header><main style="min-height:55vh;padding:24px"></main><footer style="padding:24px"><nav aria-label="Ayuda"><a href="/preview/branch-codex-localized-home-metadata/es/faq/">Preguntas frecuentes</a> <a href="/preview/branch-codex-localized-home-metadata/es/how-it-works/">Cómo funciona</a> <a href="/preview/branch-codex-localized-home-metadata/es/privacy/">Privacidad</a> <a href="/preview/branch-codex-localized-home-metadata/es/contact/">Contacto</a> </nav></footer><!-- SHELL:END --></div>
+    <noscript><p>Smart JSON Diff requires JavaScript.</p></noscript>
+  </body>
+</html>
