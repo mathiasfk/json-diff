@@ -69,6 +69,18 @@ describe('formatSelector edge cases', () => {
       expect(parse('path: C:\\temp', 'yaml')).toEqual({ path: 'C:\\temp' });
     });
 
+    it.each([false, true])('preserves literal backslashes in quoted YAML (flow: %s)', (yamlFlowStyle) => {
+      const value = { path: 'C:\\new\\O\'Brien\\"quoted"\\' };
+      const output = serialize(value, 'yaml', { yamlFlowStyle });
+      expect(output).toContain("'C:\\new\\O''Brien\\\"quoted\"\\'");
+      expect(parse(output, 'yaml')).toEqual(value);
+    });
+
+    it('round-trips a quoted root scalar containing a colon', () => {
+      const path = 'C:\\new\\';
+      expect(parse(serialize(path, 'yaml'), 'yaml')).toBe(path);
+    });
+
     it('keeps colon/hash tokens as literal string values in YAML', () => {
       expect(parse('key: a:b c#d', 'yaml')).toEqual({ key: 'a:b c#d' });
     });
