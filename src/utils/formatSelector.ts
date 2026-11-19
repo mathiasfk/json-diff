@@ -330,7 +330,7 @@ function parseYamlNode(content: string, parentIndent: number): unknown {
     return parseYamlSequence(lines, parentIndent);
   }
   // Mapping
-  if (first.rest.includes(':')) {
+  if (first.rest.includes(':') && !/^(?:"(?:[^"\\]|\\.)*"|'(?:[^']|'')*')$/.test(first.rest)) {
     return parseYamlMapping(lines, parentIndent);
   }
 
@@ -647,7 +647,9 @@ function yamlScalarValue(value: unknown): string {
   // Quote if it could be misinterpreted as a special token or contains ':' followed by space.
   const needsQuote = /[:#[\]{}&*!|>'"%@`,]/.test(str) || /^(true|false|null|~|-?\d+(\.\d+)?)$/.test(str);
   if (needsQuote) {
-    return '"' + str.replace(/"/g, '\\"') + '"';
+    // YAML single-quoted scalars preserve literal backslashes and double quotes.
+    if (str.includes('\\') || str.includes('"')) return "'" + str.replace(/'/g, "''") + "'";
+    return '"' + str + '"';
   }
   return str;
 }

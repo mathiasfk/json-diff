@@ -21,6 +21,7 @@
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 const SITE = 'https://smartjsondiff.com';
 const HOME = `${SITE}/`;
@@ -33,10 +34,10 @@ function getMeta(html, name) {
   const c = m[0].match(/content=["']([^"']*)["']/i);
   return c ? c[1] : '';
 }
-function getTag(html, tag) {
-  const re = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, 'i');
-  const m = html.match(re);
-  return m ? m[1].replace(/<[^>]*>/g, '').trim() : null;
+function getTitle(html) {
+  // Markup-like text inside a title is part of the title text.
+  const match = html.match(/<title(?=[\s>])[^>]*>([\s\S]*?)<\/title\s*>/i);
+  return match ? match[1].trim() : '';
 }
 function getAttrs(html, tag, attr) {
   const out = [];
@@ -73,8 +74,8 @@ function getJsonLdTypes(html) {
   return types;
 }
 
-function auditHome(html, headers, status, robotsText) {
-  const title = getTag(html, 'title') || '';
+export function auditHome(html, headers, status, robotsText) {
+  const title = getTitle(html);
   const desc = getMeta(html, 'description') || '';
   const h1Count = countTags(html, 'h1');
   // heading skip detection within sequence of distinct levels present
@@ -89,8 +90,14 @@ function auditHome(html, headers, status, robotsText) {
 
   const hrefs = getAttrs(html, 'a', 'href');
   const internal = hrefs.filter((h) => {
-    if (!h || h.startsWith('#') || h.startsWith('mailto:') || h.startsWith('javascript:')) return false;
-    try { return new URL(h, HOME).host === 'smartjsondiff.com'; } catch { return false; }
+    const href = h.trim();
+    if (!href || href.startsWith('#')) return false;
+    try {
+      const { protocol, host } = new URL(href, HOME);
+      return (protocol === 'https:' || protocol === 'http:') && host === 'smartjsondiff.com';
+    } catch {
+      return false;
+    }
   });
 
   const canonical = getCanonical(html);
@@ -225,4 +232,6 @@ async function main() {
   console.log('Wrote seo-audit/audit-report.txt and seo-audit/audit.json');
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((e) => { console.error(e); process.exit(1); });
+}
