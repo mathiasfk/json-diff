@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="zh"><head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-adsense-account" content="ca-pub-6364476119143776">
+  <title>常见问题 — Smart JSON Diff</title><meta name="description" content="工具比较解析后的值并排序对象属性。自动对齐匹配相似的数组元素；按位置比较会递归比较相同索引处的元素。比较在浏览器中进行。">
+  <link rel="canonical" href="https://smartjsondiff.com/zh/faq/">
+  <meta name="robots" content="noindex, nofollow"><link rel="alternate" hreflang="en"
+      href="https://smartjsondiff.com/en/faq/"><link rel="alternate" hreflang="pt"
+      href="https://smartjsondiff.com/pt/faq/"><link rel="alternate" hreflang="zh"
+      href="https://smartjsondiff.com/zh/faq/"><link rel="alternate" hreflang="es"
+      href="https://smartjsondiff.com/es/faq/"><link rel="alternate" hreflang="x-default" href="https://smartjsondiff.com/en/faq/">
+  <meta property="og:type" content="website"><meta property="og:locale" content="zh_CN"><meta property="og:title" content="常见问题 — Smart JSON Diff"><meta property="og:description" content="工具比较解析后的值并排序对象属性。自动对齐匹配相似的数组元素；按位置比较会递归比较相同索引处的元素。比较在浏览器中进行。"><meta property="og:url" content="https://smartjsondiff.com/zh/faq/"><meta property="og:image" content="https://smartjsondiff.com/og-image-1200x630.png">
+  <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="常见问题 — Smart JSON Diff"><meta name="twitter:description" content="工具比较解析后的值并排序对象属性。自动对齐匹配相似的数组元素；按位置比较会递归比较相同索引处的元素。比较在浏览器中进行。"><meta name="twitter:url" content="https://smartjsondiff.com/zh/faq/"><meta name="twitter:image" content="https://smartjsondiff.com/og-image-1200x630.png">
+  <meta name="theme-color" content="#181818"><style>:root {
+  --surface-base: #181818;
+  --surface-raised: #242424;
+  --surface-border: #404040;
+  --surface-hover: #505050;
+  --text-subtle: #929292;
+  --text-muted: #ababab;
+  --text-secondary: #c9c9c9;
+  --text-strong: #e3e3e3;
+  --text-primary: #f2f2f2;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  line-height: 1.5;
+  color-scheme: dark;
+  color: var(--text-primary);
+  background: var(--surface-base);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+:root[data-theme="light"] {
+  --surface-base: #f4f4f4;
+  --surface-raised: #ffffff;
+  --surface-border: #d1d1d1;
+  --surface-hover: #bdbdbd;
+  --text-subtle: #666666;
+  --text-muted: #595959;
+  --text-secondary: #414141;
+  --text-strong: #292929;
+  --text-primary: #1c1c1c;
+  color-scheme: light;
+}
+
+.site-header { background: var(--surface-raised); border-bottom: 1px solid var(--surface-border); padding: .75rem 1rem; }
+.site-header-inner { max-width: 1536px; margin: auto; display: flex; flex-direction: column; gap: .75rem; }
+.site-title { margin: 0; color: var(--text-primary); font-size: 1.125rem; line-height: 1.75rem; font-weight: 600; letter-spacing: -.025em; text-decoration: none; }
+.site-subtitle { margin: .125rem 0 0; color: var(--text-muted); font-size: .75rem; line-height: 1rem; }
+.site-header-actions { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.site-home { color: var(--text-muted); font-size: .875rem; text-decoration: none; }
+.site-home:hover { color: var(--text-strong); }
+.theme-toggle { display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
+  min-height: 2rem; padding: .3rem .65rem; border: 1px solid var(--surface-border);
+  border-radius: .35rem; color: var(--text-secondary); background: var(--surface-raised);
+  font: inherit; font-size: .75rem; cursor: pointer; }
+.theme-toggle[hidden] { display: none; }
+.theme-toggle:hover { border-color: var(--text-muted); color: var(--text-primary); }
+.theme-toggle:focus-visible, .site-home:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; }
+.site-language { display: flex; align-items: center; gap: .5rem; color: var(--text-muted); font-size: .75rem; line-height: 1rem; }
+.site-language select { background: var(--surface-base); border: 1px solid var(--surface-border); color: var(--text-strong);
+  border-radius: .25rem; padding: .25rem .5rem; font: inherit; }
+.site-language select:focus-visible { outline: 1px solid #3b82f6; outline-offset: 1px; }
+@media (min-width: 640px) { .site-header { padding-left: 1.5rem; padding-right: 1.5rem; } .site-subtitle { font-size: .875rem; line-height: 1.25rem; } }
+@media (min-width: 768px) { .site-header-inner { flex-direction: row; align-items: center; justify-content: space-between; } .site-header-actions { flex-direction: row; gap: 1rem; } }
+
+  * { box-sizing: border-box }
+  body { margin: 0; min-width: 320px; min-height: 100vh; background: var(--surface-base); color: var(--text-primary) }
+  a { color: var(--text-secondary); text-underline-offset: 4px }
+  a:hover { color: var(--text-primary) }
+  a:focus-visible { outline: 2px solid #60a5fa; outline-offset: 4px }
+  main { max-width: 920px; margin: auto; padding: 40px 24px 48px; min-height: 60vh }
+  main h1 { font-size: 1.75rem; line-height: 1.25; font-weight: 600; letter-spacing: -.025em; margin: 0 0 24px }
+  main h2 { font-size: 1.125rem; line-height: 1.4; font-weight: 600; margin: 0 0 8px }
+  main h3 { font-size: 1rem; line-height: 1.4; font-weight: 600; margin: 24px 0 6px }
+  section { margin: 0 0 16px; padding: 20px; background: var(--surface-raised); border: 1px solid var(--surface-border); border-radius: 6px }
+  main > p { color: var(--text-secondary) }
+  p { margin: 0 0 16px; overflow-wrap: anywhere }
+  section > p:last-child { margin-bottom: 0; color: var(--text-secondary) }
+  .examples { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 12px }
+  .examples span { font-size: .875rem; color: var(--text-secondary) }
+  .faq-example { margin-top: 20px }
+  .faq-example p { margin-top: 10px; color: var(--text-secondary) }
+  pre { margin: 4px 0 0; padding: 12px; background: var(--surface-base); border: 1px solid var(--surface-border);
+    border-radius: 4px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere }
+  footer { max-width: 1536px; margin: auto; padding: 0 24px 20px; color: var(--text-muted); font-size: .875rem }
+  footer nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 20px }
+  footer a { color: var(--text-muted) }
+  a[aria-current] { color: var(--text-primary); font-weight: 600 }
+  @media (max-width: 480px) { main { padding: 28px 16px 40px } main h1 { font-size: 1.5rem } section { padding: 16px } }
+</style>
+  <script>
+    (function () {
+      var theme;
+      try { theme = localStorage.getItem('jsonDiff.theme'); } catch (e) { /* Storage may be unavailable. */ }
+      if (theme !== 'light' && theme !== 'dark') {
+        theme = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      }
+      document.documentElement.dataset.theme = theme;
+      document.documentElement.style.colorScheme = theme;
+    }());
+  </script>
+</head><body>
+  <header class="site-header"><div class="site-header-inner">
+    <div><a class="site-title" href="/preview/branch-codex-configurar-dependabot/zh/">Smart JSON Diff</a>
+      <p class="site-subtitle">通过智能数组匹配语义比较 JSON、YAML 和 JSONL。在浏览器中格式化输入并查看差异。</p></div>
+    <nav class="site-header-actions" aria-label="主导航">
+      <a class="site-home" href="/preview/branch-codex-configurar-dependabot/zh/" aria-label="前往 Smart JSON Diff 首页">← 首页</a>
+      <button type="button" id="theme-toggle" class="theme-toggle" hidden
+        data-light="浅色" data-dark="深色"
+        data-switch-light="切换到浅色主题" data-switch-dark="切换到深色主题"><span aria-hidden="true"></span><span></span></button>
+      <label class="site-language" for="language-selector"><span>语言</span>
+        <select id="language-selector"><option value="/preview/branch-codex-configurar-dependabot/en/faq/"
+      lang="en" >English</option><option value="/preview/branch-codex-configurar-dependabot/pt/faq/"
+      lang="pt" >Português</option><option value="/preview/branch-codex-configurar-dependabot/zh/faq/"
+      lang="zh" selected>中文</option><option value="/preview/branch-codex-configurar-dependabot/es/faq/"
+      lang="es" >Español</option></select></label>
+    </nav></div></header>
+  <main><h1>常见问题</h1><section><h2>比较是如何进行的？</h2><p>工具比较解析后的值并排序对象属性。自动对齐匹配相似的数组元素；按位置比较会递归比较相同索引处的元素。比较在浏览器中进行。</p>
+      </section><section><h2>Smart JSON Diff 与其他 JSON Diff 工具有何不同？</h2><p>自动对齐忽略数组顺序，但仍计入重复元素。顺序重要时也可按位置比较。</p>
+      <div class="faq-example">
+        <div class="examples">
+    <div><span>左侧</span><pre><code>[1, 2, 3]</code></pre></div>
+    <div><span>右侧</span><pre><code>[3, 2, 1]</code></pre></div>
+  </div>
+        <p>自动对齐时等价：值及其出现次数没有变化。</p></div></section><section><h2>差异中的颜色是什么意思？</h2><p>绿色表示新增，红色表示删除。整行发生变化时会被突出显示，而具体发生变化的部分会使用更明显的颜色进一步突出。</p>
+      </section><section><h2>属性顺序会影响结果吗？</h2><p>不会。比较前会按字母顺序对属性进行排序，因此内容相同但属性顺序不同的对象会被视为等价。</p>
+      <div class="faq-example">
+        <div class="examples">
+    <div><span>左侧</span><pre><code>{&quot;a&quot;: 1, &quot;b&quot;: 2}</code></pre></div>
+    <div><span>右侧</span><pre><code>{&quot;b&quot;: 2, &quot;a&quot;: 1}</code></pre></div>
+  </div>
+        <p>等价：属性顺序不影响比较。</p></div></section><section><h2>数组顺序会影响结果吗？</h2><p>自动对齐（默认）下，仅改变顺序不影响结果。按位置比较会将顺序变化视为差异。</p>
+      <div class="faq-example">
+        <div class="examples">
+    <div><span>左侧</span><pre><code>[
+  {
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;Ana&quot;
+  },
+  {
+    &quot;id&quot;: 2,
+    &quot;name&quot;: &quot;Sam&quot;
+  }
+]</code></pre></div>
+    <div><span>右侧</span><pre><code>[
+  {
+    &quot;id&quot;: 2,
+    &quot;name&quot;: &quot;Sam&quot;
+  },
+  {
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;Ana&quot;
+  }
+]</code></pre></div>
+  </div>
+        <p>自动对齐时等价：值及其出现次数没有变化。</p></div></section><section><h2>数组差异是如何处理的？</h2><p>自动对齐通过标识字段或内容匹配相似元素。按位置比较会比较相同索引处的元素，包括嵌套数组。</p>
+      </section><section><h2>重复项和修改的值如何处理？</h2><p>重复元素仍会计数，即使结构相同，不同的值也会被检测出来。</p>
+      <div class="faq-example">
+        <div class="examples">
+    <div><span>左侧</span><pre><code>[1, 1, 2]</code></pre></div>
+    <div><span>右侧</span><pre><code>[1, 2]</code></pre></div>
+  </div>
+        <p>不等价：左侧的数字 1 多出现一次。</p></div><div class="faq-example">
+        <div class="examples">
+    <div><span>左侧</span><pre><code>{&quot;value&quot;: 10}</code></pre></div>
+    <div><span>右侧</span><pre><code>{&quot;value&quot;: 20}</code></pre></div>
+  </div>
+        <p>不等价：该字段在左侧为 10，右侧为 20。</p></div></section><section><h2>粘贴敏感数据安全吗？</h2><p>比较在浏览器中进行。输入和结果可能保留在 localStorage 中；有关存储和外部服务，请参阅隐私页面。</p>
+      </section><section><h2>如何报告错误？</h2><p>请发送电子邮件至 admin@smartjsondiff.com。</p>
+      </section></main>
+  <footer><nav aria-label="帮助"><a aria-current="page"
+      href="/preview/branch-codex-configurar-dependabot/zh/faq/">常见问题</a><a 
+      href="/preview/branch-codex-configurar-dependabot/zh/how-it-works/">使用说明</a><a 
+      href="/preview/branch-codex-configurar-dependabot/zh/privacy/">隐私</a><a 
+      href="/preview/branch-codex-configurar-dependabot/zh/contact/">联系</a></nav></footer>
+  <script>
+    var themeButton = document.getElementById('theme-toggle');
+    function updateThemeButton() {
+      var dark = document.documentElement.dataset.theme === 'dark';
+      var label = dark ? themeButton.dataset.switchLight : themeButton.dataset.switchDark;
+      themeButton.setAttribute('aria-label', label);
+      themeButton.setAttribute('title', label);
+      themeButton.children[0].textContent = dark ? '☀' : '☾';
+      themeButton.children[1].textContent = dark ? themeButton.dataset.light : themeButton.dataset.dark;
+    }
+    updateThemeButton();
+    themeButton.hidden = false;
+    themeButton.addEventListener('click', function () {
+      var theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = theme;
+      document.documentElement.style.colorScheme = theme;
+      try { localStorage.setItem('jsonDiff.theme', theme); } catch (e) { /* Storage may be unavailable. */ }
+      updateThemeButton();
+    });
+    document.getElementById('language-selector').addEventListener('change', function () {
+      window.location.assign(this.value);
+    });
+  </script>
+</body></html>
