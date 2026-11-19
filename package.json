@@ -56,6 +56,9 @@
     "overrides": {
       "dompurify": "^3.4.17",
       "minimatch@>=7.0.0 <11.0.1": "^11.0.1"
+    },
+    "patchedDependencies": {
+      "vite-plugin-monaco-editor@1.1.0": "patches/vite-plugin-monaco-editor@1.1.0.patch"
     }
   }
 }

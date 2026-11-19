@@ -1,10 +1,7 @@
 import { defineConfig } from 'vitest/config';
 
-// Dedicated Vitest config. Intentionally excludes `vite-plugin-monaco-editor`,
-// whose dev-server middleware calls `rmdirSync(..., { recursive: true })` — an
-// API removed in this Node 26 runtime. Tests don't exercise the Monaco editor,
-// so the plugin is unnecessary and only blocks the runner. `vitest` prefers
-// this file over `vite.config.ts`.
+// Dedicated Vitest config. Tests don't need the Vite plugin that bundles
+// and serves Monaco workers. Vitest prefers this file over `vite.config.ts`.
 //
 // Two projects:
 //  - "node" (default): fast, for unit tests using renderToStaticMarkup etc.

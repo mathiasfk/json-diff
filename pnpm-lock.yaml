@@ -8,6 +8,11 @@ overrides:
   dompurify: ^3.4.17
   minimatch@>=7.0.0 <11.0.1: ^11.0.1
 
+patchedDependencies:
+  vite-plugin-monaco-editor@1.1.0:
+    hash: xctki4wfwb46m2q322uyqdkfoe
+    path: patches/vite-plugin-monaco-editor@1.1.0.patch
+
 importers:
 
   .:
@@ -114,7 +119,7 @@ importers:
         version: 8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)
       vite-plugin-monaco-editor:
         specifier: ^1.1.0
-        version: 1.1.0(monaco-editor@0.57.0)
+        version: 1.1.0(patch_hash=xctki4wfwb46m2q322uyqdkfoe)(monaco-editor@0.57.0)
       vitest:
         specifier: ^5.1.0
         version: 5.1.0(@types/node@26.6.6)(@vitest/ui@5.1.0)(jsdom@31.0.1)(vite@8.3.8(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2))
@@ -3029,7 +3034,7 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
-  vite-plugin-monaco-editor@1.1.0(monaco-editor@0.57.0):
+  vite-plugin-monaco-editor@1.1.0(patch_hash=xctki4wfwb46m2q322uyqdkfoe)(monaco-editor@0.57.0):
     dependencies:
       monaco-editor: 0.57.0
 
