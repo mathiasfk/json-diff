@@ -3,6 +3,12 @@
   "locales": ["en", "pt", "zh", "es"],
   "names": {"en":"English", "pt":"Português", "zh":"中文", "es":"Español"},
   "ogLocales": {"en":"en_US", "pt":"pt_BR", "zh":"zh_CN", "es":"es_ES"},
+  "assets": {
+    "en": {"image":"og-image-1200x630.png", "manifest":"site.webmanifest"},
+    "pt": {"image":"og-image-pt-1200x630.png", "manifest":"site-pt.webmanifest"},
+    "zh": {"image":"og-image-zh-1200x630.png", "manifest":"site-zh.webmanifest"},
+    "es": {"image":"og-image-es-1200x630.png", "manifest":"site-es.webmanifest"}
+  },
   "pages": ["faq", "how-it-works", "privacy", "contact"],
   "home": {
     "en": {"title":"Compare JSON Online | Smart JSON Diff", "description":"Compare and format JSON, YAML, and JSONL for free in your browser. See differences side by side with automatic array alignment."},

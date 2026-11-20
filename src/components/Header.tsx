@@ -37,12 +37,8 @@ export function Header({ showNav = true, homeLink = false }: HeaderProps) {
   return (
     <header className="site-header" role="banner">
       <div className="site-header-inner">
-        <div>
-          <h1 className="site-title">{t('app.title')}</h1>
-          <p className="site-subtitle">
-            {t('header.subtitle')}
-          </p>
-        </div>
+        <h1 className="site-title">{t('app.title')}</h1>
+        <p className="site-subtitle">{t('header.subtitle')}</p>
         {showNav ? (
           <nav aria-label={t('header.primaryNav')} className="site-header-actions">
             {isFaq && (
