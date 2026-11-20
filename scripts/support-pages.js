@@ -84,6 +84,7 @@ export function supportPages(base = '/') {
       href="${origin}/${language}/${page}/">`).join('');
     const description = page === 'faq' ? faq[locale][0].a : page === 'how-it-works' ? c.how[0][1]
       : page === 'privacy' ? c.privacyText[0] : c.contactText;
+    const image = origin + '/' + site.assets[locale].image;
     const title = escapeHtml(c[page]);
     result[`${locale}/${page}/index.html`] = `<!doctype html>
 <html lang="${locale}"><head>
@@ -92,8 +93,8 @@ export function supportPages(base = '/') {
   <title>${title} — Smart JSON Diff</title><meta name="description" content="${escapeHtml(description)}">
   <link rel="canonical" href="${origin}/${locale}/${page}/">
   ${prefix !== '/' ? '<meta name="robots" content="noindex, nofollow">' : ''}${alternatives}<link rel="alternate" hreflang="x-default" href="${origin}/en/${page}/">
-  <meta property="og:type" content="website"><meta property="og:locale" content="${site.ogLocales[locale]}"><meta property="og:title" content="${title} — Smart JSON Diff"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${origin}/${locale}/${page}/"><meta property="og:image" content="${origin}/og-image-1200x630.png">
-  <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${title} — Smart JSON Diff"><meta name="twitter:description" content="${escapeHtml(description)}"><meta name="twitter:url" content="${origin}/${locale}/${page}/"><meta name="twitter:image" content="${origin}/og-image-1200x630.png">
+  <meta property="og:type" content="website"><meta property="og:locale" content="${site.ogLocales[locale]}"><meta property="og:title" content="${title} — Smart JSON Diff"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${origin}/${locale}/${page}/"><meta property="og:image" content="${image}">
+  <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${title} — Smart JSON Diff"><meta name="twitter:description" content="${escapeHtml(description)}"><meta name="twitter:url" content="${origin}/${locale}/${page}/"><meta name="twitter:image" content="${image}">
   <meta name="theme-color" content="#181818"><style>${sharedStyles}${styles}</style>
   <script>
     (function () {
@@ -108,8 +109,8 @@ export function supportPages(base = '/') {
   </script>
 </head><body>
   <header class="site-header"><div class="site-header-inner">
-    <div><a class="site-title" href="${prefix}${locale === 'en' ? '' : `${locale}/`}">Smart JSON Diff</a>
-      <p class="site-subtitle">${escapeHtml(translations[locale].header.subtitle)}</p></div>
+    <a class="site-title" href="${prefix}${locale === 'en' ? '' : `${locale}/`}">Smart JSON Diff</a>
+      <p class="site-subtitle">${escapeHtml(translations[locale].header.subtitle)}</p>
     <nav class="site-header-actions" aria-label="${escapeHtml(translations[locale].header.primaryNav)}">
       <a class="site-home" href="${prefix}${locale === 'en' ? '' : `${locale}/`}" aria-label="${escapeHtml(translations[locale].header.homeAria)}">← ${escapeHtml(translations[locale].header.home)}</a>
       <button type="button" id="theme-toggle" class="theme-toggle" hidden

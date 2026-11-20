@@ -23,12 +23,14 @@ for (const locale of site.locales) {
   const { subtitle } = JSON.parse(fs.readFileSync(`src/locales/${locale}.json`)).header;
   if (!c?.title || !c.description || !subtitle) throw new Error(`Missing home copy: ${locale}`);
   const alternates = site.locales.map(l => `<link rel="alternate" hreflang="${l}" href="${site.origin}${homePath(l)}">`).join('');
+  const image = site.origin + '/' + site.assets[locale].image;
   const meta = `\n<title>${esc(c.title)}</title><meta name="title" content="${esc(c.title)}"><meta name="description" content="${esc(c.description)}"><meta name="robots" content="${base === '/' ? 'index, follow' : 'noindex, nofollow'}"><meta name="inLanguage" content="${locale}"><link rel="canonical" href="${url}">${alternates}<link rel="alternate" hreflang="x-default" href="${site.origin}/">
-<meta property="og:type" content="website"><meta property="og:site_name" content="Smart JSON Diff"><meta property="og:title" content="${esc(c.title)}"><meta property="og:description" content="${esc(c.description)}"><meta property="og:url" content="${url}"><meta property="og:locale" content="${site.ogLocales[locale]}"><meta property="og:image" content="${site.origin}/og-image-1200x630.png">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${esc(c.title)}"><meta name="twitter:description" content="${esc(c.description)}"><meta name="twitter:url" content="${url}"><meta name="twitter:image" content="${site.origin}/og-image-1200x630.png">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Smart JSON Diff"><meta property="og:title" content="${esc(c.title)}"><meta property="og:description" content="${esc(c.description)}"><meta property="og:url" content="${url}"><meta property="og:locale" content="${site.ogLocales[locale]}"><meta property="og:image" content="${image}">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${esc(c.title)}"><meta name="twitter:description" content="${esc(c.description)}"><meta name="twitter:url" content="${url}"><meta name="twitter:image" content="${image}">
+<link rel="manifest" href="${base}${site.assets[locale].manifest}">
 <script id="application-schema" type="application/ld+json">${JSON.stringify(schema(locale))}</script><script type="application/ld+json">${JSON.stringify({ '@context':'https://schema.org', '@type':'Organization', name:'Smart JSON Diff', url:site.origin+'/', logo:site.origin+'/android-chrome-512x512.png' })}</script><script type="application/ld+json">${JSON.stringify({ '@context':'https://schema.org', '@type':'WebSite', name:'Smart JSON Diff', url:site.origin+'/' })}</script>\n`;
   const nav = labels[locale];
-  const shell = `<header class="site-header"><div class="site-header-inner"><div><h1 class="site-title">Smart JSON Diff</h1><p class="site-subtitle">${esc(subtitle)}</p></div></div></header><main style="min-height:55vh;padding:24px"></main><footer style="padding:24px"><nav aria-label="${esc(nav.nav)}">${site.pages.map(p => `<a href="${base}${locale}/${p}/">${esc(nav[p])}</a> `).join('')}</nav></footer>`;
+  const shell = `<header class="site-header"><div class="site-header-inner"><h1 class="site-title">Smart JSON Diff</h1><p class="site-subtitle">${esc(subtitle)}</p></div></header><main style="min-height:55vh;padding:24px"></main><footer style="padding:24px"><nav aria-label="${esc(nav.nav)}">${site.pages.map(p => `<a href="${base}${locale}/${p}/">${esc(nav[p])}</a> `).join('')}</nav></footer>`;
   let html = replaceMarked(template, 'SEO', meta).replace('<html lang="en">', `<html lang="${locale}">`);
   html = replaceMarked(html, 'SHELL', shell);
   write(locale === 'en' ? 'index.html' : `${locale}/index.html`, html);
@@ -57,6 +59,12 @@ for (const [file, source] of Object.entries(documents)) {
   const expected = site.origin + (page ? `/${target}/${page}/` : homePath(target));
   if (doc.querySelector(`link[rel="alternate"][hreflang="${language}"]`)?.getAttribute('href') !== expected) throw new Error(`Invalid alternate ${language}: ${file}`);
  }
+ const { image, manifest } = site.assets[locale];
+ const socialImage = site.origin + '/' + image;
+ if (!fs.existsSync(path.join(dist, image)) ||
+     doc.querySelector('meta[property="og:image"]')?.content !== socialImage ||
+     doc.querySelector('meta[name="twitter:image"]')?.content !== socialImage) throw new Error(`Invalid social image: ${file}`);
+ if (!page && doc.querySelector('link[rel="manifest"]')?.getAttribute('href') !== base + manifest) throw new Error(`Invalid manifest link: ${file}`);
  for (const node of doc.querySelectorAll('a[href], script[src], link[href]')) {
   const reference = node.getAttribute('href') || node.getAttribute('src');
   if (!reference?.startsWith('/')) continue;
