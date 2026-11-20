@@ -9,8 +9,8 @@
       href="https://smartjsondiff.com/pt/faq/"><link rel="alternate" hreflang="zh"
       href="https://smartjsondiff.com/zh/faq/"><link rel="alternate" hreflang="es"
       href="https://smartjsondiff.com/es/faq/"><link rel="alternate" hreflang="x-default" href="https://smartjsondiff.com/en/faq/">
-  <meta property="og:type" content="website"><meta property="og:locale" content="zh_CN"><meta property="og:title" content="常见问题 — Smart JSON Diff"><meta property="og:description" content="工具比较解析后的值并排序对象属性。自动对齐匹配相似的数组元素；按位置比较会递归比较相同索引处的元素。比较在浏览器中进行。"><meta property="og:url" content="https://smartjsondiff.com/zh/faq/"><meta property="og:image" content="https://smartjsondiff.com/og-image-1200x630.png">
-  <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="常见问题 — Smart JSON Diff"><meta name="twitter:description" content="工具比较解析后的值并排序对象属性。自动对齐匹配相似的数组元素；按位置比较会递归比较相同索引处的元素。比较在浏览器中进行。"><meta name="twitter:url" content="https://smartjsondiff.com/zh/faq/"><meta name="twitter:image" content="https://smartjsondiff.com/og-image-1200x630.png">
+  <meta property="og:type" content="website"><meta property="og:locale" content="zh_CN"><meta property="og:title" content="常见问题 — Smart JSON Diff"><meta property="og:description" content="工具比较解析后的值并排序对象属性。自动对齐匹配相似的数组元素；按位置比较会递归比较相同索引处的元素。比较在浏览器中进行。"><meta property="og:url" content="https://smartjsondiff.com/zh/faq/"><meta property="og:image" content="https://smartjsondiff.com/og-image-zh-1200x630.png">
+  <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="常见问题 — Smart JSON Diff"><meta name="twitter:description" content="工具比较解析后的值并排序对象属性。自动对齐匹配相似的数组元素；按位置比较会递归比较相同索引处的元素。比较在浏览器中进行。"><meta name="twitter:url" content="https://smartjsondiff.com/zh/faq/"><meta name="twitter:image" content="https://smartjsondiff.com/og-image-zh-1200x630.png">
   <meta name="theme-color" content="#181818"><style>:root {
   --surface-base: #181818;
   --surface-raised: #242424;
@@ -44,10 +44,16 @@
 }
 
 .site-header { background: var(--surface-raised); border-bottom: 1px solid var(--surface-border); padding: .75rem 1rem; }
-.site-header-inner { max-width: 1536px; margin: auto; display: flex; flex-direction: column; gap: .75rem; }
-.site-title { margin: 0; color: var(--text-primary); font-size: 1.125rem; line-height: 1.75rem; font-weight: 600; letter-spacing: -.025em; text-decoration: none; }
-.site-subtitle { margin: .125rem 0 0; color: var(--text-muted); font-size: .75rem; line-height: 1rem; }
-.site-header-actions { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.site-header-inner {
+  max-width: 1536px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: .25rem 1rem;
+}
+.site-title { justify-self: start; margin: 0; color: var(--text-primary); font-size: 1.125rem; line-height: 1.75rem; font-weight: 600; letter-spacing: -.025em; text-decoration: none; }
+.site-subtitle { margin: 0; color: var(--text-muted); font-size: .75rem; line-height: 1rem; }
+.site-header-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin-top: .25rem; }
 .site-home { color: var(--text-muted); font-size: .875rem; text-decoration: none; }
 .site-home:hover { color: var(--text-strong); }
 .theme-toggle { display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
@@ -61,8 +67,12 @@
 .site-language select { background: var(--surface-base); border: 1px solid var(--surface-border); color: var(--text-strong);
   border-radius: .25rem; padding: .25rem .5rem; font: inherit; }
 .site-language select:focus-visible { outline: 1px solid #3b82f6; outline-offset: 1px; }
-@media (min-width: 640px) { .site-header { padding-left: 1.5rem; padding-right: 1.5rem; } .site-subtitle { font-size: .875rem; line-height: 1.25rem; } }
-@media (min-width: 768px) { .site-header-inner { flex-direction: row; align-items: center; justify-content: space-between; } .site-header-actions { flex-direction: row; gap: 1rem; } }
+@media (min-width: 640px) {
+  .site-header { padding-inline: 1.5rem; }
+  .site-header-inner { grid-template-columns: minmax(0, 1fr) max-content; align-items: center; }
+  .site-subtitle { grid-column: 1; grid-row: 2; font-size: .875rem; line-height: 1.25rem; }
+  .site-header-actions { grid-column: 2; grid-row: 1 / span 2; gap: 1rem; margin-top: 0; }
+}
 
   * { box-sizing: border-box }
   body { margin: 0; min-width: 320px; min-height: 100vh; background: var(--surface-base); color: var(--text-primary) }
@@ -102,8 +112,8 @@
   </script>
 </head><body>
   <header class="site-header"><div class="site-header-inner">
-    <div><a class="site-title" href="/zh/">Smart JSON Diff</a>
-      <p class="site-subtitle">通过智能数组匹配语义比较 JSON、YAML 和 JSONL。在浏览器中格式化输入并查看差异。</p></div>
+    <a class="site-title" href="/zh/">Smart JSON Diff</a>
+      <p class="site-subtitle">通过智能数组匹配语义比较 JSON、YAML 和 JSONL。在浏览器中格式化输入并查看差异。</p>
     <nav class="site-header-actions" aria-label="主导航">
       <a class="site-home" href="/zh/" aria-label="前往 Smart JSON Diff 首页">← 首页</a>
       <button type="button" id="theme-toggle" class="theme-toggle" hidden
