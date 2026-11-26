@@ -1,0 +1,24 @@
+{
+  "id": "/preview/branch-dependabot-npm_and_yarn-typescript-eslint-parser-8.73.0/",
+  "lang": "es",
+  "name": "Smart JSON Diff",
+  "short_name": "Smart JSON Diff",
+  "description": "Compara y formatea JSON, YAML y JSONL gratis en tu navegador. Ve las diferencias lado a lado con alineación automática de arrays.",
+  "start_url": "./es/",
+  "scope": "./",
+  "display": "standalone",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
